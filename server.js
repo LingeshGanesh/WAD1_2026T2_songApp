@@ -1,6 +1,28 @@
 const express = require("express");
 const server = express();
 const path = require("path");
+const mongoose = require("mongoose");
+const dotenv = require('dotenv');
+
+// Load Env variable
+dotenv.config({ path: './config.env' });
+
+// Database connection
+async function connectDB() {
+  try {
+    await mongoose.connect(process.env.DB);
+    console.log("MongoDB connected successfully");
+  } catch (error) {
+    console.error("MongoDB connection failed:", error.message);
+    process.exit(1);
+  }
+};
+
+//Load Model
+const User = require("./model/users-model");
+const Song = require("./model/songs-model");
+const Playlist = require("./model/playlists-model");
+const Review = require("./model/playlists-model");
 
 // Middleware
 server.use(express.static(path.join(__dirname, "public")));
@@ -10,13 +32,32 @@ server.set("views", path.join(__dirname, "views"));
 
 // Routes
 server.get("/", (req, res) => {
-    res.render("base");
+  res.render("base");
+});
+
+//testing
+
+server.get("/add-song", async (req, res) => {
+  await Song.create({
+    title: "Blinding Lights",
+    artist: "The Weeknd",
+    album: "After Hours",
+    genre: "Pop",
+    duration: 200
+  });
+
+  res.send("Song added to database");
 });
 
 // Initialize Server
-const hostname = "localhost";
-const port = 8000;
+function startServer() {
+  const hostname = "localhost"; 
+  const port = 8000;
 
-server.listen(port, hostname, () => {
+  server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);
-});
+  });
+}
+
+// call connectDB first and when connection is ready we start the web server
+connectDB().then(startServer);
