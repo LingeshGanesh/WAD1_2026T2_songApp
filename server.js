@@ -19,10 +19,10 @@ async function connectDB() {
 };
 
 //Load Model
-const User = require("./model/users-model");
-const Song = require("./model/songs-model");
-const Playlist = require("./model/playlists-model");
-const Review = require("./model/playlists-model");
+const User = require("./models/users-model");
+const Song = require("./models/songs-model");
+const Playlist = require("./models/playlists-model");
+const Review = require("./models/playlists-model");
 
 // Middleware
 server.use(express.static(path.join(__dirname, "public")));
