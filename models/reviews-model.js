@@ -3,14 +3,18 @@ const mongoose = require('mongoose');
 const reviewSchema = new mongoose.Schema({
     rating: {
         type: Number,
-        required: [true, 'A review must have a rating']
+        required: [true, 'A review must have a rating'],
+        min: 1,
+        max: 5
     },
     comment: {
-        type: String
+        type: String,
+        required: [true, 'A review must have a comment']
     },
     song: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Song'
+        ref: 'Song',
+        required: true
     },
     author: {
         type: mongoose.Schema.Types.ObjectId,

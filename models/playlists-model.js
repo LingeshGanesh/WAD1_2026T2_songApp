@@ -11,9 +11,6 @@ const playlistSchema = new mongoose.Schema({
     genre: {
         type: String
     },
-    coverColor: {
-        type: String
-    },
     isPublic: {
         type: Boolean,
         default: true

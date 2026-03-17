@@ -20,12 +20,10 @@ const songSchema = new mongoose.Schema({
     },
     youtubeUrl: {
         type: String
-    },
-    likes: {
-        type: Number,
-        default: 0
     }
 });
+
+songSchema.index({ title: 1, artist: 1, album: 1 }, { unique: true });
 
 const Song = mongoose.model('Song', songSchema, 'songs');
 
