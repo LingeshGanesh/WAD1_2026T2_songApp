@@ -5,6 +5,10 @@ const eventSchema = new mongoose.Schema({
         type: String,
         required: [true, 'An event must have a name']
     },
+    author: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
     desc: {
         type: String,
         required: [true, 'An event must have a description']
@@ -25,4 +29,35 @@ const eventSchema = new mongoose.Schema({
 
 const Event = mongoose.model('Event', eventSchema, 'events');
 
-module.exports = Event;
+exports.findByName = function(name) {
+    return Event.find({ name: name });
+};
+
+exports.retrieveAll = function() {
+    return Event.find();
+};
+
+exports.addEvent = function(newEvent) {
+    return Event.create(newEvent);
+};
+
+exports.editEvent = function(id, name, desc, date, entryFee, location) {
+    return Event.updateOne(
+        { _id: id },
+        { name: name, desc: desc, date: date, entryFee: entryFee, location: location }
+    );
+};
+
+exports.deleteEvent = function(id) {
+    return Event.deleteOne({ _id: id });
+};
+
+exports.getUpcomingEvents = function() {
+    return Event.find().sort({ date: 1 }).limit(3);
+};
+
+// module.exports = Event;
+
+exports.addEvent = function(newEvent) {
+    return Event.create(newEvent);
+}

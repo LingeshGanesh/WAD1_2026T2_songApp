@@ -24,6 +24,8 @@ const Song = require("./models/songs-model");
 const Playlist = require("./models/playlists-model");
 const Review = require("./models/playlists-model");
 
+const eventRoutes = require("./routes/events-routes");
+
 // Middleware
 server.use(express.static(path.join(__dirname, "public")));
 server.use(express.urlencoded({ extended: true }));
@@ -34,6 +36,9 @@ server.set("views", path.join(__dirname, "views"));
 server.get("/", (req, res) => {
   res.render("base");
 });
+
+server.use("/events", eventRoutes);
+
 
 //testing
 

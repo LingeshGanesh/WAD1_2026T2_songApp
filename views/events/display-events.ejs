@@ -1,0 +1,30 @@
+<html>
+<head>
+  <title>Events on Nodes.js</title>
+</head>
+<body>
+
+  <% if (eventList.length === 0) { %>
+    <p>No events yet.</p>
+  <% } else { %>
+    <h2>Node.js Event List</h2>
+    <a href="/">back</a>
+     
+    <% eventList.forEach(event => { %>
+      
+        <p><strong>Name: <%= event.name %></strong></p>
+        Description: <%= event.desc %><br>
+        Date: <%= new Date(event.date).toLocaleDateString('en-GB', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        }) %><br>
+        Entry Fee: <%= event.entryFee %><br>
+        Location: <%= event.location %>
+      <hr>
+    <% }); %>
+    
+  <% } %>
+     
+</body>
+</html>
