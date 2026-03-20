@@ -8,6 +8,26 @@
 <body>
     <%- include("../navbar-user") %>
     <h1>Browse Playlists</h1>
+    <% if (allPlaylists) { %>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Creation Date</th>
+                <th>Owner</th>
+            </tr>
+    
+            <% allPlaylists.forEach(playlist => { %>
+            <tr>
+                <td><a href="/playlist/<%= playlist._id %>"><%= playlist.name %></a></td>
+                <td><%= playlist.creationDate %></td>
+                <td><a href="#"><%= playlist.owner %></a></td>
+            </tr>
+            <% }) %>
+    
+        </table>
+    <% } else { %>
+        <p>No playlists yet.</p>
+    <% } %>
     <%- include("../footer") %>
 </body>
 </html>
