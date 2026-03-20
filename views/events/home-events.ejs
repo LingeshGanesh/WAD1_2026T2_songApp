@@ -4,12 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Events</title>
+    <link rel="stylesheet" href="/css/events-styles.css">
 </head>
-<body style="text-align: center;">
-    <h1 style="text-align: center;">EVENTS</h1>
-    <a href="events/event-list"><button>View all events</button></a><br><br>
-    <a href="events/add-event"><button>Add new event</button></a><br><br>
-    <a href="events/edit-events"><button>View your events</button></a><br><br>
-    <a href="events/search-event"><button>Find specific event</button></a><br><br>
+<body>
+    <%- include('../navbar-user') %>
+
+    <div class="events-banner">
+        <h1 class="events-title">LISTEN TOGETHER</h1>
+    </div>
+
+    <div class="events-section">
+        <h2 class="upcoming-title">Upcoming Events</h2>
+
+        <form action="/events/search-event" method="POST" class="search-form">
+            <input 
+                type="text" 
+                name="name" 
+                placeholder="Search events..." 
+                class="search-input"
+            >
+            <button type="submit" class="search-button">
+                Search
+            </button>
+        </form>
+
+        <div class="events-cards">
+            <% for (let i = 0; i < 3; i++) { %>
+                <div class="event-card">
+                    <% if (upcomingEvents[i]) { %>
+                        <h2 class="event-name"><%= upcomingEvents[i].name %></h2>
+                        <p>
+                            Date: <%= new Date(upcomingEvents[i].date).toLocaleDateString("en-GB", {
+                                day: "numeric",
+                                month: "long",
+                                year: "numeric"
+                            }) %>
+                        </p>
+                        <p><%= upcomingEvents[i].location %></p>
+                        <p class="event-desc"><%= upcomingEvents[i].desc %></p>
+                    <% } else { %>
+                        <h2>No Event</h2>
+                        <p>No upcoming event</p>
+                        <p></p>
+                        <p></p>
+                    <% } %>
+                </div>
+            <% } %>
+
+            <div class="side-buttons">
+                <a href="events/event-list" class="side-link">
+                    <div class="side-card">
+                        <h3>All Events</h3>
+                        <p>Click here to see all events</p>
+                    </div>
+                </a>
+
+                <a href="events/edit-events" class="side-link">
+                    <div class="side-card">
+                        <h3>My Events</h3>
+                        <p>Click here to see your events</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../footer') %>
 </body>
 </html>

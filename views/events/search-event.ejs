@@ -2,33 +2,50 @@
 <html lang="en">
 <head>
     <title>Search Events</title>
+    <link rel="stylesheet" href="/css/events-styles.css">
 </head>
 <body>
-    <form action="/events/search-event" method="POST">
-        Event Name:
-        <input type="text" name="name">
-        <button type="submit">Find</button>
-    </form>
+    <%- include('../navbar-user') %>
 
-    <br><br>
+    <div class="all-events-section">
+        <div style="text-align: left; padding-left: 60px; margin-bottom: 20px;">
+            <a href="/events">back</a>
+        </div>
 
-    <% if (searchTerm) { %>
-        <h3>Search results for: <%= searchTerm %></h3>
-    <% } %>
+        <h1 class="all-events-title">SEARCH EVENTS</h1>
 
-    <% if (result && result.length > 0) { %>
-        <% result.forEach(event => { %>
-            Name: <%= event.name %><br>
-            Description: <%= event.desc %><br>
-            Date: <%= event.date %><br>
-            Entry Fee: $<%= event.entryFee %><br>
-            Location: <%= event.location %><br>
-            <hr>
-        <% }); %>
-    <% } else if (result === null || (result && result.length === 0)) { %>
-        <p>Event not found</p>
-    <% } %>
+        <form action="/events/search-event" method="POST" class="search-form">
+            <input type="text" name="name" class="search-input" placeholder="Search events...">
+            <button type="submit" class="search-button">Find</button>
+        </form>
 
-    <a href="/events">back</a>
+        <% if (searchTerm) { %>
+            <p class="no-events-text">Search results for: <%= searchTerm %></p>
+        <% } %>
+
+        <% if (result && result.length > 0) { %>
+            <div class="all-events-cards">
+                <% result.forEach(event => { %>
+                    <div class="all-event-card">
+                        <h2 class="all-event-name"><%= event.name %></h2>
+                        <p>
+                            Date: <%= new Date(event.date).toLocaleDateString('en-GB', {
+                                day: 'numeric',
+                                month: 'long',
+                                year: 'numeric'
+                            }) %>
+                        </p>
+                        <p><%= event.location %></p>
+                        <p class="all-event-desc"><%= event.desc %></p>
+                        <p>Entry Fee: $<%= event.entryFee %></p>
+                    </div>
+                <% }); %>
+            </div>
+        <% } else if (result === null || (result && result.length === 0)) { %>
+            <p class="no-events-text">Event not found</p>
+        <% } %>
+    </div>
+
+    <%- include('../footer') %>
 </body>
 </html>

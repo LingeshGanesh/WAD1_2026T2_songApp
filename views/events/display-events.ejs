@@ -1,30 +1,40 @@
+<!DOCTYPE html>
 <html>
 <head>
-  <title>Events on Nodes.js</title>
+  <title>Events</title>
+  <link rel="stylesheet" href="/css/events-styles.css">
 </head>
 <body>
+  <%- include('../navbar-user') %>
+          <div style="text-align: left; padding-left: 60px; margin-bottom: 20px;">
+            <a href="/events">back</a>
+        </div>
 
-  <% if (eventList.length === 0) { %>
-    <p>No events yet.</p>
-  <% } else { %>
-    <h2>Node.js Event List</h2>
-    <a href="/events">back</a>
-     
-    <% eventList.forEach(event => { %>
-      
-        <p><strong>Name: <%= event.name %></strong></p>
-        Description: <%= event.desc %><br>
-        Date: <%= new Date(event.date).toLocaleDateString('en-GB', {
-          day: 'numeric',
-          month: 'long',
-          year: 'numeric'
-        }) %><br>
-        Entry Fee: <%= event.entryFee %><br>
-        Location: <%= event.location %>
-      <hr>
-    <% }); %>
-    
-  <% } %>
-     
+  <div class="all-events-section">
+    <h1 class="all-events-title">ALL EVENTS</h1>
+
+    <% if (eventList.length === 0) { %>
+      <p class="no-events-text">No events yet.</p>
+    <% } else { %>
+      <div class="all-events-cards">
+        <% eventList.forEach(event => { %>
+          <div class="all-event-card">
+            <h2 class="all-event-name"><%= event.name %></h2>
+            <p>
+              Date: <%= new Date(event.date).toLocaleDateString('en-GB', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+              }) %>
+            </p>
+            <p><%= event.location %></p>
+            <p class="all-event-desc"><%= event.desc %></p>
+          </div>
+        <% }); %>
+      </div>
+    <% } %>
+  </div>
+
+  <%- include('../footer') %>
 </body>
 </html>

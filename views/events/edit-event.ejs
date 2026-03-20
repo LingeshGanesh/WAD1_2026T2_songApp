@@ -1,28 +1,47 @@
+<!DOCTYPE html>
 <html>
 <head>
   <title>Edit Events</title>
+  <link rel="stylesheet" href="/css/events-styles.css">
 </head>
 <body>
+  <%- include('../navbar-user') %>
+<div style="text-align: left; padding-left: 60px; margin-bottom: 20px;">
+  <a href="/events">back</a>
+</div>
 
-  <% if (events.length === 0) { %>
-    <p>No events yet.</p>
-  <% } else { %>
-    <h2>Your Event List</h2>
-    <a href="/events">Back to Home Page</a>
+  <div class="all-events-section">
+    <h1 class="all-events-title">MY EVENTS</h1>
 
-    <% events.forEach(event => { %>
-      
-        <p><strong>Name: <%= event.name %></strong></p>
-        Description: <%= event.desc %><br>
-        Date: <%= event.date %><br>
-        Entry Fee: <%= event.entryFee %><br>
-        Location: <%= event.location %><br>
-        <a href="/events/update-event?id=<%= event._id %>">Edit</a> |
-        <a href="/events/delete-event?id=<%= event._id %>">Delete</a>
-        <hr>
-    <% }); %>
-    
-  <% } %>
-     
+
+
+    <% if (events.length === 0) { %>
+      <p class="no-events-text">No events yet.</p>
+    <% } else { %>
+      <div class="all-events-cards">
+        <% events.forEach(event => { %>
+          <div class="all-event-card">
+            <h2 class="all-event-name"><%= event.name %></h2>
+            <p>
+              Date: <%= new Date(event.date).toLocaleDateString('en-GB', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+              }) %>
+            </p>
+            <p><%= event.location %></p>
+            <p class="all-event-desc"><%= event.desc %></p>
+            <p>Entry Fee: <%= event.entryFee %></p>
+            <p>
+              <a href="/events/update-event?id=<%= event._id %>"><button>Edit</button></a>
+              <a href="/events/delete-event?id=<%= event._id %>"><button>Delete</button></a>
+            </p>
+          </div>
+        <% }); %>
+      </div>
+    <% } %>
+  </div>
+
+  <%- include('../footer') %>
 </body>
 </html>

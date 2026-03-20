@@ -4,7 +4,8 @@ const fs = require('fs/promises');
 const Event = require('./../models/events-model');
 
 exports.getIndex = async (req, res) => {
-  res.render("events/home-events");
+  const upcomingEvents = await Event.getUpcomingEvents();
+  res.render("events/home-events", { upcomingEvents });
 };
 
 //DUMMY USER ID TO BE USED ONLY UNTIL AUTH AND SESSION IS ONLINE

@@ -1,0 +1,173 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    text-align: center;
+    margin: 0;
+    background-color: black;
+}
+
+
+.events-banner {
+    background-image: url('/img/events_BG.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 20px 0;
+}
+
+.events-title {
+    text-align: center;
+    font-size: 70px;
+}
+
+.events-section {
+    background-color: black;
+    padding: 40px 0;
+}
+
+.upcoming-title {
+    color: white;
+    margin-bottom: 30px;
+    font-size: 40px;
+}
+
+.search-form {
+    margin-bottom: 30px;
+}
+
+.search-input {
+    padding: 12px;
+    width: 500px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+}
+
+.search-button {
+    padding: 12px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.events-cards {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+    align-items: stretch;
+}
+
+.event-card {
+    background-color: #1a1a1a;
+    color: white;
+    width: 320px;
+    height: 260px;
+    padding: 30px;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.event-name {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.event-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.side-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 320px;
+}
+
+.side-link {
+    text-decoration: none;
+}
+
+.side-card {
+    background-color: #333333;
+    color: white;
+    width: 320px;
+    height: 120px;
+    padding: 10px;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.all-events-grid {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+}
+
+.all-events-grid .event-card {
+    width: 260px;
+    min-height: 260px;
+}
+
+.all-events-section {
+    background-color: black;
+    padding: 40px 60px;
+    min-height: 100vh;
+}
+
+.all-events-title {
+    color: white;
+    font-size: 55px;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.no-events-text {
+    color: white;
+    text-align: center;
+    font-size: 20px;
+}
+
+.all-events-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+}
+
+.all-event-card {
+    background-color: #1a1a1a;
+    color: white;
+    min-height: 280px;
+    padding: 30px;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.all-event-name {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.all-event-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.all-event-card button {
+    font-family: inherit;
+}
