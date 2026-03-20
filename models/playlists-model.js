@@ -40,3 +40,7 @@ exports.retrieveAll = async function () {
 exports.retrievePublic = async function () {
     return await Playlist.find({isPublic: true});
 }
+
+exports.getByID = async function (id) {
+    return await Playlist.findById(id);
+}
