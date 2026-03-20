@@ -3,6 +3,17 @@ const fs = require('fs/promises');
 // Get Service model
 const Event = require('./../models/events-model');
 
+exports.getIndex = async (req, res) => {
+  res.render("events/home-events");
+};
+
+//DUMMY USER ID TO BE USED ONLY UNTIL AUTH AND SESSION IS ONLINE
+const userId = "69bc23ebd3cd6548aad26bdb";
+// DUMMY
+// DUMMY
+// DUMMY
+// REMEMBER TO CHANGE LATER PLEASE
+
 // Controller function to get all the documents in the db and display it
 exports.showEvents = async (req, res) => {
   try {
@@ -13,4 +24,144 @@ exports.showEvents = async (req, res) => {
     console.error(error);
     res.send("Error reading database"); // Send error message if fetching fails
   }
+};
+
+exports.showAddForm = (req, res) => {
+    res.render("events/add-event", { result: undefined, msg: undefined });
+};
+
+exports.createEvent = async (req, res) => {
+    try {
+        // get user input
+        const name = req.body.name;
+        const desc = req.body.desc;
+        const date = req.body.date;
+        const entryFee = req.body.entryFee;
+        const location = req.body.location;
+
+        // form validation
+
+        // create structure that stores new event
+        let newEvent = { name: name, desc: desc, date: date, entryFee: entryFee, location: location, author: userId };
+
+        try {
+            let msg = `Event has been added successfully.<br><br>Name: ${name}<br>Description: ${desc}<br>Date: ${date}<br>Entry Fee: ${entryFee}<br>Location: ${location}`;
+            let result = await Event.addEvent(newEvent);
+            console.log("event added:" + result);
+
+            res.render("events/add-event", { result: result || null, msg });
+
+        } catch (error) {
+            console.error(error);
+            let result = "fail";
+            let msg = "Error adding event";
+            res.render("events/add-event", { result, msg });
+        }
+
+    } catch (error) {
+
+    }
+};
+
+exports.showEventList = async (req, res) => {
+    const userId = "69bc23ebd3cd6548aad26bdb";
+
+    try {
+        let events = await Event.retrieveByAuthor(userId);
+        console.log(events);
+        res.render("events/edit-event", { events });
+    } catch (error) {
+        console.error(error);
+        res.send("Error reading database");
+    }
+};
+
+exports.getEvent = async (req, res) => {
+    const userId = "69bc23ebd3cd6548aad26bdb";
+    const id = req.query.id;
+    console.log(id);
+
+    try {
+        const result = await Event.findByIdAndAuthor(id, userId);
+        res.render("events/update-event", { result });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Something went wrong");
+    }
+};
+
+exports.updateEvent = async (req, res) => {
+    const userId = "69bc23ebd3cd6548aad26bdb";
+
+    const id = req.body.id;
+    console.log(id);
+    const name = req.body.name;
+    const desc = req.body.desc;
+    const date = req.body.date;
+    const entryFee = req.body.entryFee;
+    const location = req.body.location;
+
+    try {
+        let success = await Event.editEvent(id, userId, name, desc, date, entryFee, location);
+        console.log(success);
+        res.send('Event has been successfully updated. <a href="/events/edit-events">Go back to event list</a>');
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+exports.deleteAnEvent = async (req, res) => {
+    const userId = "69bc23ebd3cd6548aad26bdb";
+    const id = req.body.id;
+
+    try {
+        let success = await Event.deleteEvent(id, userId);
+        console.log(success);
+
+        if (success.deletedCount === 1) {
+            res.send('Event has been successfully deleted. <a href="/events/edit-events">Go back to event list</a>');
+        }
+
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+exports.getMarkedEvent = async (req, res) => {
+    const userId = "69bc23ebd3cd6548aad26bdb";
+    const id = req.query.id;
+    console.log(id);
+
+    try {
+        const result = await Event.findByIdAndAuthor(id, userId);
+        res.render("events/show-an-event", { result });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Something went wrong");
+    }
+};
+
+exports.showForm = (req, res) => {
+    res.render("events/search-event", { result: undefined, searchTerm: undefined });
+};
+
+exports.submitEvent = async (req, res) => {
+    try {
+        const name = req.body.name;
+        console.log(name);
+
+        if (name === "") {
+            console.log("ERROR: empty input");
+            return res.render("events/search-event", { result: undefined, searchTerm: "" });
+        }
+
+        const result = await Event.findByName(name);
+        console.log("result:" + result);
+        res.render("events/search-event", { result: result || null, searchTerm: name });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Something went wrong");
+    }
 };

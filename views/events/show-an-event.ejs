@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Event Marked for Deletion</title>
+</head>
+<body>
+    <p><strong>Event Marked for Deletion.</strong></p>
+
+    <% if (result) { %>
+        Name: <%= result.name %><br>
+        Description: <%= result.desc %><br>
+        Date: <%= result.date %><br>
+        Entry Fee: $<%= result.entryFee %><br>
+        Location: <%= result.location %><br>
+
+        <form action="/events/delete-event" method="POST">
+            <p>Click the Confirm button to delete this event.</p>
+            <input type="hidden" name="id" value="<%= result._id %>">
+            <button type="submit">Confirm</button>
+        </form>
+        
+    <% } else if (result === null) { %>
+        <p>Event not found</p>
+    <% } %>
+
+    <br><br><a href="/events/edit-events">back</a>
+</body>
+</html>
