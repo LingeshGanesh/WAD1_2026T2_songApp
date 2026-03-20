@@ -32,3 +32,7 @@ const playlistSchema = new mongoose.Schema({
 const Playlist = mongoose.model('Playlist', playlistSchema, 'playlists');
 
 module.exports = Playlist;
+
+exports.retrieveAll = async function () {
+    return await Playlist.find();
+}
