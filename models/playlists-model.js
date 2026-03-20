@@ -36,3 +36,7 @@ const Playlist = mongoose.model('Playlist', playlistSchema, 'playlists');
 exports.retrieveAll = async function () {
     return await Playlist.find();
 }
+
+exports.retrievePublic = async function () {
+    return await Playlist.find({isPublic: true});
+}
