@@ -1,0 +1,58 @@
+[
+    {
+        "title": "Never Enough",
+        "artist": "Loren Allred",
+        "album": "The Greatest Showman (Original Motion Picture Soundtrack)",
+        "genre": "Pop",
+        "duration": 207,
+        "youtubeUrl": "https://youtu.be/fKEMBn_JdCE"
+    },
+    {
+        "title": "Two Time",
+        "artist": "Jack Stauber",
+        "album": "Inchman / Two Time",
+        "genre": "Indie",
+        "duration": 42,
+        "youtubeUrl": "https://youtu.be/FNt8xXCJplY"
+    },
+    {
+        "title": "if a mouse could sing",
+        "artist": "spellcasting",
+        "album": "if a mouse could sing",
+        "genre": "Indie",
+        "duration": 90,
+        "youtubeUrl": "https://youtu.be/GlyfakFb5xM"
+    },
+    {
+        "title": "dancing around in circles until my little feet fall off",
+        "artist": "spellcasting",
+        "album": "dancing around in circles until my little feet fall off",
+        "genre": "Indie",
+        "duration": 89,
+        "youtubeUrl": "https://youtu.be/3AgveSlcT0E"
+    },
+    {
+        "title": "Everybody Home",
+        "artist": "PRD Music",
+        "album": "Everybody Home",
+        "genre": "Electro Swing",
+        "duration": 170,
+        "youtubeUrl": "https://youtu.be/75-IxT01YNM"
+    },
+    {
+        "title": "那些年 (Those Bygone Years)",
+        "artist": "胡夏 (Hu Xia)",
+        "album": "Flame of Love",
+        "genre": "Romance",
+        "duration": 368,
+        "youtubeUrl": "https://youtu.be/rHmLEj3-JAI"
+    },
+    {
+        "title": "The Way You Felt",
+        "artist": "Alec Benjamin",
+        "album": "'(Un)Commentary",
+        "genre": "Pop",
+        "duration": 188,
+        "youtubeUrl": "https://youtu.be/Ut85dWwrTV8"
+    }
+]

@@ -1,0 +1,20 @@
+[
+    {
+        "name": "Clown Beat Type Ahh",
+        "description": "A silly clown beat playlist!",
+        "genre": "Funk",
+        "isPublic": "true"
+    },
+    {
+        "name": "Songs to Turn Rain into Drinking Water",
+        "description": "Singapore is turning rain into drinking water! Majulah!",
+        "genre": "Pop",
+        "isPublic": "true"
+    },
+    {
+        "name": "Animation Meme Music",
+        "description": "A collection of songs used in most animation memes!",
+        "genre": "Indie",
+        "isPublic": "true"
+    }
+]
