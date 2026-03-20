@@ -15,7 +15,7 @@ server.set("views", path.join(__dirname, "views"));
 
 // Routes
 const baseRouter = require("./routes/base-router.js")
-server.get("/", baseRouter)
+server.use("/", baseRouter);
 
 // Database connection
 async function connectDB() {
