@@ -15,6 +15,10 @@ const playlistSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
+    creationDate: {
+        type: Date,
+        default: Date.now()
+    },
     owner: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
