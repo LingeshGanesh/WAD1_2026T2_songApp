@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Song = require('./songs-model');
 
 const playlistSchema = new mongoose.Schema({
     name: {
@@ -31,8 +32,15 @@ const playlistSchema = new mongoose.Schema({
 
 const Playlist = mongoose.model('Playlist', playlistSchema, 'playlists');
 
-// module.exports = Playlist;
+// Private Functions
+function convertTime(timeSec) {
+    const minute = Math.floor(timeSec / 60);
+    const second = timeSec % 60;
 
+    return `${minute}:${second.toString().padStart(2, "0")}`;
+}
+
+// CRUD Functions
 exports.retrieveAll = async function() {
     return await Playlist.find();
 }

@@ -2,14 +2,6 @@
 const Playlist = require("../models/playlists-model");
 const Song = require("./../models/songs-model.js");
 
-// Private Functions
-function convertTime(timeSec) {
-    const minute = Math.floor(timeSec / 60);
-    const second = timeSec % 60;
-
-    return `${minute}:${second.toString().padStart(2, "0")}`;
-}
-
 // Controllers
 exports.browse = async (req, res) => {
     const allPlaylists = await Playlist.retrieveAll();
@@ -38,6 +30,8 @@ exports.create = async (req, res) => {
     user = user === ""? null : user;
     name = name.trim();
     description = description.trim();
+    description = description === ""? null : description;
+    genre = genre === ""? null: genre;
     isPublic = isPublic.toLowerCase() === 'true';
     
     // There is no song.
