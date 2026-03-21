@@ -20,25 +20,28 @@ exports.showCreationForm = async (req, res) => {
     res.render('playlists/create-form', {user});
 }
 
-// exports.createSongSlot = async (req, res) => {
-//     const slotNum = parseInt(req.query.slotnum);
-
-//     // TODO: get song from the model
-//     const song = {
-//         "_id": {
-//             "$oid": "69bd3ac637ba9aa3d3421557"
-//         },
-//         "title": "Two Time",
-//         "artist": "Jack Stauber",
-//         "album": "Inchman / Two Time",
-//         "genre": "Indie",
-//         "duration": 42,
-//         "youtubeUrl": "https://youtu.be/FNt8xXCJplY"
-//         }
-
-//     res.render('playlists/song-slot', {song, slotNum});
-// }
-
 exports.create = async (req, res) => {
+    let { user, name, description, genre, isPublic, songs } = req.body;
 
+    // Input Validation
+    user = user === ""? null : user;
+    name = name.trim();
+    description = description.trim();
+    isPublic = isPublic.toLowerCase() === 'true';
+    songs = songs.split(",") || [];
+
+    console.log(songs);
+
+    // Insert into the database
+    // ID is required to direct user to their created playlist.
+    const playlistDoc = await Playlist.insert({
+        name: name,
+        description: description,
+        genre: genre,
+        isPublic: isPublic,
+        owner: user,
+        songs: songs
+        });
+
+    res.render('playlists/create-success', {playlist: playlistDoc});
 }

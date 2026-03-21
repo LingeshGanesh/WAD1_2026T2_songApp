@@ -33,14 +33,19 @@ const Playlist = mongoose.model('Playlist', playlistSchema, 'playlists');
 
 // module.exports = Playlist;
 
-exports.retrieveAll = async function () {
+exports.retrieveAll = async function() {
     return await Playlist.find();
 }
 
-exports.retrievePublic = async function () {
+exports.retrievePublic = async function() {
     return await Playlist.find({isPublic: true});
 }
 
-exports.getByID = async function (id) {
+exports.getByID = async function(id) {
     return await Playlist.findById(id);
+}
+
+exports.insert = async function(newPlaylist) {
+    const doc = await Playlist.create(newPlaylist);
+    return doc;
 }
