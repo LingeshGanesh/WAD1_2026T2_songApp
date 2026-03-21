@@ -28,7 +28,7 @@ exports.playlistInfo = async (req, res) => {
 exports.showCreationForm = async (req, res) => {
     // TODO: get username/UserID from session middleware
     const user = null;
-    res.render('playlists/create-form', {user});
+    res.render('playlists/create-form', {user, error: false});
 }
 
 exports.create = async (req, res) => {
@@ -39,9 +39,13 @@ exports.create = async (req, res) => {
     name = name.trim();
     description = description.trim();
     isPublic = isPublic.toLowerCase() === 'true';
-    songs = songs.split(",") || [];
+    
+    // There is no song.
+    if (songs === "") {
+        return res.render('playlists/create-form', { user, name, description, genre, isPublic, songs, error: true })
+    }
+    songs = songs.split(",");
 
-    console.log(songs);
 
     // Insert into the database
     // ID is required to direct user to their created playlist.

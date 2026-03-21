@@ -13,26 +13,32 @@
     <input type="hidden" name="user" value="<%= user %>">
 
     <label for="name">Playlist Name</label><br>
-    <input type="text" name="name" id="name" required><br><br>
+    <input type="text" name="name" id="name" required value="<%= error? name: "" %>"><br><br>
 
     <label for="description">Description</label><br>
-    <textarea name="description" id="description" rows="2" cols="50"></textarea><br><br>
+    <textarea name="description" id="description" rows="2" cols="50"><%= error? description : "" %></textarea><br><br>
+    
+    <!-- TODO: Store Genre List Externally, add dynamically. -->
+    <% const allGenres = ["Pop", "Rock", "Indie", "Jazz"] %>
+    <% let genreSel = error? genre: "" %>
 
     <label for="genre">Genre</label><br>
     <select name="genre" id="genre">
-        <!-- TODO: Softcode the genre options -->
-        <option value="" selected>(blank option)</option>
-        <option value="Pop">Pop</option>
-        <option value="Rock">Rock</option>
-        <option value="Indie">Indie</option>
-        <option value="Jazz">Jazz</option>
-        <option value="Other">Other</option>
+        <option value="" <%= "" === genreSel? "selected": "" %>>None</option>
+
+        <% allGenres.forEach(option => { %>
+            <option value="<%= option %>" <%= option === genreSel? "selected": "" %>><%= option %></option>
+        <% }) %>
+
+        <option value="Other" <%= "Other" === genreSel? "selected": "" %>>Other</option>
     </select><br><br>
 
+    
+    <% let isPublicSel = error? isPublic: false %>
     <label for="isPublic">Visibility</label><br>
     <select name="isPublic" id="isPublic">
-        <option value="false">Private</option>
-        <option value="true">Public</option>
+        <option value="false" <%= isPublicSel? "": "selected" %>>Private</option>
+        <option value="true" <%= isPublicSel? "selected": "" %>>Public</option>
     </select><br><br>
 
     <!-- Song Selection -->
