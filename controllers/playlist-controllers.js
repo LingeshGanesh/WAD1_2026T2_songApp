@@ -20,22 +20,7 @@ exports.browse = async (req, res) => {
 exports.playlistInfo = async (req, res) => {
     const {playlistID} = req.params;
     console.log("Gathering playlist information")
-    let playlist = await Playlist.getByID(playlistID);
-
-    // Gather Songs
-    let songsList = []
-    let songsDuration = []
-    for (let i = 0; i < playlist.songs.length; i++) {
-        const songID = playlist.songs[i]
-        // TODO: replace with song's create method
-        let eachSong = await Song.findById(songID);
-        songsList.push(eachSong);
-        songsDuration.push(convertTime(eachSong.duration));
-    }
-
-    console.log(playlist);
-    console.log(songsList);
-    console.log(songsDuration);
+    let {playlist, songsList, songsDuration} = await Playlist.getByID(playlistID, true);
 
     res.render('playlists/playlist-info', {playlist, songsList, songsDuration});
 };

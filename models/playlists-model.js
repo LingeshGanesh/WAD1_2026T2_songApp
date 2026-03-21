@@ -41,8 +41,22 @@ exports.retrievePublic = async function() {
     return await Playlist.find({isPublic: true});
 }
 
-exports.getByID = async function(id) {
-    return await Playlist.findById(id);
+exports.getByID = async function(id, loadSong = false) {
+    const playlist =  await Playlist.findById(id);
+    if (loadSong) {
+        let songsList = [];
+        let songsDuration = [];
+        for (let i = 0; i < playlist.songs.length; i++) {
+            const songID = playlist.songs[i]
+            // TODO: replace with song's create method
+            let eachSong = await Song.findById(songID);
+            songsList.push(eachSong);
+            songsDuration.push(convertTime(eachSong.duration));
+        }
+        return {playlist, songsList, songsDuration};
+    } else {
+        return playlist;
+    }
 }
 
 exports.insert = async function(newPlaylist) {
