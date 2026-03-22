@@ -12,9 +12,9 @@ const playlistSchema = new mongoose.Schema({
     genre: {
         type: String
     },
-    isPublic: {
-        type: Boolean,
-        default: true
+    visibility: {
+        type: String,
+        default: "Private"
     },
     creationDate: {
         type: Date,
@@ -46,7 +46,7 @@ exports.retrieveAll = async function() {
 }
 
 exports.retrievePublic = async function() {
-    return await Playlist.find({isPublic: true});
+    return await Playlist.find({visibility: "Public"});
 }
 
 exports.getByID = async function(id, loadSong = false) {

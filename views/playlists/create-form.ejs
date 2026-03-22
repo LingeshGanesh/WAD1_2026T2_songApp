@@ -32,12 +32,14 @@
         <option value="Other" <%= "Other" === genreSel? "selected": "" %>>Other</option>
     </select><br><br>
 
-    
-    <% let isPublicSel = error? isPublic: false %>
-    <label for="isPublic">Visibility</label><br>
-    <select name="isPublic" id="isPublic">
-        <option value="false" <%= isPublicSel? "": "selected" %>>Private</option>
-        <option value="true" <%= isPublicSel? "selected": "" %>>Public</option>
+    <% const visList = ["Private", "Unlisted", "Public"] %>
+
+    <% let visSel = error? visibility: "Private" %>
+    <label for="visibility">Visibility</label><br>
+    <select name="visibility" id="visibility">
+        <% visList.forEach(vis => { %>
+            <option value="<%= vis %>" <% vis === visSel? "selected": "" %>><%= vis %></option>
+        <% }) %>
     </select><br><br>
 
     <!-- Song Selection -->

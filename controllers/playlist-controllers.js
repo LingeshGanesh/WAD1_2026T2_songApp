@@ -4,7 +4,7 @@ const Song = require("./../models/songs-model.js");
 
 // Controllers
 exports.browse = async (req, res) => {
-    const allPlaylists = await Playlist.retrieveAll();
+    const allPlaylists = await Playlist.retrievePublic();
     
     res.render('playlists/browse', {allPlaylists});
 };
@@ -24,7 +24,7 @@ exports.showCreationForm = async (req, res) => {
 }
 
 exports.create = async (req, res) => {
-    let { user, name, description, genre, isPublic, songs } = req.body;
+    let { user, name, description, genre, visibility, songs } = req.body;
 
     // Input Validation
     user = user === ""? null : user;
@@ -32,11 +32,10 @@ exports.create = async (req, res) => {
     description = description.trim();
     description = description === ""? null : description;
     genre = genre === ""? null: genre;
-    isPublic = isPublic.toLowerCase() === 'true';
     
     // There is no song.
     if (songs === "") {
-        return res.render('playlists/create-form', { user, name, description, genre, isPublic, songs, error: true })
+        return res.render('playlists/create-form', { user, name, description, genre, visibility, songs, error: true })
     }
     songs = songs.split(",");
 
@@ -47,7 +46,7 @@ exports.create = async (req, res) => {
         name: name,
         description: description,
         genre: genre,
-        isPublic: isPublic,
+        visibility: visibility,
         owner: user,
         songs: songs
         });
