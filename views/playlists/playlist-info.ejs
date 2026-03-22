@@ -19,7 +19,18 @@
             <li><a href="/playlist/edit/<%= playlist._id %>">Edit</a></li>
             <li><a href="/playlist/delete/<%= playlist._id %>">Delete</a></li>
         </ul>
-        <p><%= playlist.description || "No description provided." %></p>
+        
+        <% const descLines = playlist.description.split("\n") || ["No description provided."] %>
+        <fieldset>
+            <legend><strong>Description</strong></legend>
+            <% descLines.forEach((line, i) => { %>
+                <% if (i > 0) { %>
+                    <br>
+                <% } %>
+                <%= line %>
+            <% }) %>
+        </fieldset>
+        
         <!-- Other information -->
         <table class="pinfo">
             <tr>
