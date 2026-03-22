@@ -35,7 +35,7 @@ exports.create = async (req, res) => {
     
     // There is no song.
     if (songs === "") {
-        return res.render('playlists/create-form', { user, name, description, genre, visibility, songs, error: true })
+        return res.render('playlists/create-form', { user, fields: {name, description, genre, visibility, songs}, error: true })
     }
     songs = songs.split(",");
 

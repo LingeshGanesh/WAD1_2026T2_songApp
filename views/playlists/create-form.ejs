@@ -7,40 +7,15 @@
 </head>
 <body>
     <h1>Create Playlist</h1>
+    <% if (error) { %>
+        <p style="color: red;"><strong>Error:</strong> Playlist must have at least one song.</p>
+    <% } %>
     <form action="/playlist/create" method="post">
         
     <input type="hidden" name="user" value="<%= user %>">
 
-    <label for="name">Playlist Name</label><br>
-    <input type="text" name="name" id="name" required value="<%= error? name: "" %>"><br><br>
-
-    <label for="description">Description</label><br>
-    <textarea name="description" id="description" rows="2" cols="50"><%= error? description : "" %></textarea><br><br>
-    
-    <!-- TODO: Store Genre List Externally, add dynamically. -->
-    <% const allGenres = ["Pop", "Rock", "Indie", "Jazz"] %>
-    <% let genreSel = error? genre: "" %>
-
-    <label for="genre">Genre</label><br>
-    <select name="genre" id="genre">
-        <option value="" <%= "" === genreSel? "selected": "" %>>None</option>
-
-        <% allGenres.forEach(option => { %>
-            <option value="<%= option %>" <%= option === genreSel? "selected": "" %>><%= option %></option>
-        <% }) %>
-
-        <option value="Other" <%= "Other" === genreSel? "selected": "" %>>Other</option>
-    </select><br><br>
-
-    <% const visList = ["Private", "Unlisted", "Public"] %>
-
-    <% let visSel = error? visibility: "Private" %>
-    <label for="visibility">Visibility</label><br>
-    <select name="visibility" id="visibility">
-        <% visList.forEach(vis => { %>
-            <option value="<%= vis %>" <% vis === visSel? "selected": "" %>><%= vis %></option>
-        <% }) %>
-    </select><br><br>
+    <!-- fields are not curly-bracketted to be unpacked immediately -->
+    <%- include("form-fields.ejs", error? fields: {error}) %> 
 
     <!-- Song Selection -->
     <%- include("songs-insert-table", {songs: []}) %>
