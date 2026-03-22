@@ -8,12 +8,17 @@ const playlistRouter = require("./playlist-router.js")
 // Branching Route
 router.use("/playlist", playlistRouter);
 
-// TODO: Remove this route when insert song popup is implemented.
-router.get("/song/:songID", async (req, res) => {
+// TODO: Remove these route when insert song popup is implemented.
+router.get("/song/search/:songID", async (req, res) => {
     const {songID} = req.params;
     const searchedSong = await Song.findById(songID);
     res.send(searchedSong);
 })
+router.get("/song/:songID", async (req, res) => {
+    const {songID} = req.params;
+    const searchedSong = await Song.findById(songID);
+    res.redirect(searchedSong.youtubeUrl);
+});
 
 // Export
 module.exports = router;

@@ -37,6 +37,12 @@
                 <th>:</th>
                 <td><%= playlist.creationDate %></td>
             </tr>
+            <tr>
+                <% const playlistMinute = Math.round(playlistDuration / 60) %>
+                <th>Total Duration</th>
+                <th>:</th>
+                <td><%= playlistMinute %> minute<%= playlistMinute == 1? "": "s" %></td>
+            </tr>
         </table><br>
         <!-- Songs -->
         <%- include("songs-table", {songs: songsList, durations: songsDuration}) %>

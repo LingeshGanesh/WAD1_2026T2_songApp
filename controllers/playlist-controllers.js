@@ -12,9 +12,9 @@ exports.browse = async (req, res) => {
 exports.playlistInfo = async (req, res) => {
     const {playlistID} = req.params;
     
-    let {playlist, songsList, songsDuration} = await Playlist.getByID(playlistID, true);
+    let {playlist, songsList, songsDuration, playlistDuration} = await Playlist.getByID(playlistID, true);
 
-    res.render('playlists/playlist-info', {playlist, songsList, songsDuration});
+    res.render('playlists/playlist-info', {playlist, songsList, songsDuration, playlistDuration});
 };
 
 exports.showCreationForm = async (req, res) => {

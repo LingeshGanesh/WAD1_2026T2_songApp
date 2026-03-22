@@ -66,13 +66,15 @@ exports.getByID = async function(id, loadSong = false) {
         // Fill songsList
         let songsList = [];
         let songsDuration = [];
+        let playlistDuration = 0;
         for (let i = 0; i < playlist.songs.length; i++) {
             const songID = playlist.songs[i];
             const eachSong = songLUT.get(songID.toString());
             songsList.push(eachSong);
             songsDuration.push(convertTime(eachSong.duration));
+            playlistDuration += eachSong.duration;
         }
-        return {playlist, songsList, songsDuration};
+        return {playlist, songsList, songsDuration, playlistDuration};
     } else {
         return playlist;
     }

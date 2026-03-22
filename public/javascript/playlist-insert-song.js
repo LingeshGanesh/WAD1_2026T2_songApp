@@ -88,7 +88,7 @@ function showEmptySlot() {
 }
 
 async function createSlot() {
-    const songProm = await fetch(`/song/${searchSongID.value.trim()}`);
+    const songProm = await fetch(`/song/search/${searchSongID.value.trim()}`);
     const song = await songProm.json();
 
     let row = document.createElement("tr");
