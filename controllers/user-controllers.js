@@ -45,19 +45,31 @@ exports.loginPost = async (req, res) => {
 
         if (!match) {
             console.log("Wrong password");
-            return res.redriect('/user/login');
+            return res.redirect('/user/login');
         }
 
         req.session.user = {
             id: user._id,
-            email: user.email
+            email: user.email,
+            username: user.username
         }
 
         console.log("Login successful");
         //need to link to index.html
-        res.send('successful')
+        res.redirect('/user/profile');
     } catch (error) {
-        console.error('Error occured while trying to login',err);
+        console.error('Error occured while trying to login',error);
         res.redirect('/user/login');
     }
+}
+
+exports.profile = (req,res)=>{
+    res.render('users/profile', { user: req.session.user });
+}
+
+exports.logout = (req, res) => {
+    req.session.destroy(() => {
+        res.redirect('/user/login');
+    });
+    console.log("Logout successful")
 }
