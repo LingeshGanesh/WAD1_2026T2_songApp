@@ -1,6 +1,7 @@
 const insertBtn = document.getElementById("insertBtn");
 const tbody = document.querySelector("tbody");
 const emptySlot = document.getElementById("empty-slot");
+const searchSongID = document.getElementById("searchSongID");
 let songSelection = document.querySelector("input#songs");
 
 // Add event listener if song rows exist (for playlist editing)
@@ -32,7 +33,7 @@ insertBtn.addEventListener("click", async event => {
 function moveRowUp(event) {
     event.preventDefault();
     const tr = event.target.parentElement.parentElement;
-    const rowNum = parseInt(tr.firstChild.innerText);
+    const rowNum = parseInt(tr.firstElementChild.innerText);
 
     // Reference: https://stackoverflow.com/questions/7742305/changing-the-order-of-elements
     // https://stackoverflow.com/a/78233036
@@ -47,7 +48,7 @@ function moveRowUp(event) {
 function moveRowDown(event) {
     event.preventDefault();
     const tr = event.target.parentElement.parentElement;
-    const rowNum = parseInt(tr.firstChild.innerText);
+    const rowNum = parseInt(tr.firstElementChild.innerText);
 
     // Reference: https://stackoverflow.com/questions/7742305/changing-the-order-of-elements
     // https://stackoverflow.com/a/78233036
@@ -63,7 +64,7 @@ function moveRowDown(event) {
 function removeRow(event) {
     event.preventDefault();
     const tr = event.target.parentElement.parentElement;
-    const rowNum = parseInt(tr.firstChild.innerText);
+    const rowNum = parseInt(tr.firstElementChild.innerText);
     tr.remove();
     updateRowNum(rowNum);
     showEmptySlot();
@@ -77,7 +78,7 @@ function updateRowNum(start, end = null) {
     let childNodes = getSlotRows();
 
     for (let i = start; i <= end; i++) {
-        childNodes.item(i - 1).firstChild.innerText = i.toString().padStart(2, "0");
+        childNodes.item(i - 1).firstElementChild.innerText = i.toString().padStart(2, "0");
     }
     updateSongSelection()
 }
@@ -87,13 +88,11 @@ function showEmptySlot() {
 }
 
 async function createSlot() {
-    const songProm = await fetch("/playlist/random-songs");
+    const songProm = await fetch(`/song/search/${searchSongID.value.trim()}`);
     const song = await songProm.json();
 
-    console.log(song);
-
     let row = document.createElement("tr");
-    let c_no = document.createElement("td");
+    let c_no = document.createElement("th");
     let c_song = document.createElement("td");
     let c_action = document.createElement("td");
 
@@ -103,7 +102,10 @@ async function createSlot() {
     c_no.innerText = (getSlotRows().length + 1).toString().padStart(2, "0");
 
     // fill the song cell
-    c_song.innerText = song.title;
+    let songAhref = document.createElement("a");
+    songAhref.href = `/song/${song._id}`;
+    songAhref.innerText = `${song.artist} - ${song.title}`;
+    c_song.appendChild(songAhref)
 
     // fill the action cell
     let upBtn = document.createElement("button");
@@ -143,4 +145,5 @@ function updateSongSelection() {
         songIDs.push(slotRow.id);
     })
     songSelection.value = songIDs;
+    console.log(songIDs);
 }

@@ -4,30 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Browse Playlists</title>
+    <style>
+        table.pinfo th {
+            text-align: left;
+        }
+    </style>
 </head>
 <body>
     <%- include("../navbar-user") %>
-    <h1>Information for "<%= playlist.name %>"</h1>
-    <h2>Created by: <%= playlist.owner? playlist.owner: "Unknown" %></h2>
-    <p><%= playlist.description %></p>
-    <!-- Songs -->
-    <table border="1">
-        <tr>
-            <th>No.</th>
-            <th>Title</th>
-            <th>Artist</th>
-            <th>Duration</th>
-        </tr>
-        <% for (let i = 0; i < playlist.songs.length; i++) { %>
-        <tr>
-            <% const song = songsList[i] %>
-            <th><%= (i + 1).toString().padStart(2, "0") %></th>
-            <td><a href="/song/<%= song._id %>"><%= song.title %></a></td>
-            <td><%= song.artist %></td>
-            <td><%= songsDuration[i] %></td>
-        </tr>
-        <% } %>
-    </table>
+    <main>
+        <h1>Information for "<%= playlist.name %>"</h1>
+        <h2>Created by: <%= playlist.owner? playlist.owner: "Unknown" %></h2>
+        <ul>
+            <li><a href="/playlist/edit/<%= playlist._id %>">Edit</a></li>
+            <li><a href="/playlist/delete/<%= playlist._id %>">Delete</a></li>
+        </ul>
+        
+        <% const descLines = playlist.description.split("\n") || ["No description provided."] %>
+        <fieldset>
+            <legend><strong>Description</strong></legend>
+            <% descLines.forEach((line, i) => { %>
+                <% if (i > 0) { %>
+                    <br>
+                <% } %>
+                <%= line %>
+            <% }) %>
+        </fieldset>
+        
+        <!-- Other information -->
+        <table class="pinfo">
+            <tr>
+                <th>Genre</th>
+                <th>:</th>
+                <td><%= playlist.genre || "None" %></td>
+            </tr>
+            <tr>
+                <th>Visibility</th>
+                <th>:</th>
+                <td><%= playlist.visibility %></td>
+            </tr>
+            <tr>
+                <th>Creation Date</th>
+                <th>:</th>
+                <td><%= playlist.creationDate %></td>
+            </tr>
+            <tr>
+                <% const playlistMinute = Math.round(playlistDuration / 60) %>
+                <th>Total Duration</th>
+                <th>:</th>
+                <td><%= playlistMinute %> minute<%= playlistMinute == 1? "": "s" %></td>
+            </tr>
+        </table><br>
+        <!-- Songs -->
+        <%- include("songs-table", {songs: songsList, durations: songsDuration}) %>
+    </main>
     <%- include("../footer") %>
 </body>
 </html>

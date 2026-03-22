@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Playlist</title>
+</head>
+<body>
+    <h1>Edit Playlist</h1>
+    <% if (error) { %>
+        <p style="color: red;"><strong>Error:</strong> Playlist must have at least one song.</p>
+    <% } %>
+    <form action="/playlist/edit/<%= playlist._id %>" method="post">
+        
+    <input type="hidden" name="user" value="<%= user %>">
+    <input type="hidden" name="playlistID" value="<%= playlist._id %>">
+
+    <!-- error set to true to fill the fields, as if there is an error -->
+    <%- include("form-fields.ejs", {fields: playlist, error: true}) %>
+
+    <!-- Song Selection -->
+    <%- include("songs-insert-table", {songs: songsList}) %>
+    <br>
+    <input type="submit" value="Save Changes">
+
+    </form>
+
+</body>
+</html>

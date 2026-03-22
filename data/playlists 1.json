@@ -1,0 +1,107 @@
+[{
+  "_id": {
+    "$oid": "69bd2fae37ba9aa3d3421552"
+  },
+  "name": "Clown Beat Type Ahh",
+  "description": "A silly clown beat playlist!",
+  "genre": "Funk",
+  "visibility": "Public"
+},
+{
+  "_id": {
+    "$oid": "69bd2fae37ba9aa3d3421553"
+  },
+  "name": "Songs to Turn Rain into Drinking Water",
+  "description": "Singapore is turning rain into drinking water! Majulah!",
+  "genre": "Pop",
+  "visibility": "Public"
+},
+{
+  "_id": {
+    "$oid": "69bd2fae37ba9aa3d3421554"
+  },
+  "name": "Animation Meme Music",
+  "description": "A collection of songs used in most animation memes!",
+  "genre": "Indie",
+  "visibility": "Public"
+},
+{
+  "_id": {
+    "$oid": "69be968919148b460d39190e"
+  },
+  "name": "⭐ First User Generated Playlist ⭐",
+  "description": "This playlist is made from /playlist/create form, adding random songs and sort them neatly. :3",
+  "genre": "Indie",
+  "creationDate": {
+    "$date": "2026-03-21T13:00:30.120Z"
+  },
+  "owner": null,
+  "songs": [
+    {
+      "$oid": "69bd3ac637ba9aa3d342155b"
+    },
+    {
+      "$oid": "69bd3ac637ba9aa3d342155c"
+    },
+    {
+      "$oid": "69bd3ac637ba9aa3d3421558"
+    },
+    {
+      "$oid": "69bd3ac637ba9aa3d3421556"
+    },
+    {
+      "$oid": "69bd3ac637ba9aa3d3421557"
+    },
+    {
+      "$oid": "69bd3ac637ba9aa3d342155a"
+    }
+  ],
+  "__v": 0,
+  "visibility": "Public"
+},
+{
+  "_id": {
+    "$oid": "69be9f71ce6b74ed2c3a4b26"
+  },
+  "name": "New Playlist to Bang Head?",
+  "description": "Whar?? 😭😭😭🥀",
+  "genre": "Rock",
+  "creationDate": {
+    "$date": "2026-03-21T13:35:07.997Z"
+  },
+  "owner": null,
+  "songs": [
+    {
+      "$oid": "69bd3ac637ba9aa3d3421557"
+    },
+    {
+      "$oid": "69bd3ac637ba9aa3d3421557"
+    },
+    {
+      "$oid": "69bd3ac637ba9aa3d342155a"
+    },
+    {
+      "$oid": "69bd3ac637ba9aa3d3421557"
+    },
+    {
+      "$oid": "69bd3ac637ba9aa3d3421558"
+    },
+    {
+      "$oid": "69bd3ac637ba9aa3d3421556"
+    },
+    {
+      "$oid": "69bd3ac637ba9aa3d3421559"
+    },
+    {
+      "$oid": "69bd3ac637ba9aa3d3421556"
+    },
+    {
+      "$oid": "69bd3ac637ba9aa3d342155b"
+    },
+    {
+      "$oid": "69bd3ac637ba9aa3d342155c"
+    }
+  ],
+  "__v": 0,
+  "visibility": "Public"
+}]

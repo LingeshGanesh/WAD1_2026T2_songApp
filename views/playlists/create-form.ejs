@@ -4,56 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Playlist</title>
-    <script src="/javascript/playlist-insert-song.js" defer></script>
 </head>
 <body>
     <h1>Create Playlist</h1>
+    <% if (error) { %>
+        <p style="color: red;"><strong>Error:</strong> Playlist must have at least one song.</p>
+    <% } %>
     <form action="/playlist/create" method="post">
         
     <input type="hidden" name="user" value="<%= user %>">
 
-    <label for="name">Playlist Name</label><br>
-    <input type="text" name="name" id="name" required><br><br>
-
-    <label for="description">Description</label><br>
-    <textarea name="description" id="description" rows="2" cols="50"></textarea><br><br>
-
-    <label for="genre">Genre</label><br>
-    <select name="genre" id="genre">
-        <!-- TODO: Softcode the genre options -->
-        <option value="" selected>(blank option)</option>
-        <option value="Pop">Pop</option>
-        <option value="Rock">Rock</option>
-        <option value="Indie">Indie</option>
-        <option value="Jazz">Jazz</option>
-        <option value="Other">Other</option>
-    </select><br><br>
-
-    <label for="isPublic">Visibility</label><br>
-    <select name="isPublic" id="isPublic">
-        <option value="false">Private</option>
-        <option value="true">Public</option>
-    </select><br><br>
+    <%- include("form-fields.ejs", error? {fields, error}: {error}) %> 
 
     <!-- Song Selection -->
-    <button id="insertBtn">Insert new slot</button>
-    <table border="1">
-        <input type="hidden" name="songs" id="songs">
-        <thead>
-            <th>No.</th>
-            <th>Song</th>
-            <th>Action</th>
-        </thead>
-        <tbody>
-            <tr id="empty-slot">
-                <td colspan="3">No songs yet...</td>
-            </tr>
-
-        </tbody>
-
-    </table>
-
-    <input type="submit">
+    <%- include("songs-insert-table", {songs: []}) %>
+    <br>
+    <input type="submit" value="Create Playlist">
 
     </form>
 

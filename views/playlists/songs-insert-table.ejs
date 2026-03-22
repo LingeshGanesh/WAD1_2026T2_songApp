@@ -1,0 +1,34 @@
+<div>
+    <input type="search" id="searchSongID" placeholder="Search Song ID">
+    <button id="insertBtn">Insert song</button>
+    <table border="1">
+        <input type="hidden" name="songs" id="songs">
+        <thead>
+            <th>No.</th>
+            <th>Song</th>
+            <th>Action</th>
+        </thead>
+        <tbody>
+            <!-- This if-else statement is because style is not embeddable... -->
+            <% if (songs.length == 0) { %>
+                <tr id="empty-slot">
+            <% } else { %>
+                <tr id="empty-slot" style="display: none;">
+            <% } %>
+                <td colspan="3">No songs yet...</td>
+            </tr>
+            <% songs.forEach((song, i) => { %>
+                <tr id="<%= song.id %>">
+                    <th><%= (i + 1).toString().padStart(2, "0") %></th>
+                    <td><a href="/song/<%= song._id %>"><%= song.artist %> - <%= song.title %></a></td>
+                    <td>
+                        <!-- Buttons stacked in one row to remove whitespace margin -->
+                        <button class="up">&uparrow;</button><button class="down">&downarrow;</button><button class="remove">&minus;</button>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+
+    </table>
+    <script src="/javascript/playlist-insert-song.js" defer></script>
+</div>

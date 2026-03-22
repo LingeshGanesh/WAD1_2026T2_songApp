@@ -2,61 +2,43 @@
 const Playlist = require("../models/playlists-model");
 const Song = require("./../models/songs-model.js");
 
-// Private Functions
-function convertTime(timeSec) {
-    const minute = Math.floor(timeSec / 60);
-    const second = timeSec % 60;
-
-    return `${minute}:${second.toString().padStart(2, "0")}`;
-}
-
 // Controllers
 exports.browse = async (req, res) => {
-    const allPlaylists = await Playlist.retrieveAll();
+    const allPlaylists = await Playlist.retrievePublic();
     
     res.render('playlists/browse', {allPlaylists});
 };
 
 exports.playlistInfo = async (req, res) => {
     const {playlistID} = req.params;
-    console.log("Gathering playlist information")
-    let playlist = await Playlist.getByID(playlistID);
+    
+    let {playlist, songsList, songsDuration, playlistDuration} = await Playlist.getByID(playlistID, true);
 
-    // Gather Songs
-    let songsList = []
-    let songsDuration = []
-    for (let i = 0; i < playlist.songs.length; i++) {
-        const songID = playlist.songs[i]
-        // TODO: replace with song's create method
-        let eachSong = await Song.findById(songID);
-        songsList.push(eachSong);
-        songsDuration.push(convertTime(eachSong.duration));
-    }
-
-    console.log(playlist);
-    console.log(songsList);
-    console.log(songsDuration);
-
-    res.render('playlists/playlist-info', {playlist, songsList, songsDuration});
+    res.render('playlists/playlist-info', {playlist, songsList, songsDuration, playlistDuration});
 };
 
 exports.showCreationForm = async (req, res) => {
     // TODO: get username/UserID from session middleware
     const user = null;
-    res.render('playlists/create-form', {user});
+    res.render('playlists/create-form', {user, error: false});
 }
 
 exports.create = async (req, res) => {
-    let { user, name, description, genre, isPublic, songs } = req.body;
+    let { user, name, description, genre, visibility, songs } = req.body;
 
     // Input Validation
     user = user === ""? null : user;
     name = name.trim();
     description = description.trim();
-    isPublic = isPublic.toLowerCase() === 'true';
-    songs = songs.split(",") || [];
+    description = description === ""? null : description;
+    genre = genre === ""? null: genre;
+    
+    // There is no song.
+    if (songs === "") {
+        return res.render('playlists/create-form', { user, fields: {name, description, genre, visibility, songs}, error: true })
+    }
+    songs = songs.split(",");
 
-    console.log(songs);
 
     // Insert into the database
     // ID is required to direct user to their created playlist.
@@ -64,10 +46,51 @@ exports.create = async (req, res) => {
         name: name,
         description: description,
         genre: genre,
-        isPublic: isPublic,
+        visibility: visibility,
         owner: user,
         songs: songs
         });
 
     res.render('playlists/create-success', {playlist: playlistDoc});
+}
+
+exports.showEditForm = async (req, res) => {
+    // TODO: get username/UserID from session middleware
+    const user = null;
+    const {playlistID} = req.params;
+
+    let {playlist, songsList, songsDuration} = await Playlist.getByID(playlistID, true);
+    
+    res.render('playlists/edit-form', {user, error: false, playlist, songsList, songsDuration});
+}
+
+exports.update = async (req, res) => {
+    let { user, playlistID, name, description, genre, visibility, songs } = req.body;
+
+    // Input Validation
+    user = user === ""? null : user;
+    name = name.trim();
+    description = description.trim();
+    description = description === ""? null : description;
+    genre = genre === ""? null: genre;
+    
+    // There is no song.
+    if (songs === "") {
+        return res.render('playlists/create-form', { user, fields: {name, description, genre, visibility, songs}, error: true })
+    }
+    songs = songs.split(",");
+
+
+    // Insert into the database
+    // ID is required to direct user to their created playlist.
+    await Playlist.updateByID(playlistID, {
+        name: name,
+        description: description,
+        genre: genre,
+        visibility: visibility,
+        owner: user,
+        songs: songs
+        });
+
+    res.render('playlists/edit-success', {playlist: {name, _id: playlistID}});
 }

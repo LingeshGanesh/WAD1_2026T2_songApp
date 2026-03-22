@@ -20,7 +20,7 @@
             <tr>
                 <td><a href="/playlist/<%= playlist._id %>"><%= playlist.name %></a></td>
                 <td><%= playlist.creationDate %></td>
-                <td><a href="#"><%= playlist.owner %></a></td>
+                <td><a href="#"><%= playlist.owner || "Unknown" %></a></td>
             </tr>
             <% }) %>
     
