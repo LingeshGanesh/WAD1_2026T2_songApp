@@ -71,3 +71,7 @@ exports.insert = async function(newPlaylist) {
     const doc = await Playlist.create(newPlaylist);
     return doc;
 }
+
+exports.updateByID = async function(id, newValue) {
+    await Playlist.updateOne({_id: id}, newValue)
+}

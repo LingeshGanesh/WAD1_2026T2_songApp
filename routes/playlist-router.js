@@ -7,8 +7,15 @@ const Song = require("./../models/songs-model.js");
 
 // Routes
 router.get("/browse", playlistControllers.browse);
+
+// Creation
 router.get("/create", playlistControllers.showCreationForm);
 router.post("/create", playlistControllers.create);
+
+// Edit
+router.get("/edit/:playlistID", playlistControllers.showEditForm);
+router.post("/edit/:playlistID", playlistControllers.update);
+
 
 // TODO: Remove this route when insert song popup is implemented.
 router.get("/random-songs", async (req, res) => {
@@ -17,9 +24,7 @@ router.get("/random-songs", async (req, res) => {
     res.send(allSongs[i]);
 })
 
-// Dynamic Routes
 router.get("/:playlistID", playlistControllers.playlistInfo);
-// router.post("/create", playlistControllers.create);
 
 // Export
 module.exports = router;

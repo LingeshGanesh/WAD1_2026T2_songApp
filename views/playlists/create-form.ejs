@@ -14,8 +14,7 @@
         
     <input type="hidden" name="user" value="<%= user %>">
 
-    <!-- fields are not curly-bracketted to be unpacked immediately -->
-    <%- include("form-fields.ejs", error? fields: {error}) %> 
+    <%- include("form-fields.ejs", error? {fields, error}: {error}) %> 
 
     <!-- Song Selection -->
     <%- include("songs-insert-table", {songs: []}) %>
