@@ -1,6 +1,7 @@
 const insertBtn = document.getElementById("insertBtn");
 const tbody = document.querySelector("tbody");
 const emptySlot = document.getElementById("empty-slot");
+const searchSongID = document.getElementById("searchSongID");
 let songSelection = document.querySelector("input#songs");
 
 // Add event listener if song rows exist (for playlist editing)
@@ -87,7 +88,7 @@ function showEmptySlot() {
 }
 
 async function createSlot() {
-    const songProm = await fetch("/playlist/random-songs");
+    const songProm = await fetch(`/song/${searchSongID.value.trim()}`);
     const song = await songProm.json();
 
     let row = document.createElement("tr");
