@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Playlist</title>
-    <script src="/javascript/playlist-insert-song.js" defer></script>
 </head>
 <body>
     <h1>Create Playlist</h1>
@@ -42,22 +41,7 @@
     </select><br><br>
 
     <!-- Song Selection -->
-    <button id="insertBtn">Insert new slot</button>
-    <table border="1">
-        <input type="hidden" name="songs" id="songs">
-        <thead>
-            <th>No.</th>
-            <th>Song</th>
-            <th>Action</th>
-        </thead>
-        <tbody>
-            <tr id="empty-slot">
-                <td colspan="3">No songs yet...</td>
-            </tr>
-
-        </tbody>
-
-    </table>
+    <%- include("songs-table", {songs: []}) %>
     <br>
     <input type="submit" value="Create Playlist">
 

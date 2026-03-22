@@ -1,0 +1,21 @@
+<div>
+    <script src="/javascript/playlist-insert-song.js" defer></script>
+    <button id="insertBtn">Insert new slot</button>
+    <table border="1">
+        <input type="hidden" name="songs" id="songs">
+        <thead>
+            <th>No.</th>
+            <th>Song</th>
+            <th>Action</th>
+        </thead>
+        <tbody>
+            <tr id="empty-slot">
+                <td colspan="3">No songs yet...</td>
+            </tr>
+            <% songs.forEach((song, i) => { %>
+                <%- include('playlist/song-slot', {song, slotNum: i + 1}) %>
+            <% }) %>
+        </tbody>
+
+    </table>
+</div>
