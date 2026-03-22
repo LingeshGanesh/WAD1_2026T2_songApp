@@ -14,18 +14,26 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'A user must have a password']
     },
-    bio: {
-        type: String
-    },
     profilePicture: {
         type: String
     },
     createdAt: {
         type: Date,
         default: Date.now
-    }
+    },
+    friends: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }]
+
 });
 
 const User = mongoose.model('User', userSchema, 'users');
 
-module.exports = User;
+exports.createUser = function(newUser){
+    return User.create(newUser);
+}
+
+exports.findUser = function(email){
+    return User.findOne({email:email})
+}
