@@ -1,6 +1,5 @@
 // Import model
 const Playlist = require("../models/playlists-model");
-const Song = require("./../models/songs-model.js");
 
 // Controllers
 exports.browse = async (req, res) => {
@@ -11,10 +10,14 @@ exports.browse = async (req, res) => {
 
 exports.playlistInfo = async (req, res) => {
     const {playlistID} = req.params;
+    const user = null;
     
     let {playlist, songsList, songsDuration, playlistDuration} = await Playlist.getByID(playlistID, true);
 
-    res.render('playlists/playlist-info', {playlist, songsList, songsDuration, playlistDuration});
+    // TODO: take user object ID from session and compare to playlist owner Object ID
+    const isOwner = true; // (user === playlist.owner);
+
+    res.render('playlists/playlist-info', {isOwner, playlist, songsList, songsDuration, playlistDuration});
 };
 
 exports.showCreationForm = async (req, res) => {
