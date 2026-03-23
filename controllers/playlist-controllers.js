@@ -2,6 +2,7 @@
 const Playlist = require("../models/playlists-model");
 
 // Controllers
+// Read
 exports.browse = async (req, res) => {
     const allPlaylists = await Playlist.retrievePublic();
     
@@ -20,13 +21,14 @@ exports.playlistInfo = async (req, res) => {
     res.render('playlists/playlist-info', {isOwner, playlist, songsList, songsDuration, playlistDuration});
 };
 
+// Create
 exports.showCreationForm = async (req, res) => {
     // TODO: get username/UserID from session middleware
     const user = null;
     res.render('playlists/create-form', {user, error: false});
 }
 
-exports.create = async (req, res) => {
+exports.createPlaylist = async (req, res) => {
     let { user, name, description, genre, visibility, songs } = req.body;
 
     // Input Validation
@@ -57,6 +59,7 @@ exports.create = async (req, res) => {
     res.render('playlists/create-success', {playlist: playlistDoc});
 }
 
+// Update
 exports.showEditForm = async (req, res) => {
     // TODO: get username/UserID from session
     const user = null;
@@ -72,7 +75,7 @@ exports.showEditForm = async (req, res) => {
     res.render('playlists/edit-form', {user, error: false, playlist, songsList});
 }
 
-exports.update = async (req, res) => {
+exports.updatePlaylist = async (req, res) => {
     let { user, playlistID, name, description, genre, visibility, songs } = req.body;
 
     // Input Validation
@@ -101,4 +104,44 @@ exports.update = async (req, res) => {
         });
 
     res.render('playlists/edit-success', {playlist: {name, _id: playlistID}});
+}
+
+// Delete
+exports.showDeleteForm = async (req, res) => {
+    // TODO: get username/UserID from session
+    const user = null;
+    const {playlistID} = req.params;
+
+    let {playlist, songsList} = await Playlist.getByID(playlistID, true);
+    
+    // TODO: do authorization here
+    if (false) {//(user !== playlist.owner) {
+        return res.status(403).send("You are not allowed to edit this form.")
+    }
+
+    res.render('playlists/delete-form', {user, errorMsg: false, playlist, songsList});
+}
+
+exports.deletePlaylist = async (req, res) => {
+    // TODO: get username/UserID from session
+    const user = null;
+    const {playlistID} = req.params;
+    let declaration = req.body.declaration || [];
+    declaration = Array.isArray(declaration)? declaration: [declaration];
+
+    // TODO: authorize playlist deletion
+    const {playlist, songsList} = await Playlist.getByID(playlistID, true);
+    if (declaration.length < 2) {
+        return res.render('playlists/delete-form', {user, errorMsg: "Please check the boxes to confirm deletion.", playlist, songsList});
+    }
+
+    if (false) {// (user !== playlist.owner) {
+        return res.render('playlists/delete-form', {user, errorMsg: "Please enter your username to confirm deletion.", playlist, songsList});
+    }
+
+    // Delete playlist
+    await Playlist.deleteByID(playlistID);
+
+    res.render("playlists/delete-success", { playlist });
+
 }

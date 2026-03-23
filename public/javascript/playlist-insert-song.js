@@ -20,7 +20,7 @@ updateSongSelection()
 insertBtn.addEventListener("click", async event => {
     event.preventDefault(); // Prevents button from submitting the form
     insertBtn.disabled = true;
-    tbody.appendChild(await createSlot())
+    tbody.appendChild(await createSlot());
     
     showEmptySlot();
     updateSongSelection();
@@ -70,6 +70,7 @@ function removeRow(event) {
     showEmptySlot();
 }
 
+// Extra methods
 function updateRowNum(start, end = null) {
     if (end === null) {
         end = getSlotRows().length;
@@ -80,7 +81,8 @@ function updateRowNum(start, end = null) {
     for (let i = start; i <= end; i++) {
         childNodes.item(i - 1).firstElementChild.innerText = i.toString().padStart(2, "0");
     }
-    updateSongSelection()
+
+    updateSongSelection();
 }
 
 function showEmptySlot() {
@@ -141,9 +143,11 @@ function getSlotRows() {
 
 function updateSongSelection() {
     let songIDs = [];
+
     getSlotRows().forEach(slotRow => {
         songIDs.push(slotRow.id);
-    })
+    });
+
     songSelection.value = songIDs;
     console.log(songIDs);
 }
