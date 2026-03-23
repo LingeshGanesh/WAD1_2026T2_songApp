@@ -5,37 +5,56 @@
     <link rel="stylesheet" href="/css/events-styles.css">
 </head>
 <body>
-    <h3>Add a New Event</h3>
-    <a href="/events">back</a><br><br>
+    <%- include('../navbar-user') %>
 
-    <form action="/events/add-event" method="POST">
-        <table border="1">
-            <tr>
-                <th>Name:</th><td><input type="text" name="name"></td>
-            </tr>
-            <tr>
-                <th>Description:</th><td><input type="text" name="desc"></td>
-            </tr>
-            <tr>
-                <th>Date:</th><td><input type="date" name="date"></td>
-            </tr>
-            <tr>
-                <th>Entry Fee:</th><td><input type="text" name="entryFee"></td>
-            </tr>
-            <tr>
-                <th>Location:</th><td><input type="text" name="location"></td>
-            </tr>
-            <tr>
-                <td colspan="2"><button type="submit">Add Event</button></td>
-            </tr>
-        </table>
-        <br>
+    <div class="all-events-section">
+        <div style="text-align: left; padding-left: 60px; margin-bottom: 20px;">
+            <a href="/events/edit-events">back</a>
+        </div>
 
-        <% if (msg) { %>
-            <%- msg %>
-        <% } %>
-    </form>
+        <h1 class="all-events-title">ADD EVENT</h1>
 
-    <br><br>
+        <div class="form-card">
+            <form action="/events/add-event" method="POST">
+                <table class="event-form-table">
+                    <tr>
+                        <th>Name:</th>
+                        <td><input type="text" name="name"></td>
+                    </tr>
+                    <tr>
+                        <th>Description:</th>
+                        <td><input type="text" name="desc"></td>
+                    </tr>
+                    <tr>
+                        <th>Date:</th>
+                        <td><input type="date" name="date"></td>
+                    </tr>
+                    <tr>
+                        <th>Entry Fee:</th>
+                        <td><input type="text" name="entryFee"></td>
+                    </tr>
+                    <tr>
+                        <th>Location:</th>
+                        <td><input type="text" name="location"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <button type="submit">Add Event</button>
+                        </td>
+                    </tr>
+                </table>
+
+                <br>
+
+                <% if (msg) { %>
+                    <div class="form-message">
+                        <%- msg %>
+                    </div>
+                <% } %>
+            </form>
+        </div>
+    </div>
+
+    <%- include('../footer') %>
 </body>
 </html>

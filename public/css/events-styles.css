@@ -1,13 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
 
+* {
+    box-sizing: border-box;
+}
+
 body {
     font-family: 'Poppins', sans-serif;
     font-weight: 700;
     text-align: center;
     margin: 0;
     background-color: black;
+    overflow-x: hidden;
 }
-
 
 .events-banner {
     background-image: url('/img/events_BG.jpg');
@@ -15,31 +19,39 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     padding: 20px 0;
+    width: 100%;
 }
 
 .events-title {
     text-align: center;
-    font-size: 70px;
+    font-size: clamp(36px, 8vw, 70px);
+    color: white;
+    margin: 0;
 }
 
 .events-section {
     background-color: black;
-    padding: 40px 0;
+    padding: 40px 20px;
+    width: 100%;
 }
 
 .upcoming-title {
     color: white;
     margin-bottom: 30px;
-    font-size: 40px;
+    font-size: clamp(28px, 5vw, 40px);
 }
 
 .search-form {
     margin-bottom: 30px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .search-input {
     padding: 12px;
-    width: 500px;
+    width: min(500px, 90%);
     font-size: 16px;
     border-radius: 5px;
     border: none;
@@ -60,16 +72,16 @@ body {
     flex-wrap: wrap;
     margin-bottom: 40px;
     align-items: stretch;
+    width: 100%;
 }
 
 .event-card {
     background-color: #1a1a1a;
     color: white;
-    width: 320px;
-    height: 260px;
+    width: min(320px, 90%);
+    min-height: 260px;
     padding: 30px;
     border-radius: 10px;
-    box-sizing: border-box;
 }
 
 .event-name {
@@ -90,7 +102,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    width: 320px;
+    width: min(320px, 90%);
 }
 
 .side-link {
@@ -100,11 +112,10 @@ body {
 .side-card {
     background-color: #333333;
     color: white;
-    width: 320px;
-    height: 120px;
+    width: 100%;
+    min-height: 120px;
     padding: 10px;
     border-radius: 10px;
-    box-sizing: border-box;
 }
 
 .all-events-grid {
@@ -116,19 +127,19 @@ body {
 }
 
 .all-events-grid .event-card {
-    width: 260px;
+    width: min(260px, 90%);
     min-height: 260px;
 }
 
 .all-events-section {
     background-color: black;
-    padding: 40px 60px;
+    padding: 40px 20px;
     min-height: 100vh;
 }
 
 .all-events-title {
     color: white;
-    font-size: 55px;
+    font-size: clamp(32px, 7vw, 55px);
     margin-bottom: 40px;
     text-align: center;
 }
@@ -141,7 +152,7 @@ body {
 
 .all-events-cards {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 30px;
 }
 
@@ -151,7 +162,6 @@ body {
     min-height: 280px;
     padding: 30px;
     border-radius: 10px;
-    box-sizing: border-box;
 }
 
 .all-event-name {
@@ -170,4 +180,50 @@ body {
 
 .all-event-card button {
     font-family: inherit;
+}
+
+/* for form to add new event */
+.form-card {
+    background-color: #1a1a1a;
+    color: white;
+    width: 600px;
+    margin: 0 auto;
+    padding: 30px;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.event-form-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: white;
+}
+
+.event-form-table th,
+.event-form-table td {
+    padding: 12px;
+    text-align: left;
+}
+
+.event-form-table input {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    border: none;
+    font-family: inherit;
+}
+
+.event-form-table button {
+    padding: 12px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.form-message {
+    color: white;
+    margin-top: 10px;
 }
