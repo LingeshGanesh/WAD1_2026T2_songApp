@@ -28,6 +28,42 @@ async function connectDB() {
   }
 };
 
+//Load Model
+const User = require("./models/users-model");
+const Song = require("./models/songs-model");
+const Playlist = require("./models/playlists-model");
+const Review = require("./models/playlists-model");
+
+const eventRoutes = require("./routes/events-routes");
+
+// Middleware
+server.use(express.static(path.join(__dirname, "public")));
+server.use(express.urlencoded({ extended: true }));
+server.set('view engine', 'ejs');
+server.set("views", path.join(__dirname, "views"));
+
+// Routes
+server.get("/", (req, res) => {
+  res.render("base");
+});
+
+server.use("/events", eventRoutes);
+
+
+//testing
+
+server.get("/add-song", async (req, res) => {
+  await Song.create({
+    title: "Blinding Lights",
+    artist: "The Weeknd",
+    album: "After Hours",
+    genre: "Pop",
+    duration: 200
+  });
+
+  res.send("Song added to database");
+});
+
 // Initialize Server
 function startServer() {
   const hostname = "localhost"; 
