@@ -33,8 +33,7 @@ const User = require("./models/users-model");
 const Song = require("./models/songs-model");
 const Playlist = require("./models/playlists-model");
 const Review = require("./models/playlists-model");
-
-const eventRoutes = require("./routes/events-routes");
+const Events = require("./models/events-model")
 
 // Middleware
 server.use(express.static(path.join(__dirname, "public")));
@@ -46,8 +45,6 @@ server.set("views", path.join(__dirname, "views"));
 server.get("/", (req, res) => {
   res.render("base");
 });
-
-server.use("/events", eventRoutes);
 
 
 //testing
