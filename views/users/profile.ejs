@@ -8,10 +8,15 @@
 </head>
 
 <body>
-    <h2>Welcome, user: <%= user.username %>!</h2>
-    <%= user.email %> <br>
-    <a href="/user/friends">Friends</a><br>
-    <a href="/user/logout">Logout</a>
+    <h2>Welcome, <%= user.username %>!</h2>
+    <a href="/user/search">Search Friends</a><br>
+    <a href="/user/logout">Logout</a><br>
+    <a href="/user/edit/">Edit</a><br>
+    <a href="/user/delete/">Delete</a><br>
+    <img src="<%=user.profilePicture%>" width="150"><br>
+    Email: <%= user.email %> <br>
+    
+    <a href="/playlist/browse">Browse your playlist!</a>
 </body>
 
 </html>
