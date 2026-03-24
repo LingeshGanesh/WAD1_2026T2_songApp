@@ -18,9 +18,9 @@
                 <td colspan="3">No songs yet...</td>
             </tr>
             <% songs.forEach((song, i) => { %>
-                <tr id="<%= song.id %>">
+                <tr id="<%= song._id %>">
                     <th><%= (i + 1).toString().padStart(2, "0") %></th>
-                    <td><a href="/song/<%= song._id %>"><%= song.artist %> - <%= song.title %></a></td>
+                    <td><a href="/song/<%= song._id %>/open"><%= song.artist %> - <%= song.title %></a></td>
                     <td>
                         <!-- Buttons stacked in one row to remove whitespace margin -->
                         <button class="up">&uparrow;</button><button class="down">&downarrow;</button><button class="remove">&minus;</button>

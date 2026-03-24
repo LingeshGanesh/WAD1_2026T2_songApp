@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Songs</title>
+</head>
+<body>
+    <%- include("../navbar-user") %>
+    <h1>Browse Songs</h1>
+
+    <p>
+        <a href="/song/create">Add Song</a>
+    </p>
+
+    <form action="/song/import" method="post">
+        <button type="submit">Import songs from JSON</button>
+    </form>
+
+    <% if (importResult) { %>
+        <p>
+            Imported <%= importResult.totalCount %> songs.
+            Added <%= importResult.insertedCount %>,
+            updated <%= importResult.updatedCount %>.
+        </p>
+    <% } %>
+
+    <% if (allSongs.length > 0) { %>
+        <table border="1">
+            <tr>
+                <th>Title</th>
+                <th>Artist</th>
+                <th>Album</th>
+                <th>Genre</th>
+                <th>Duration</th>
+                <th>Actions</th>
+            </tr>
+            <% allSongs.forEach(song => { %>
+                <tr>
+                    <td><a href="/song/<%= song._id %>"><%= song.title %></a></td>
+                    <td><%= song.artist %></td>
+                    <td><%= song.album || "N/A" %></td>
+                    <td><%= song.genre || "N/A" %></td>
+                    <td><%= song.duration %>s</td>
+                    <td>
+                        <a href="/song/edit/<%= song._id %>">Edit</a>
+                        <form action="/song/delete/<%= song._id %>" method="post" style="display: inline;">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }) %>
+        </table>
+    <% } else { %>
+        <p>No songs in the database yet.</p>
+    <% } %>
+
+    <%- include("../footer") %>
+</body>
+</html>

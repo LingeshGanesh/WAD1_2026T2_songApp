@@ -88,3 +88,7 @@ exports.insert = async function(newPlaylist) {
 exports.updateByID = async function(id, newValue) {
     await Playlist.updateOne({_id: id}, newValue)
 }
+
+exports.removeSongFromAll = async function(songID) {
+    await Playlist.updateMany({}, { $pull: { songs: songID } });
+}

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Song</title>
+</head>
+<body>
+    <%- include("../navbar-user") %>
+    <h1>Edit Song</h1>
+
+    <% if (error) { %>
+        <p style="color: red;"><strong>Error:</strong> <%= error %></p>
+    <% } %>
+
+    <form action="/song/edit/<%= song._id %>" method="post">
+        <%- include("form-fields", { fields }) %>
+        <br>
+        <input type="submit" value="Save Changes">
+    </form>
+
+    <%- include("../footer") %>
+</body>
+</html>
