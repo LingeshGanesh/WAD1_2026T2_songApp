@@ -36,7 +36,7 @@ exports.loginPost = async (req, res) => {
         const email = req.body.email.trim();
         const password = req.body.password.trim();
 
-        const user = await User.findUser(email);
+        const user = await User.findUserByEmail(email);
 
         if (!user) {
             console.log("User not found");
@@ -67,35 +67,35 @@ exports.loginPost = async (req, res) => {
 
 exports.profile = async (req, res) => {
     const email = req.session.user.email;
-    const user = await User.findUser(email);
+    const user = await User.findUserByEmail(email);
 
     res.render('users/profile', { user });
 }
 
 exports.editUser = async (req, res) => {
     const email = req.session.user.email;
-    const user = await User.findUser(email);
+    const user = await User.findUserByEmail(email);
 
-    res.render('users/edit', { user })
+    res.render('users/edit-user', { user })
 }
 
 exports.updateUser = async (req, res) => {
 
     const email = req.session.user.email;
     const id = req.session.user.id;
-    const user = await User.findUser(email);
+    const user = await User.findUserByEmail(email);
 
     const newAvatar = req.body.newAvatar;
     const newUsername = req.body.newUsername;
     const newEmail = req.body.newEmail;
 
     if (!newAvatar || !newUsername || !newEmail) {
-        return res.render('users/edit', { user: user })
+        return res.render('users/edit-user', { user: user })
     }
 
     try {
-        let newUser = await User.updateUser(id, newUsername, newEmail, newAvatar);
-        const updatedUser = await User.findUser(newEmail);
+        let newUser = await User.updateUserByID(id, newUsername, newEmail, newAvatar);
+        const updatedUser = await User.findUserByEmail(newEmail);
         req.session.user = {
             id: updatedUser._id,
             username: updatedUser.username,
@@ -105,13 +105,13 @@ exports.updateUser = async (req, res) => {
         res.render('users/profile', { user: updatedUser });
     } catch (error) {
         console.log('Error while updating User', error);
-        res.render('users/edit', { user: user })
+        res.render('users/edit-user', { user: user })
     }
 }
 
 exports.displayUser = async (req, res) => {
     const email = req.session.user.email;
-    const user = await User.findUser(email);
+    const user = await User.findUserByEmail(email);
 
     res.render('users/delete-user', { user });
 }
@@ -120,7 +120,7 @@ exports.displayUser = async (req, res) => {
 exports.deleteUser = async(req,res) => {
     const email = req.session.user.email;
     const id = req.session.user.id;
-    const user = await User.findUser(email);
+    const user = await User.findUserByEmail(email);
 
     try{
         let user = await User.deleteUser(id);

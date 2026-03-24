@@ -35,23 +35,27 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema, 'users');
 
+//create new user
 exports.createUser = function (newUser) {
     return User.create(newUser);
 }
 
-exports.findUser = function (email) {
+//find user by email
+exports.findUserByEmail = function (email) {
     return User.findOne({ email: email })
 }
 
-exports.updateUser = function(id, username, email, profilePicture){
+//update user by id
+exports.updateUserByID = function(id, username, email, profilePicture){
     return User.updateOne({_id:id},{username:username, email:email, profilePicture: profilePicture})
 }
 
+//delete user
 exports.deleteUser = function(id){
     return User.deleteOne({_id:id})
 }
 
-/// search users 
+//search users 
 exports.searchUsers = function(query, currentUserId) {
     return User.find({
         username: { $regex: '^' + query, $options: 'i' }, // starts with

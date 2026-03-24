@@ -59,21 +59,6 @@ server.get("/", (req, res) => {
   res.render("base");
 });
 
-
-//testing
-
-server.get("/add-song", async (req, res) => {
-  await Song.create({
-    title: "Blinding Lights",
-    artist: "The Weeknd",
-    album: "After Hours",
-    genre: "Pop",
-    duration: 200
-  });
-
-  res.send("Song added to database");
-});
-
 // Initialize Server
 function startServer() {
   const hostname = "localhost";
