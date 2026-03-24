@@ -5,10 +5,12 @@ const Song = require("./../models/songs-model.js");
 // Import routers
 const playlistRouter = require("./playlist-router.js");
 const eventsRouter = require("./events-router.js");
+const reviewsRouter = require("./reviews-router.js");
 
 // Branching Route
 router.use("/playlist", playlistRouter);
 router.use("/events", eventsRouter);
+router.use("/reviews", reviewsRouter);
 
 // TODO: Remove these route when insert song popup is implemented.
 router.get("/song/search/:songID", async (req, res) => {

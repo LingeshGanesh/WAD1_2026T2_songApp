@@ -1,0 +1,23 @@
+<h1>Add Review</h1>
+
+<form action="/reviews/add-review" method="POST">
+  <div>
+    <label>Song ID:</label>
+    <input type="text" name="songId" required>
+  </div>
+
+  <div>
+    <label>Rating (1-5):</label>
+    <input type="number" name="rating" min="1" max="5" required>
+  </div>
+
+  <div>
+    <label>Comment:</label>
+    <textarea name="comment" required></textarea>
+  </div>
+
+  <button type="submit">Submit Review</button>
+</form>
+
+<%- msg %>
+

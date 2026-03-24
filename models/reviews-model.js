@@ -28,4 +28,12 @@ const reviewSchema = new mongoose.Schema({
 
 const Review = mongoose.model('Review', reviewSchema, 'reviews');
 
+exports.addReviewBD = function(newReview) {
+    return Review.create(newReview);
+}
+
+exports.retrieveAll = function() {
+    return Review.find();
+};
+
 module.exports = Review;
