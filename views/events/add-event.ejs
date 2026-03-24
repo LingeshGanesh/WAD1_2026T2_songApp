@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Add a New Event</title>
+</head>
+<body>
+    <h3>Add a New Event</h3>
+    <a href="/events">back</a><br><br>
+
+    <form action="/events/add-event" method="POST">
+        <table border="1">
+            <tr>
+                <th>Name:</th><td><input type="text" name="name"></td>
+            </tr>
+            <tr>
+                <th>Description:</th><td><input type="text" name="desc"></td>
+            </tr>
+            <tr>
+                <th>Date:</th><td><input type="date" name="date"></td>
+            </tr>
+            <tr>
+                <th>Entry Fee:</th><td><input type="text" name="entryFee"></td>
+            </tr>
+            <tr>
+                <th>Location:</th><td><input type="text" name="location"></td>
+            </tr>
+            <tr>
+                <td colspan="2"><button type="submit">Add Event</button></td>
+            </tr>
+        </table>
+        <br>
+
+        <% if (msg) { %>
+            <%- msg %>
+        <% } %>
+    </form>
+
+    <br><br>
+</body>
+</html>

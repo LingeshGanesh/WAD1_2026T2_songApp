@@ -1,0 +1,28 @@
+<html>
+<head>
+  <title>Edit Events</title>
+</head>
+<body>
+
+  <% if (events.length === 0) { %>
+    <p>No events yet.</p>
+  <% } else { %>
+    <h2>Your Event List</h2>
+    <a href="/events">Back to Home Page</a>
+
+    <% events.forEach(event => { %>
+      
+        <p><strong>Name: <%= event.name %></strong></p>
+        Description: <%= event.desc %><br>
+        Date: <%= event.date %><br>
+        Entry Fee: <%= event.entryFee %><br>
+        Location: <%= event.location %><br>
+        <a href="/events/update-event?id=<%= event._id %>">Edit</a> |
+        <a href="/events/delete-event?id=<%= event._id %>">Delete</a>
+        <hr>
+    <% }); %>
+    
+  <% } %>
+     
+</body>
+</html>
