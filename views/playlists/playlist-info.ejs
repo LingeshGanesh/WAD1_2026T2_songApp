@@ -3,27 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Browse Playlists</title>
+    <title><%= playlist.name %></title>
     <style>
         table.pinfo th {text-align: left;}
-        header {display: flex; align-items: center; gap: 1rem;}
     </style>
 </head>
 <body>
     <%- include("../navbar-user") %>
     <main>
-        <% const thumbURL = playlist.thumbnailExt === ""? "": `/image/playlist-thumb/${playlist._id}${playlist.thumbnailExt}` %>
-        <header>
-            <img src="<%= thumbURL %>" alt="" height="128" width="128">
-            <span>
-                <h1><%= playlist.name %></h1>
-                <% if (playlist.owner) { %>
-                    <p><a href="<%= playlist.owner %>"><%= playlist.owner %></a></p>
-                <% } else { %>
-                    <p><em>Unknown Owner</em></p>
-                <% } %>
-            </span>
-        </header>
+        <%- include("playlist-header", {playlist}) %>
         <% if (isOwner) { %>
             <ul>
                 <li><a href="/playlist/edit/<%= playlist._id %>">Edit</a></li>

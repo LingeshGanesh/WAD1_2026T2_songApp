@@ -29,14 +29,16 @@
     <% if (allPlaylists) { %>
         <table border="1">
             <tr>
-                <th>Name</th>
+                <th>Playlist</th>
                 <th>Creation Date</th>
                 <th>Owner</th>
             </tr>
     
             <% allPlaylists.forEach(playlist => { %>
             <tr>
-                <td><a href="/playlist/<%= playlist._id %>"><%= playlist.name %></a></td>
+                <td><a href="/playlist/<%= playlist._id %>">
+                    <%- include("playlist-header", {playlist}) %>
+                </a></td>
                 <td><%= playlist.creationDate %></td>
                 <td><a href="#"><%= playlist.owner || "Unknown" %></a></td>
             </tr>
