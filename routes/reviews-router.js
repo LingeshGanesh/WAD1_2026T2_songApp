@@ -1,14 +1,10 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
+const reviewController = require('../controllers/reviews-controller');
 
-const reviewsController = require('./../controllers/reviews-controller');
-
-const Review = require("../models/reviews-model");
-const Song = require("../models/songs-model");
-
-// display form
-router.get("/add-review", reviewsController.getIndex);
-router.post("/add-review", reviewsController.createReview);
-
+router.get('/', reviewController.getAllReviews);
+router.post('/create', reviewController.createReview);
+router.post('/update', reviewController.updateReview);
+router.post('/delete', reviewController.deleteReview);
 
 module.exports = router;
