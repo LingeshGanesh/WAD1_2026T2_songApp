@@ -10,7 +10,7 @@
     <% if (error) { %>
         <p style="color: red;"><strong>Error:</strong> Playlist must have at least one song.</p>
     <% } %>
-    <form action="/playlist/edit/<%= playlist._id %>" method="post">
+    <form action="/playlist/edit/<%= playlist._id %>" method="post" enctype="multipart/form-data">
         
     <input type="hidden" name="user" value="<%= user %>">
     <input type="hidden" name="playlistID" value="<%= playlist._id %>">

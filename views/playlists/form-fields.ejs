@@ -8,16 +8,8 @@
 <% const allGenres = ["Pop", "Rock", "Indie", "Jazz"] %>
 <% let genreSel = error? fields.genre: "" %>
 
-<label for="genre">Genre</label><br>
-<select name="genre" id="genre">
-    <option value="" <%= "" === genreSel? "selected": "" %>>None</option>
-
-    <% allGenres.forEach(option => { %>
-        <option value="<%= option %>" <%= option === genreSel? "selected": "" %>><%= option %></option>
-    <% }) %>
-
-    <option value="Other" <%= "Other" === genreSel? "selected": "" %>>Other</option>
-</select><br><br>
+<label for="thumbnail">Thumbnail</label><br>
+<input type="file" name="thumbnail" id="thumbnail" accept="image"><br><br>
 
 <% const visList = ["Private", "Unlisted", "Public"] %>
 

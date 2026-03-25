@@ -1,6 +1,14 @@
 const mongoose = require('mongoose');
 const Song = require('./songs-model');
 
+// File System to store thumbnails
+const fs = require('fs/promises');
+const path = require('path');
+const thumbnailDir = path.join(__dirname, "../public/image/playlist-thumb");
+
+// Set the directory if it does not exist during setup
+if (!require("fs").existsSync(thumbnailDir)) {fs.mkdir(thumbnailDir);}
+
 const playlistSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -9,7 +17,7 @@ const playlistSchema = new mongoose.Schema({
     description: {
         type: String
     },
-    genre: {
+    thumbnailExt: {
         type: String
     },
     visibility: {
@@ -51,7 +59,12 @@ exports.retrievePublic = async function() {
 
 exports.getByID = async function(id, loadSong = false) {
     const playlist =  await Playlist.findById(id);
+    // The playlist returned is either null or not.
+    
     if (loadSong) {
+        // Return early if no playlist is found.
+        if (!playlist) {return {playlist};}
+
         // Query songs from the database
         let songLUT = new Map();
         for (const songID of playlist.songs) {
@@ -85,6 +98,16 @@ exports.insert = async function(newPlaylist) {
     return doc;
 }
 
+exports.createThumbnail = async function(fileobject, playlistID) {
+    let filename = fileobject.originalname;
+    let imagefile = fileobject.buffer;
+    await fs.writeFile(path.join(thumbnailDir, `${playlistID}${path.extname(filename)}`), imagefile);
+}
+
 exports.updateByID = async function(id, newValue) {
     await Playlist.updateOne({_id: id}, newValue)
+}
+
+exports.deleteByID = async function(id) {
+    await Playlist.deleteOne({_id: id});
 }
