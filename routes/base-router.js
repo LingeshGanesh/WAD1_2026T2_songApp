@@ -22,5 +22,10 @@ router.get("/song/:songID", async (req, res) => {
     res.redirect(searchedSong.youtubeUrl);
 });
 
+// 404 Not Found
+router.all(/.*/, (req, res) => {
+    res.status(404).render('not-found', {url: req.url});
+})
+
 // Export
 module.exports = router;

@@ -1,4 +1,5 @@
 // Import model
+const mongoose = require('mongoose');
 const Playlist = require("../models/playlists-model");
 
 // Controllers
@@ -32,6 +33,10 @@ exports.browse = async (req, res) => {
 exports.playlistInfo = async (req, res) => {
     const {playlistID} = req.params;
     const user = null;
+
+    if (!mongoose.isValidObjectId(playlistID)) {
+        return res.status(404).render("not-found", {url: req.url});
+    }
     
     try {
         let {playlist, songsList, songsDuration, playlistDuration} = await Playlist.getByID(playlistID, true);
