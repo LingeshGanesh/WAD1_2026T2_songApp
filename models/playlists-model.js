@@ -1,8 +1,13 @@
 const mongoose = require('mongoose');
 const Song = require('./songs-model');
-const fs = require('fs/promises')
+
+// File System to store thumbnails
+const fs = require('fs/promises');
 const path = require('path');
 const thumbnailDir = path.join(__dirname, "../public/image/playlist-thumb");
+
+// Set the directory if it does not exist during setup
+if (!require("fs").existsSync(thumbnailDir)) {fs.mkdir(thumbnailDir);}
 
 const playlistSchema = new mongoose.Schema({
     name: {
