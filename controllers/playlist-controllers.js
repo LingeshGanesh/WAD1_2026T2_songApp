@@ -8,7 +8,13 @@ exports.browse = async (req, res) => {
     sortby = sortby || 'creationDate'
     isAscending = (isAscending === 'true') || false;
 
-    let allPlaylists = await Playlist.retrievePublic();
+    let allPlaylists;
+    try {
+        allPlaylists = await Playlist.retrievePublic();
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send("Error calling database.")
+    }
 
     allPlaylists.sort((a, b) => {
         let comp;
@@ -27,22 +33,25 @@ exports.playlistInfo = async (req, res) => {
     const {playlistID} = req.params;
     const user = null;
     
-    let {playlist, songsList, songsDuration, playlistDuration} = await Playlist.getByID(playlistID, true);
+    try {
+        let {playlist, songsList, songsDuration, playlistDuration} = await Playlist.getByID(playlistID, true);
 
-    // If the playlist does not exist, show not found page
-    if (!playlist) {
-        return res.render('playlists/not-found');
+        // If the playlist does not exist, show not found page
+        if (!playlist) {return res.render('playlists/not-found');}
+
+        // TODO: take user object ID from session and compare to playlist owner Object ID
+        const isOwner = true; // (user === playlist.owner);
+
+        // If non-owner is accessing private playlist, show not found page
+        if (playlist.visibility === 'Private' && !isOwner) {
+            return res.render('playlists/not-found');
+        }
+
+        res.render('playlists/playlist-info', {isOwner, playlist, songsList, songsDuration, playlistDuration});
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send("Error calling database.")
     }
-
-    // TODO: take user object ID from session and compare to playlist owner Object ID
-    const isOwner = true; // (user === playlist.owner);
-
-    // If non-owner is accessing private playlist, show not found page
-    if (playlist.visibility === 'Private' && !isOwner) {
-        return res.render('playlists/not-found');
-    }
-
-    res.render('playlists/playlist-info', {isOwner, playlist, songsList, songsDuration, playlistDuration});
 };
 
 // Create
@@ -71,16 +80,21 @@ exports.createPlaylist = async (req, res) => {
 
     // Insert into the database
     // ID is required to direct user to their created playlist.
-    const playlistDoc = await Playlist.insert({
-        name: name,
-        description: description,
-        genre: genre,
-        visibility: visibility,
-        owner: user,
-        songs: songs
-        });
-
-    res.render('playlists/create-success', {playlist: playlistDoc});
+    try {
+        const playlistDoc = await Playlist.insert({
+            name: name,
+            description: description,
+            genre: genre,
+            visibility: visibility,
+            owner: user,
+            songs: songs
+            });
+    
+        res.render('playlists/create-success', {playlist: playlistDoc});
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send("Error adding playlist to the database.")
+    }
 }
 
 // Update
@@ -89,14 +103,19 @@ exports.showEditForm = async (req, res) => {
     const user = null;
     const {playlistID} = req.params;
 
-    let {playlist, songsList} = await Playlist.getByID(playlistID, true);
+    try {
+        let {playlist, songsList} = await Playlist.getByID(playlistID, true);
+        
+        // TODO: do authorization here
+        if (false) {//(user !== playlist.owner) {
+            return res.status(403).send("You are not allowed to edit this form.")
+        }
     
-    // TODO: do authorization here
-    if (false) {//(user !== playlist.owner) {
-        return res.status(403).send("You are not allowed to edit this form.")
+        res.render('playlists/edit-form', {user, error: false, playlist, songsList});
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send("Error calling database.")
     }
-
-    res.render('playlists/edit-form', {user, error: false, playlist, songsList});
 }
 
 exports.updatePlaylist = async (req, res) => {
@@ -118,14 +137,19 @@ exports.updatePlaylist = async (req, res) => {
 
     // Insert into the database
     // ID is required to direct user to their created playlist.
-    await Playlist.updateByID(playlistID, {
-        name: name,
-        description: description,
-        genre: genre,
-        visibility: visibility,
-        owner: user,
-        songs: songs
-        });
+    try {
+        await Playlist.updateByID(playlistID, {
+            name: name,
+            description: description,
+            genre: genre,
+            visibility: visibility,
+            owner: user,
+            songs: songs
+            });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send("Error updating playlist in the database.")
+    }
 
     res.render('playlists/edit-success', {playlist: {name, _id: playlistID}});
 }
@@ -136,14 +160,19 @@ exports.showDeleteForm = async (req, res) => {
     const user = null;
     const {playlistID} = req.params;
 
-    let {playlist, songsList} = await Playlist.getByID(playlistID, true);
+    try {
+        let {playlist, songsList} = await Playlist.getByID(playlistID, true);
+        
+        // TODO: do authorization here
+        if (false) {//(user !== playlist.owner) {
+            return res.status(403).send("You are not allowed to edit this form.")
+        }
     
-    // TODO: do authorization here
-    if (false) {//(user !== playlist.owner) {
-        return res.status(403).send("You are not allowed to edit this form.")
+        res.render('playlists/delete-form', {user, errorMsg: false, playlist, songsList});
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send("Error calling database.")
     }
-
-    res.render('playlists/delete-form', {user, errorMsg: false, playlist, songsList});
 }
 
 exports.deletePlaylist = async (req, res) => {
@@ -164,8 +193,12 @@ exports.deletePlaylist = async (req, res) => {
     }
 
     // Delete playlist
-    await Playlist.deleteByID(playlistID);
-
-    res.render("playlists/delete-success", { playlist });
+    try {
+        await Playlist.deleteByID(playlistID);
+        res.render("playlists/delete-success", { playlist });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send("Error deleting playlist from the database.")
+    }
 
 }
