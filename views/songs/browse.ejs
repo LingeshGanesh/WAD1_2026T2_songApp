@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Songs</title>
+</head>
+<body>
+    <%- include("../navbar-user") %>
+    <h1>Browse Songs</h1>
+    <p><a href="/songs/create">Add a new song</a></p>
+
+    <!-- If no songs, display message, else display table of songs -->
+    <% if (songs.length > 0) { %>
+        <table border="1">
+            <tr>
+                <th>Uploader</th>
+                <th>Title</th>
+                <th>Artist</th>
+                <th>Album</th>
+                <th>Genre</th>
+                <th>Duration</th>
+            </tr>
+            <% songs.forEach(song => { %>
+                <tr>
+                    <td><%= song.uploader %></td>
+                    <td><a href="/songs/<%= song._id %>"><%= song.title %></a></td>
+                    <td><%= song.artist %></td>
+                    <td><%= song.album || "-" %></td>
+                    <td><%= song.genre || "-" %></td>
+                    <td><%= formatDuration(song.duration) %></td>
+                </tr>
+            <% }) %>
+        </table>
+    <% } else { %>
+        <p>No songs have been added yet.</p>
+    <% } %>
+
+    <%- include("../footer") %>
+</body>
+</html>
