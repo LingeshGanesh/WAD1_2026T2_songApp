@@ -51,7 +51,12 @@ exports.retrievePublic = async function() {
 
 exports.getByID = async function(id, loadSong = false) {
     const playlist =  await Playlist.findById(id);
+    // The playlist returned is either null or not.
+    
     if (loadSong) {
+        // Return early if no playlist is found.
+        if (!playlist) {return {playlist};}
+
         // Query songs from the database
         let songLUT = new Map();
         for (const songID of playlist.songs) {
@@ -87,4 +92,8 @@ exports.insert = async function(newPlaylist) {
 
 exports.updateByID = async function(id, newValue) {
     await Playlist.updateOne({_id: id}, newValue)
+}
+
+exports.deleteByID = async function(id) {
+    await Playlist.deleteOne({_id: id});
 }
