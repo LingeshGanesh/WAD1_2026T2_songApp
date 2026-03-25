@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search friend</title>
+</head>
+
+<body>
+    <form action="/user/search-friend" method="get">
+        <input type="text" name="query" placeholder="Search friends" value="<%=query%>">
+        <button type="submit">Search</button>
+    </form>
+    <br>
+    <%if(result){%>
+        <table border="1">
+            <tr>
+                <th>Username</th>
+                <th>Action</th>
+            </tr>
+
+            <% result.forEach(user=> { %>
+                <tr>
+                    <td>
+                        <%= user.username %>
+                    </td>
+                    <td><a href="/user/addFriend/<%= user._id %>">Add</a></td>
+                </tr>
+                <% }) %>
+        </table>
+
+        <%}%>
+
+</body>
+
+</html>

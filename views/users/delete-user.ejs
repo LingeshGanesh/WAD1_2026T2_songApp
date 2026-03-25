@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User deletion</title>
+</head>
+
+<body>
+    <p><strong>User Marked for Deletion.</strong></p>
+    
+    Email: <%=user.email%><br>
+    Username: <%=user.username%>
+    <!-- delete hasn't doen yet -->
+    <form action="/user/delete" method="post">
+        <p style="color: red;">
+            Click "Confirm" to permanently delete your account.<br> All your playlists and history will be removed and cannot be recovered.
+        </p>
+    </form>
+    
+    
+
+</html>

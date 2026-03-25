@@ -3,6 +3,7 @@ const server = express();
 const path = require("path");
 const mongoose = require("mongoose");
 const dotenv = require('dotenv');
+const session = require('express-session');
 
 // Load Env variable
 dotenv.config({ path: './config.env' });
@@ -12,6 +13,18 @@ server.use(express.static(path.join(__dirname, "public")));
 server.use(express.urlencoded({ extended: true }));
 server.set('view engine', 'ejs');
 server.set("views", path.join(__dirname, "views"));
+
+// session ID
+
+const secret = process.env.SECRET;
+server.use(session({
+  secret: secret, // sign the session ID cookie. should be a long, random, and secure string, preferably stored in an environment variable
+  resave: false, // Prevents the session from being saved back to the session store if nothing has changed.
+  saveUninitialized: false, // Prevents a new, empty session from being saved to the store.
+  cookie: {
+        secure: false // even if I reload, session will stay
+    }
+}));
 
 // Routes
 const baseRouter = require("./routes/base-router.js")
@@ -46,24 +59,9 @@ server.get("/", (req, res) => {
   res.render("base");
 });
 
-
-//testing
-
-server.get("/add-song", async (req, res) => {
-  await Song.create({
-    title: "Blinding Lights",
-    artist: "The Weeknd",
-    album: "After Hours",
-    genre: "Pop",
-    duration: 200
-  });
-
-  res.send("Song added to database");
-});
-
 // Initialize Server
 function startServer() {
-  const hostname = "localhost"; 
+  const hostname = "localhost";
   const port = 8000;
 
   server.listen(port, hostname, () => {
