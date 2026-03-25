@@ -1,4 +1,4 @@
-<% const descLines = playlist.description.split("\n") || ["No description provided."] %>
+<% const descLines = playlist.description? playlist.description.split("\n") : ["No description provided."] %>
 <% descLines.forEach((line, i) => { %>
     <% if (i > 0) { %><br><% } %>
     <%= line %>

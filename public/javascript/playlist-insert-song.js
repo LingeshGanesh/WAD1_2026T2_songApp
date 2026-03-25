@@ -20,7 +20,10 @@ updateSongSelection()
 insertBtn.addEventListener("click", async event => {
     event.preventDefault(); // Prevents button from submitting the form
     insertBtn.disabled = true;
-    tbody.appendChild(await createSlot());
+    const newSlot = await createSlot()
+    if (newSlot) {
+        tbody.appendChild(newSlot);
+    }
     
     showEmptySlot();
     updateSongSelection();
@@ -90,8 +93,14 @@ function showEmptySlot() {
 }
 
 async function createSlot() {
-    const songProm = await fetch(`/song/search/${searchSongID.value.trim()}`);
-    const song = await songProm.json();
+    let song;
+    try {
+        const songProm = await fetch(`/song/search/${searchSongID.value.trim()}`);
+        song = await songProm.json();
+    } catch (error) {
+        console.error(error);
+        return;
+    }
 
     let row = document.createElement("tr");
     let c_no = document.createElement("th");

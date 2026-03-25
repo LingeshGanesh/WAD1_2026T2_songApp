@@ -1,6 +1,7 @@
 // Import model
 const mongoose = require('mongoose');
 const Playlist = require("../models/playlists-model");
+const path = require("path");
 
 // Controllers
 // Read
@@ -34,6 +35,7 @@ exports.playlistInfo = async (req, res) => {
     const {playlistID} = req.params;
     const user = null;
 
+    // The given playlistID is not a playlistID.
     if (!mongoose.isValidObjectId(playlistID)) {
         return res.status(404).render("not-found", {url: req.url});
     }
@@ -67,33 +69,41 @@ exports.showCreationForm = async (req, res) => {
 }
 
 exports.createPlaylist = async (req, res) => {
-    let { user, name, description, genre, visibility, songs } = req.body;
+    let { user, name, description, visibility, songs } = req.body;
+    let thumbnail = req.file;
 
     // Input Validation
     user = user === ""? null : user; // May be taken from session instead
     name = name.trim();
     description = description.trim();
     description = description === ""? null : description;
-    genre = genre === ""? null: genre;
     
     // There is no song.
     if (songs === "") {
-        return res.render('playlists/create-form', { user, fields: {name, description, genre, visibility, songs}, error: true })
+        return res.render('playlists/create-form', { user, fields: {name, description, thumbnail, visibility, songs}, error: true })
     }
     songs = songs.split(",");
 
 
     // Insert into the database
-    // ID is required to direct user to their created playlist.
     try {
-        const playlistDoc = await Playlist.insert({
+        const newPlaylist = {
             name: name,
             description: description,
-            genre: genre,
             visibility: visibility,
             owner: user,
             songs: songs
-            });
+        }
+
+        // ID is required to direct user to their created playlist.
+        // Therefore, playlistDoc is used, which contains the generated id.
+        const playlistDoc = await Playlist.insert(newPlaylist);
+        const playlistID = playlistDoc._id;
+
+        if (thumbnail) {
+            await Playlist.updateByID(playlistID, {thumbnailExt: path.extname(thumbnail.originalname)})
+            await Playlist.createThumbnail(thumbnail, playlistID);
+        }
     
         res.render('playlists/create-success', {playlist: playlistDoc});
     } catch (error) {
@@ -124,18 +134,19 @@ exports.showEditForm = async (req, res) => {
 }
 
 exports.updatePlaylist = async (req, res) => {
-    let { user, playlistID, name, description, genre, visibility, songs } = req.body;
+    let { user, playlistID, name, description, visibility, songs } = req.body;
+    let thumbnail = req.file;
+    console.log("Thumbnail:", thumbnail);
 
     // Input Validation
     user = user === ""? null : user;
     name = name.trim();
     description = description.trim();
     description = description === ""? null : description;
-    genre = genre === ""? null: genre;
     
     // There is no song.
     if (songs === "") {
-        return res.render('playlists/edit-form', { user, fields: {name, description, genre, visibility, songs}, error: true })
+        return res.render('playlists/edit-form', { user, fields: {name, description, visibility, songs}, error: true })
     }
     songs = songs.split(",");
 
@@ -143,14 +154,21 @@ exports.updatePlaylist = async (req, res) => {
     // Insert into the database
     // ID is required to direct user to their created playlist.
     try {
-        await Playlist.updateByID(playlistID, {
+        // Update non-thumbnail data
+        const editedPlaylist = {
             name: name,
             description: description,
-            genre: genre,
             visibility: visibility,
-            owner: user,
             songs: songs
-            });
+        }
+
+        await Playlist.updateByID(playlistID, editedPlaylist);
+
+        // Update thumbnail data
+        if (thumbnail) {
+            await Playlist.updateByID(playlistID, {thumbnailExt: path.extname(thumbnail.originalname)})
+            await Playlist.createThumbnail(thumbnail, playlistID);
+        }
     } catch (error) {
         console.error(error);
         return res.status(500).send("Error updating playlist in the database.")

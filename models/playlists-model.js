@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 const Song = require('./songs-model');
+const fs = require('fs/promises')
+const path = require('path');
+const thumbnailDir = path.join(__dirname, "../public/image/playlist-thumb");
 
 const playlistSchema = new mongoose.Schema({
     name: {
@@ -9,7 +12,7 @@ const playlistSchema = new mongoose.Schema({
     description: {
         type: String
     },
-    genre: {
+    thumbnailExt: {
         type: String
     },
     visibility: {
@@ -88,6 +91,12 @@ exports.getByID = async function(id, loadSong = false) {
 exports.insert = async function(newPlaylist) {
     const doc = await Playlist.create(newPlaylist);
     return doc;
+}
+
+exports.createThumbnail = async function(fileobject, playlistID) {
+    let filename = fileobject.originalname;
+    let imagefile = fileobject.buffer;
+    await fs.writeFile(path.join(thumbnailDir, `${playlistID}${path.extname(filename)}`), imagefile);
 }
 
 exports.updateByID = async function(id, newValue) {
