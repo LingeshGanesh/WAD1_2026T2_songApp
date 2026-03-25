@@ -43,6 +43,11 @@
                 <td><%= playlist.creationDate %></td>
             </tr>
             <tr>
+                <th>Total Songs</th>
+                <th>:</th>
+                <td><%= playlist.songs.length %> song<%= playlist.songs.length == 1? "": "s" %></td>
+            </tr>
+            <tr>
                 <% const playlistMinute = Math.round(playlistDuration / 60) %>
                 <th>Total Duration</th>
                 <th>:</th>
