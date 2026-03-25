@@ -4,9 +4,23 @@ const Playlist = require("../models/playlists-model");
 // Controllers
 // Read
 exports.browse = async (req, res) => {
-    const allPlaylists = await Playlist.retrievePublic();
+    let {sortby, isAscending} = req.query;
+    sortby = sortby || 'creationDate'
+    isAscending = (isAscending === 'true') || false;
+
+    let allPlaylists = await Playlist.retrievePublic();
+
+allPlaylists.sort((a, b) => {
+    let comp;
+    if (sortby === 'name') {
+        comp = (a.name > b.name)? 1: -1;
+    } else {
+        comp = a.creationDate - b.creationDate;
+    }
+    return comp * (isAscending? 1: -1);
+});
     
-    res.render('playlists/browse', {allPlaylists});
+    res.render('playlists/browse', {allPlaylists, sortby, isAscending});
 };
 
 exports.playlistInfo = async (req, res) => {
@@ -15,8 +29,18 @@ exports.playlistInfo = async (req, res) => {
     
     let {playlist, songsList, songsDuration, playlistDuration} = await Playlist.getByID(playlistID, true);
 
+    // If the playlist does not exist, show not found page
+    if (!playlist) {
+        return res.render('playlists/not-found');
+    }
+
     // TODO: take user object ID from session and compare to playlist owner Object ID
     const isOwner = true; // (user === playlist.owner);
+
+    // If non-owner is accessing private playlist, show not found page
+    if (playlist.visibility === 'Private' && !isOwner) {
+        return res.render('playlists/not-found');
+    }
 
     res.render('playlists/playlist-info', {isOwner, playlist, songsList, songsDuration, playlistDuration});
 };

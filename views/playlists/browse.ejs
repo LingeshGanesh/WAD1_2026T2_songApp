@@ -8,6 +8,24 @@
 <body>
     <%- include("../navbar-user") %>
     <h1>Browse Playlists</h1>
+
+    <form action="/playlist/browse" method="get">
+        <label for="sortby">Sort by:</label>
+        <select name="sortby" id="sortby">
+            <option value="name" <%= sortby === 'name'? "selected": "" %>>Playlist Name</option>
+            <option value="creationDate" <%= sortby === 'creationDate'? "selected": "" %>>Creation Date</option>
+        </select>
+        
+        <label for="isAscending">Order:</label>
+        <select name="isAscending" id="isAscending">
+            <option value="true" <%= isAscending? "selected": "" %>>Ascending (A to Z, earliest)</option>
+            <option value="false" <%= !isAscending? "selected": "" %>>Descending (Z to A, latest)</option>
+        </select>
+
+        <input type="submit" value="Sort">
+    </form>
+    <br>
+
     <% if (allPlaylists) { %>
         <table border="1">
             <tr>
