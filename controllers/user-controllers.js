@@ -2,23 +2,50 @@ const User = require('../models/users-model');
 const bcrypt = require('bcrypt');
 
 exports.registerGet = (req, res) => {
-    res.render('users/register')
+    res.render('users/register', {
+        error:null,
+        username: '',
+        email: '',
+        avatar: ''
+    })
 }
 
 exports.registerPost = async (req, res) => {
     try {
+        const { username, email, password, avatar } = req.body || '';
+        console.log(username,email,password,avatar)
+
+        //check empty fields
+        if (!username || !email || !password || !avatar) {
+            return res.render('users/register', {
+                error: "All fileds are required",
+                username,
+                email,
+                avatar
+            })
+        }
+
+        //password validation https://stackoverflow.com/questions/2370015/regular-expression-for-password-validation
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&!?]).{8,12}$/;
+         if (!passwordRegex.test(password)) {
+            return res.render('users/register', {
+                error: "Password is invalid. Please follow the guidelines.",
+                username,
+                email,
+                avatar
+            });
+        }
+
         const user = {
-            username: req.body.username.trim(),
-            email: req.body.email.trim(),
-            password: await bcrypt.hash(req.body.password.trim(), 10),
-            profilePicture: req.body.avatar
+            username: username.trim(),
+            email: email.trim(),
+            password: await bcrypt.hash(password.trim(), 10),
+            profilePicture: avatar
         };
         await User.createUser(user);
         console.log(`Successfully register with
             user:${user.username}
-            password:${user.password}
-            email:${user.email},
-            profilePic:${user.profilePicture}`)
+            email:${user.email}`)
         res.redirect('/user/login');
 
     } catch (error) {
@@ -117,22 +144,22 @@ exports.displayUser = async (req, res) => {
 }
 
 //delete hasn't done yet
-exports.deleteUser = async(req,res) => {
+exports.deleteUser = async (req, res) => {
     const email = req.session.user.email;
     const id = req.session.user.id;
     const user = await User.findUserByEmail(email);
 
-    try{
+    try {
         let user = await User.deleteUser(id);
-        
-        req.session.destroy((err)=>{
-            if(err){
+
+        req.session.destroy((err) => {
+            if (err) {
                 console.log("Error while destorying session:", err);
-                return res.redirect('/user/profile',{user})
+                return res.redirect('/user/profile', { user })
             }
             res.redirect('/user/login')
         })
-    }catch (error) {
+    } catch (error) {
         console.log('Error while deleting User', error);
         res.render('users/profile', { user: user })
     }
@@ -146,12 +173,12 @@ exports.searchUser = async (req, res) => {
     const currentUserId = req.session.user.id;
 
     if (!query) {
-        return res.render('users/search-friend', {result: '', query: '' });
+        return res.render('users/search-friend', { result: '', query: '' });
     }
 
     const users = await User.searchUsers(query, currentUserId);
     console.log(users);
-    res.render('users/search-friend', {result: users, query: query });
+    res.render('users/search-friend', { result: users, query: query });
 };
 
 exports.logout = (req, res) => {
