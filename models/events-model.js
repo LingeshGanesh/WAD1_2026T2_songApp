@@ -3,7 +3,10 @@ const mongoose = require('mongoose');
 const eventSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, 'An event must have a name']
+        required: [true, 'An event must have a name'],
+        trim: true,
+        minlength: [3, 'Event name must be at least 3 characters'],
+        maxlength: [30, 'Event name cannot exceed 30 characters']
     },
     author: {
         type: mongoose.Schema.Types.ObjectId,
@@ -11,19 +14,36 @@ const eventSchema = new mongoose.Schema({
     },
     desc: {
         type: String,
-        required: [true, 'An event must have a description']
+        required: [true, 'An event must have a description'],
+        trim: true,
+        maxlength: [100, 'Description cannot exceed 100 characters']
     },
     date: {
         type: Date,
-        required: [true, 'An event must have a date']
+        required: [true, 'An event must have a date'],
+        validate: {
+            validator: function(value) {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                const maxDate = new Date(today);
+                maxDate.setMonth(maxDate.getMonth() + 3);
+
+                return value >= today && value <= maxDate;
+            },
+            message: 'Event date cannot be in the past and can only be scheduled up to 3 months in advance'
+        }
     },
     entryFee: {
         type: Number,
-        default: 0
+        default: 0,
+        cast: 'Entry Fee must be a number',
+        min: [0, 'Entry Fee cannot be negative']
     },
     location: {
         type: String,
-        required: [true, 'An event must have a location']
+        required: [true, 'An event must have a location'],
+        trim: true
     }
 });
 
@@ -45,7 +65,8 @@ exports.addEvent = function(newEvent) {
 exports.editEvent = function(id, authorId, name, desc, date, entryFee, location) {
     return Event.updateOne(
         { _id: id, author: authorId },
-        { name: name, desc: desc, date: date, entryFee: entryFee, location: location }
+        { name: name, desc: desc, date: date, entryFee: entryFee, location: location },
+        { runValidators: true }
     );
 };
 

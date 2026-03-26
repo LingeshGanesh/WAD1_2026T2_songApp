@@ -10,16 +10,16 @@
     <form action="/events/add-event" method="POST">
         <table border="1">
             <tr>
-                <th>Name:</th><td><input type="text" name="name"></td>
+                <th>Name (between 3 and 30 chars):</th><td><input type="text" name="name"></td>
             </tr>
             <tr>
-                <th>Description:</th><td><input type="text" name="desc"></td>
+                <th>Description (within 100 chars):</th><td><input type="text" name="desc"></td>
             </tr>
             <tr>
                 <th>Date:</th><td><input type="date" name="date"></td>
             </tr>
             <tr>
-                <th>Entry Fee:</th><td><input type="text" name="entryFee"></td>
+                <th>Entry Fee (must be a number):</th><td><input type="text" name="entryFee"></td>
             </tr>
             <tr>
                 <th>Location:</th><td><input type="text" name="location"></td>
@@ -31,7 +31,7 @@
         <br>
 
         <% if (msg) { %>
-            <%- msg %>
+            <script>alert(`<%- msg %>`)</script>
         <% } %>
     </form>
 

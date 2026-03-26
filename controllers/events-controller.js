@@ -55,6 +55,13 @@ exports.createEvent = async (req, res) => {
             console.error(error);
             let result = "fail";
             let msg = "Error adding event";
+
+            if (error.name === "ValidationError") {
+                msg = Object.values(error.errors)
+                    .map(err => err.message)
+                    .join("\n");
+            }
+
             res.render("events/add-event", { result, msg });
         }
 
@@ -79,11 +86,12 @@ exports.showEventList = async (req, res) => {
 exports.getEvent = async (req, res) => {
     const userId = "69bc23ebd3cd6548aad26bdb";
     const id = req.query.id;
+    const msg = req.query.msg;
     console.log(id);
 
     try {
         const result = await Event.findByIdAndAuthor(id, userId);
-        res.render("events/update-event", { result });
+        res.render("events/update-event", { result, msg });
     } catch (error) {
         console.log(error);
         res.status(500).send("Something went wrong");
