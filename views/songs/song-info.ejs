@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= song.title %></title>
+</head>
+<body>
+    <%- include("../navbar-user") %>
+    <h1><%= song.title %></h1>
+    <!-- Song information -->
+    <p><strong>Uploaded by:</strong> <%= song.uploader %></p>
+    <p><strong>Artist:</strong> <%= song.artist %></p>
+    <p><strong>Album:</strong> <%= song.album || "N/A" %></p>
+    <p><strong>Genre:</strong> <%= song.genre || "N/A" %></p>
+    <p><strong>Duration:</strong> <%= formatDuration(song.duration) %></p>
+    <p><strong>YouTube URL:</strong>
+        <% if (song.youtubeUrl) { %>
+            <a href="<%= song.youtubeUrl %>"><%= song.youtubeUrl %></a>
+        <% } else { %>
+            N/A
+        <% } %>
+    </p>
+
+    <!-- Action links -->
+    <ul>
+        <li><a href="/songs/edit/<%= song._id %>">Edit Song</a></li>
+        <li><a href="/songs/delete/<%= song._id %>">Delete Song</a></li>
+        <li><a href="/songs/browse">Back to Browse</a></li>
+    </ul>
+
+    <%- include("../footer") %>
+</body>
+</html>

@@ -5,8 +5,10 @@ const mongoose = require("mongoose");
 const dotenv = require('dotenv');
 const session = require('express-session');
 
+
 // Load Env variable
 dotenv.config({ path: './config.env' });
+require("node:dns/promises").setServers(["1.1.1.1", "8.8.8.8"]);
 
 // Middleware
 server.use(express.static(path.join(__dirname, "public")));

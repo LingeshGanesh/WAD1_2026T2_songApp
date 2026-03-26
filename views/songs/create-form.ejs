@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Song</title>
+</head>
+<!-- Create Song Form -->
+<body>
+    <%- include("../navbar-user") %>
+    <h1>Add Song</h1>
+
+    <% if (error) { %>
+        <p style="color: red;"><strong>Error:</strong> <%= error %></p>
+    <% } %>
+
+    <form action="/songs/create" method="post">
+        <%- include("form-fields", { fields, showUploader: true }) %>
+        <input type="submit" value="Save Song">
+    </form>
+
+    <%- include("../footer") %>
+</body>
+</html>
