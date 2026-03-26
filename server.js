@@ -41,24 +41,6 @@ async function connectDB() {
   }
 };
 
-//Load Model
-const User = require("./models/users-model");
-const Song = require("./models/songs-model");
-const Playlist = require("./models/playlists-model");
-const Review = require("./models/playlists-model");
-const Events = require("./models/events-model")
-
-// Middleware
-server.use(express.static(path.join(__dirname, "public")));
-server.use(express.urlencoded({ extended: true }));
-server.set('view engine', 'ejs');
-server.set("views", path.join(__dirname, "views"));
-
-// Routes
-server.get("/", (req, res) => {
-  res.render("base");
-});
-
 // Initialize Server
 function startServer() {
   const hostname = "localhost";
