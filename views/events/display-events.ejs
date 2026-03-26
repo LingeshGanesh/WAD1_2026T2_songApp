@@ -1,6 +1,6 @@
 <html>
 <head>
-  <title>Events on Nodes.js</title>
+  <title>Events</title>
 </head>
 <body>
 
@@ -20,7 +20,19 @@
           year: 'numeric'
         }) %><br>
         Entry Fee: <%= event.entryFee %><br>
-        Location: <%= event.location %>
+        Location: <%= event.location %><br><br>
+        
+        <% if (event.author && event.author.toString() === userId) { %>
+          <button disabled>Your event</button>
+        <% } else if (userEvents.some(e => e.toString() === event._id.toString())) { %>
+          <button disabled>Event already added</button>
+        <% } else { %>
+          <form action="/events/event-list" method="POST">
+            <input type="hidden" name="eventId" value="<%= event._id %>">
+            <button type="submit">Add to my events</button>
+          </form>
+        <% } %>
+
       <hr>
     <% }); %>
     

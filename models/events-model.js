@@ -77,6 +77,11 @@ exports.findByIdAndAuthor = function(id, authorId) {
     return Event.findOne({ _id: id, author: authorId });
 };
 
+exports.findById = function(id) {
+    return Event.findOne({ _id: id});
+};
+
+
 exports.deleteEvent = function(id, authorId) {
     return Event.deleteOne({ _id: id, author: authorId });
 };
