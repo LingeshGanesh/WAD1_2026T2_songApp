@@ -16,7 +16,7 @@
   </form>
 
   <h2>Review List</h2>
-  <ul>
+  <ol>
     <% reviews.forEach(function(review) { %>
       <li>
         <strong><%= review.songId %></strong><br>
@@ -26,8 +26,8 @@
         <!-- UPDATE FORM -->
         <form action="/reviews/update" method="POST">
           <input type="hidden" name="reviewId" value="<%= review._id %>" />
-          <input type="number" name="rating" min="1" max="5" placeholder="New Rating" />
-          <input type="text" name="comment" placeholder="New Comment" />
+          <input type="number" name="rating" min="1" max="5" placeholder="New Rating" style="width: 15ch;" />
+          <input type="text" name="comment" placeholder="New Comment" style="width: 15ch;" /> 
           <button type="submit">Update</button>
         </form>
         
@@ -35,10 +35,17 @@
         <!-- DELETE FORM -->
         <form action="/reviews/delete" method="POST">
           <input type="hidden" name="reviewId" value="<%= review._id %>" />
+          <br>
           <button type="submit">Delete</button>
         </form>
       </li>
+      <br>
     <% }) %>
   </ul>
+  
+  <% if (output) { %>
+    <%= output %>
+  <% } %>
+
 </body>
 </html>

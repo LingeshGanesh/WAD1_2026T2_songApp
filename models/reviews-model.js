@@ -23,4 +23,32 @@ const reviewSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Review', reviewSchema);
+const Review = mongoose.model('Review', reviewSchema, 'reviews');
+
+exports.retrieveAll = function() {
+    return Review.find();
+};
+
+exports.createReview = async (userId, songId, rating, comment) => {
+  const review = new Review({
+    userId,
+    songId,
+    rating,
+    comment
+  });
+
+  return await review.save();
+};
+
+exports.updateReview = async (reviewId, rating, comment) => {
+  return await Review.findByIdAndUpdate(reviewId, {
+    rating,
+    comment
+  });
+};
+
+exports.deleteReview = async (reviewId) => {
+  return await Review.findByIdAndDelete(reviewId);
+};
+
+

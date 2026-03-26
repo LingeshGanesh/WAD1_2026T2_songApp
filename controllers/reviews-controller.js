@@ -13,8 +13,7 @@ exports.createReview = async (req, res) => {
       return res.send('Rating must be between 1 and 5');
     }
 
-    const review = new Review({ userId, songId, rating, comment });
-    await review.save();
+    await Review.createReview(userId, songId, rating, comment);
 
     res.redirect('/reviews');
   } catch (err) {
@@ -25,9 +24,10 @@ exports.createReview = async (req, res) => {
 // READ
 exports.getAllReviews = async (req, res) => {
   try {
-    const reviews = await Review.find();
-    res.render('reviews', { reviews });
+    const reviews = await Review.retrieveAll();
+    res.render('reviews', { reviews, output:null });
   } catch (err) {
+    console.log(err.message)
     res.send('Error fetching reviews');
   }
 };
@@ -35,15 +35,25 @@ exports.getAllReviews = async (req, res) => {
 
 // UPDATE 
 exports.updateReview = async (req, res) => {
+  let output = '';
+
   try {
     const { reviewId, rating, comment } = req.body;
 
-    await Review.findByIdAndUpdate(reviewId, {
-      rating,
-      comment
-    });
+    if (rating && comment) {
+      await Review.updateReview(reviewId, rating, comment);
 
-    res.redirect('/reviews');
+    } 
+    else if (!rating && comment) {
+      output = 'Please include rating!';
+    } 
+    else {
+      output = 'Please include comment!';
+    }
+
+    const reviews = await Review.retrieveAll();
+
+    res.render('reviews', { reviews, output });
   } catch (err) {
     res.send('Error updating review');
   }
@@ -54,7 +64,8 @@ exports.deleteReview = async (req, res) => {
   try {
     const { reviewId } = req.body;
 
-    await Review.findByIdAndDelete(reviewId);
+    await Review.deleteReview(reviewId);
+
     res.redirect('/reviews');
   } catch (err) {
     res.send('Error deleting review');
