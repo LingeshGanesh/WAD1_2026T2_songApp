@@ -1,0 +1,23 @@
+<!-- Form fields for song data -->
+<% if (showUploader !== false) { %>
+<label for="uploader">Uploader</label><br>
+<input type="text" name="uploader" id="uploader" value="<%= fields.uploader || '' %>" required><br><br>
+<% } %>
+
+<label for="title">Title</label><br>
+<input type="text" name="title" id="title" value="<%= fields.title || '' %>" required><br><br>
+
+<label for="artist">Artist</label><br>
+<input type="text" name="artist" id="artist" value="<%= fields.artist || '' %>" required><br><br>
+
+<label for="album">Album</label><br>
+<input type="text" name="album" id="album" value="<%= fields.album || '' %>"><br><br>
+
+<label for="genre">Genre</label><br>
+<input type="text" name="genre" id="genre" value="<%= fields.genre || '' %>"><br><br>
+
+<label for="duration">Duration (seconds)</label><br>
+<input type="number" name="duration" id="duration" min="1" value="<%= fields.duration || '' %>" required><br><br>
+
+<label for="youtubeUrl">YouTube URL</label><br>
+<input type="url" name="youtubeUrl" id="youtubeUrl" value="<%= fields.youtubeUrl || '' %>"><br><br>

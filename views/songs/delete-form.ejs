@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Song</title>
+</head>
+<body>
+    <%- include("../navbar-user") %>
+    <h1>Delete Song</h1>
+    <p>You are deleting "<strong><%= song.title %></strong>" by <strong><%= song.artist %></strong>.</p>
+    <p>Uploaded by: <strong><%= song.uploader %></strong></p>
+    <p>Album: <%= song.album || "N/A" %></p>
+    <p>Duration: <%= formatDuration(song.duration) %></p>
+    <!-- Display error message if there is an error -->
+    <% if (error) { %>
+        <p style="color: red;"><strong>Error:</strong> <%= error %></p>
+    <% } %>
+    
+    <!-- Delete confirmation form -->
+    <form action="/songs/delete/<%= song._id %>" method="post">
+        <label for="uploader">Enter uploader username</label><br>
+        <input type="text" name="uploader" id="uploader" required><br><br>
+        <label for="confirmation">Type DELETE to confirm</label><br>
+        <input type="text" name="confirmation" id="confirmation" required><br><br>
+        <input type="submit" value="Delete Song">
+    </form>
+
+    <%- include("../footer") %>
+</body>
+</html>
