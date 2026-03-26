@@ -6,6 +6,7 @@ const Song = require("./../models/songs-model.js");
 const playlistRouter = require("./playlist-router.js");
 const eventsRouter = require("./events-router.js");
 const usersRouter = require("./user-routes.js")
+const albumRouter = require("./album-router.js")
 const songsRouter = require("./songs-router.js");
 
 // Branching Route
@@ -16,6 +17,7 @@ router.get("/", (req, res) => {
 router.use("/playlist", playlistRouter);
 router.use("/user", usersRouter);
 router.use("/events", eventsRouter);
+router.use("/album", albumRouter);
 router.use("/songs", songsRouter);
 
 // TODO: Remove these route when insert song popup is implemented.
