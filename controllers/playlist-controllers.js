@@ -168,6 +168,9 @@ exports.updatePlaylist = async (req, res) => {
         if (thumbnail) {
             await Playlist.updateByID(playlistID, {thumbnailExt: path.extname(thumbnail.originalname)})
             await Playlist.createThumbnail(thumbnail, playlistID);
+        } else {
+            // No thumbnail provided. Clear the extension field
+            await Playlist.updateByID(playlistID, {thumbnailExt: null})
         }
     } catch (error) {
         console.error(error);
