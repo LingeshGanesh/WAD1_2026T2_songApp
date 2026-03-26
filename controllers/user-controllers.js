@@ -51,41 +51,51 @@ exports.registerPost = async (req, res) => {
         console.log(`Successfully register with
             user:${user.username}
             email:${user.email}`)
-        res.redirect('/user/login');
+        return res.redirect('/user/login');
 
     } catch (error) {
         console.log('Error while registering\n', error);
-        res.redirect('/user/register')
+        return res.redirect('/user/register')
     }
 }
 
 exports.loginGet = (req, res) => {
     res.render('users/login',{
-        email:''
+        email:'',
+        error:null
     });
 }
 
 exports.loginPost = async (req, res) => {
     try {
-        const email = req.body.email.trim();
+        const email = req.body.email.trim()||'';
         const password = req.body.password.trim();
 
-        // if(!email || !password){
-
-        // };
+        if(!email || !password){
+            return res.render('users/login', {
+                error: "All fileds are required",
+                email
+            })
+        };
 
         const user = await User.findUserByEmail(email);
 
         if (!user) {
             console.log("User not found");
-            return res.redirect('/user/login');
+            return res.render('users/login',{
+                error: "User not found",
+                email
+            });
         }
 
         const match = await bcrypt.compare(password, user.password);
 
         if (!match) {
             console.log("Wrong password");
-            return res.redirect('/user/login');
+            return res.render('users/login',{
+                error: "Wrong password",
+                email
+            });
         }
 
         req.session.user = {
@@ -96,10 +106,10 @@ exports.loginPost = async (req, res) => {
 
         console.log("Login successful");
         //need to link to index.html
-        res.redirect('/homepage');
+        return res.redirect('/homepage');
     } catch (error) {
         console.error('Error occured while trying to login', error);
-        res.redirect('/user/login');
+        return res.redirect('/user/login');
     }
 }
 
