@@ -12,11 +12,14 @@
     <form action="/user/register" method="post">
         <label for="avatar">Please choose a profile picture:</label><br>
         <% for (let i=1; i<=5; i++){ %>
-            <input type="radio" name="avatar" value="/image/profilepic<%=i%>.jpg" <%= avatar === '/image/profilepic' + i + '.jpg' ? 'checked' : '' %> required>
-            <img src="/image/profilepic<%=i%>.jpg" alt="profilepic<%=i%>" width="150"><br>
+            <label>
+                <input type="radio" name="avatar" value="/image/profilepic<%=i%>.jpg" <%=avatar==='/image/profilepic' +
+                    i + '.jpg' ? 'checked' : '' %> required>
+                <img src="/image/profilepic<%=i%>.jpg" alt="profilepic<%=i%>" width="150">
+            </label>
             <% }%>
 
-                <br>
+                
                 <label for="username">Username:</label><br>
                 <input type="text" name="username" placeholder="Username" value="<%=username%>" required>
                 <br><br>
@@ -35,8 +38,9 @@
                 </ul>
                 <button type="submit">Sign up</button><br>
                 <%if(error){%>
-                    <p style="color: red">Error: <%=error%></p>
-                <%}%>
+                    <p style="color: red">Error: <%=error%>
+                    </p>
+                    <%}%>
     </form>
     <br>Already have an account? <br><a href="/user/login">Login</a>
 </body>

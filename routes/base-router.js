@@ -5,12 +5,12 @@ const Song = require("./../models/songs-model.js");
 // Import routers
 const playlistRouter = require("./playlist-router.js");
 const eventsRouter = require("./events-router.js");
-const usersRouter = require("./user-routes.js")
+const usersRouter = require("./users-router.js")
 const albumRouter = require("./album-router.js")
 const songsRouter = require("./songs-router.js");
 
 // Branching Route
-router.get("/", (req, res) => {
+router.get("/homepage", (req, res) => {
     res.render("base");
 });
 

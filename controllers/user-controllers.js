@@ -18,7 +18,7 @@ exports.registerGet = (req, res) => {
 exports.registerPost = async (req, res) => {
     try {
         const { username, email, password, avatar } = req.body || '';
-        console.log(username,email,avatar)
+        console.log(username,email,avatar, password)
 
         //check empty fields
         if (!username || !email || !password || !avatar) {
@@ -61,7 +61,7 @@ exports.registerPost = async (req, res) => {
 
 exports.loginGet = (req, res) => {
     res.render('users/login',{
-        email
+        email:''
     });
 }
 
@@ -96,7 +96,7 @@ exports.loginPost = async (req, res) => {
 
         console.log("Login successful");
         //need to link to index.html
-        res.redirect('/user/profile');
+        res.redirect('/homepage');
     } catch (error) {
         console.error('Error occured while trying to login', error);
         res.redirect('/user/login');
