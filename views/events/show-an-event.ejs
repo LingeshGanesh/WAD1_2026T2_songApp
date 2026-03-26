@@ -16,6 +16,7 @@
         <form action="/events/delete-event" method="POST">
             <p>Click the Confirm button to delete this event.</p>
             <input type="hidden" name="id" value="<%= result._id %>">
+            <input type="hidden" name="name" value="<%= result.name %>">
             <button type="submit">Confirm</button>
         </form>
         

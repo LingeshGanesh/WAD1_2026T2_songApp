@@ -36,6 +36,7 @@ const eventSchema = new mongoose.Schema({
     },
     entryFee: {
         type: Number,
+        required: [true, 'An event must have an entry free, put 0 if your event has free entry'],
         default: 0,
         cast: 'Entry Fee must be a number',
         min: [0, 'Entry Fee cannot be negative']
@@ -62,12 +63,10 @@ exports.addEvent = function(newEvent) {
     return Event.create(newEvent);
 };
 
-exports.editEvent = function(id, authorId, name, desc, date, entryFee, location) {
-    return Event.updateOne(
-        { _id: id, author: authorId },
-        { name: name, desc: desc, date: date, entryFee: entryFee, location: location },
-        { runValidators: true }
-    );
+exports.editEvent =  async function(id, authorId, name, desc, date, entryFee, location) {
+    const doc = await Event.findOne({ _id: id, author: authorId });
+    Object.assign(doc, { name, desc, date, entryFee, location });
+    return doc.save();
 };
 
 exports.retrieveByAuthor = function(authorId) {

@@ -45,28 +45,28 @@ exports.createEvent = async (req, res) => {
         let newEvent = { name: name, desc: desc, date: date, entryFee: entryFee, location: location, author: userId };
 
         try {
-            let msg = `Event has been added successfully.<br><br>Name: ${name}<br>Description: ${desc}<br>Date: ${date}<br>Entry Fee: ${entryFee}<br>Location: ${location}`;
+            let msg = `Event ${name} has been added successfully`;
             let result = await Event.addEvent(newEvent);
             console.log("event added:" + result);
 
-            res.render("events/add-event", { result: result || null, msg });
+            res.render("events/success", { msg: msg, redirectUrl: "/events/edit-events"});
 
         } catch (error) {
-            console.error(error);
+            console.log(error);
+
+            let msg = "Please fix the following issues:";
+
+        if (error.name === "ValidationError") {
+            msg += "<br><ul>" + Object.values(error.errors)
+                .map(err => `<li>${err.message}</li>`)
+                .join("") + "</ul>";
+        }
             let result = "fail";
-            let msg = "Error adding event";
-
-            if (error.name === "ValidationError") {
-                msg = Object.values(error.errors)
-                    .map(err => err.message)
-                    .join("\n");
-            }
-
             res.render("events/add-event", { result, msg });
         }
 
     } catch (error) {
-
+        console.error(error);
     }
 };
 
@@ -88,6 +88,7 @@ exports.getEvent = async (req, res) => {
     const id = req.query.id;
     const msg = req.query.msg;
     console.log(id);
+    console.log("getting event")
 
     try {
         const result = await Event.findByIdAndAuthor(id, userId);
@@ -102,32 +103,47 @@ exports.updateEvent = async (req, res) => {
     const userId = "69bc23ebd3cd6548aad26bdb";
 
     const id = req.body.id;
-    console.log(id);
+    console.log('id'+id);
     const name = req.body.name;
+    console.log('name:'+name);
     const desc = req.body.desc;
     const date = req.body.date;
     const entryFee = req.body.entryFee;
     const location = req.body.location;
 
     try {
+        let msg = `Event ${name} has been editted successfully`;
         let success = await Event.editEvent(id, userId, name, desc, date, entryFee, location);
         console.log(success);
-        res.send('Event has been successfully updated. <a href="/events/edit-events">Go back to event list</a>');
+        res.render("events/success", { msg: msg, redirectUrl: "/events/edit-events"});
     } catch (error) {
-        console.error(error);
+        console.log(error);
+
+        let msg = "Please fix the following issues:";
+
+    if (error.name === "ValidationError") {
+        msg += "<br><ul>" + Object.values(error.errors)
+            .map(err => `<li>${err.message}</li>`)
+            .join("") + "</ul>";
+    }
+        const result = await Event.findByIdAndAuthor(id, userId);
+         res.render("events/update-event", { result, msg });
     }
 };
 
 exports.deleteAnEvent = async (req, res) => {
     const userId = "69bc23ebd3cd6548aad26bdb";
     const id = req.body.id;
+    const name = req.body.name;
+    console.log("name"+name);
 
     try {
         let success = await Event.deleteEvent(id, userId);
         console.log(success);
 
         if (success.deletedCount === 1) {
-            res.send('Event has been successfully deleted. <a href="/events/edit-events">Go back to event list</a>');
+            let msg = `Event ${name} has been deleted successfully`;
+            res.render("events/success", { msg: msg, redirectUrl: "/events/edit-events"});
         }
 
     } catch (error) {
