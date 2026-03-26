@@ -4,6 +4,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 const dotenv = require('dotenv');
 const session = require('express-session');
+require("node:dns/promises").setServers(["1.1.1.1", "8.8.8.8"]);
 
 // Load Env variable
 dotenv.config({ path: './config.env' });
