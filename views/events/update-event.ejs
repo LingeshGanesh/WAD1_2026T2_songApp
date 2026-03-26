@@ -12,6 +12,7 @@
         <table border="1">
             <tr>
                 <th>Name:</th><td><%= result.name %></td>
+                <input type="hidden" name="name" value="<%= result.name %>">
             </tr>
             <tr>
                 <th>Description:</th><td><input type="text" name="desc" value="<%= result.desc %>"></td>
@@ -32,9 +33,9 @@
         </table>
     </form>
 
-        <% if (msg) { %>
-            <script>alert(`<%- msg %>`)</script>
-        <% } %>
+    <% if(msg) { %>
+        <p><%- msg %></p>
+    <%}%>
     
     <% } %>
 

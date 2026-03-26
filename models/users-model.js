@@ -71,3 +71,7 @@ exports.searchUsers = function(query, currentUserId) {
         _id: { $ne: currentUserId } // exclude yourself
     }).limit(10);
 };
+
+exports.updateOne = function(filter, update) {
+    return User.updateOne(filter, update);
+}
