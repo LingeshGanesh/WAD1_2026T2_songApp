@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Album Marked for Deletion</title>
+</head>
+<body>
+    <h1>Album Marked for Deletion</h1>
+    <button type="button"><strong><a href="/album/<%= album._id %>">Back To Album</strong></a></button><br>
+    <% if(album){ %>
+        <p><strong>Title:</strong> <%= album.title %></p>
+        <p><strong>Artist:</strong> <%= album.artist %></p>
+        <p><strong>Description:</strong> <%= album.description %></p>
+        <p><strong>Release Year:</strong> <%= album.yearReleased %></p>
+        <p><strong>Songs: <%= album.songs.length %></strong></p>
+            <% if (album.songs.length > 0) { %>
+                <% album.songs.forEach(song => { %>
+                    <ul>
+                        <li><%= song.title %> by <%= song.artist %></li>
+                    </ul>
+                <% }) %>
+            <% } else { %>
+                <p>No songs available.</p>
+            <% } %>
+    
+    <br>
+    <form action="/album/delete/<%= album._id %>" method="post">
+        <input type="hidden" name="id" value="<%= album._id%>">
+        <button type="submit">Delete Album</button>
+    </form>
+<% } else if (album === null) { %>
+    <p>Album not found</p>
+<% } %>
+
+</body>
+</html>
