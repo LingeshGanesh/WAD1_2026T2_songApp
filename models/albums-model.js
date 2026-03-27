@@ -8,7 +8,6 @@ const albumSchema = new mongoose.Schema({
     yearReleased: {
         type: Number,
         required: [true, 'An album must have year of release'],
-        min: [1900, 'Year must be after 1900s'], // Min year validation of 1900
         validate: {
             validator: function(value) {
                 return value.toString().length === 4; //Ensure it's 4 digit number
@@ -27,7 +26,6 @@ const albumSchema = new mongoose.Schema({
     description: {
         type: String
     }
-
 });
 
 const Album = mongoose.model('Album', albumSchema, 'albums');
@@ -55,4 +53,8 @@ exports.editAlbum = function(albumID, title, description, artist, songs, yearRel
 
 exports.deleteAlbum = function(albumID) {
     return Album.deleteOne({_id: albumID});
+};
+
+exports.findByIDAndPopulate = function (albumID) {
+    return Album.findOne({ _id: albumID }).populate('songs');
 };

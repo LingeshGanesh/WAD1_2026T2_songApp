@@ -14,14 +14,14 @@
         <% if (allAlbums && allAlbums.length ) { %>
             <table border="1">
                 <tr>
-                    <th>Actions</th>
+                    <th>Action</th>
                     <th>Album Name</th>
                     <th>Year Created</th>
                     <th>Artist</th>
                 </tr>
                 <% allAlbums.forEach(album=> { %>
                     <tr>
-                        <td><a href="/album/<%= album._id %>">View/Edit/Delete</a></td>
+                        <td><a href="/album/<%= album._id %>">View</a></td>
                         <td><%= album.title %></td>
                         <td><%= album.yearReleased %></td>
                         <td><%= album.artist %></td>
