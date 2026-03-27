@@ -227,3 +227,20 @@ exports.attendEvent = async (req, res) => {
     res.send("Error adding event");
   }
 };
+
+exports.removeEvent = async (req, res) => {
+  try {
+    const userId = req.session.user.id;
+    const eventId = req.body.eventId;
+
+    await User.updateOne({ _id: userId }, { $pull: { events: eventId } });
+
+    res.render("events/success", {
+      msg: "Event removed successfully",
+      redirectUrl: "/events/event-list"
+    });
+  } catch (error) {
+    console.error(error);
+    res.send("Error removing event");
+  }
+};

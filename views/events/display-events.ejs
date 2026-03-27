@@ -25,7 +25,10 @@
         <% if (event.author && event.author.toString() === userId) { %>
           <button disabled>Your event</button>
         <% } else if (userEvents.some(e => e.toString() === event._id.toString())) { %>
-          <button disabled>Event already added</button>
+          <form action="/events/event-list/remove" method="POST">
+            <input type="hidden" name="eventId" value="<%= event._id %>">
+            <button type="submit">Remove from my events</button>
+          </form>
         <% } else { %>
           <form action="/events/event-list" method="POST">
             <input type="hidden" name="eventId" value="<%= event._id %>">
