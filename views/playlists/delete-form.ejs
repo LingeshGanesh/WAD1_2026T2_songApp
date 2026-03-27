@@ -25,7 +25,7 @@
         <tr>
             <th class="pinfo">Description</th>
             <th>:</th>
-            <td><%- include("playlist-desc", {playlist}) %></td>
+            <td><%- include("subpages/playlist-desc", {playlist}) %></td>
         </tr>
         <tr>
             <th class="pinfo">Genre</th>
@@ -59,9 +59,17 @@
         </tr>
     </table>
 
+    <% if (errorMsgs) { %>
+        <ul style="color: red;">
+            <% errorMsgs.forEach(msg => { %>
+                <li><%= msg %></li>
+            <% }) %>
+        </ul>    
+    <% } %>
+
     <form action="/playlist/delete/<%= playlist._id %>" method="post">
-        <label for="userConfirm">Type your <strong>username</strong> to confirm:</label><br>
-        <input type="text" name="userConfirm" id="userConfirm" required><br><br>
+        <label for="username">Type your <strong>username</strong> to confirm:</label><br>
+        <input type="text" name="username" id="username" required><br><br>
 
         <input type="checkbox" name="declaration" id="declaration-1" required>
         <label for="declaration-1">I confirm to <strong>permanently</strong> delete this playlist.</label><br>

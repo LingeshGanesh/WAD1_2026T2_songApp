@@ -2,7 +2,6 @@
 const mongoose = require('mongoose');
 const Playlist = require("../models/playlists-model");
 const User = require("../models/users-model");
-const path = require("path");
 
 // Private Method
 function checkOwnership(user, playlist) {
@@ -279,7 +278,7 @@ exports.updatePlaylist = async (req, res) => {
                 await Playlist.addThumbnail(playlistID, thumbnail);
             } else {
                 // No thumbnail provided. Clear the extension field
-                await Playlist.deleteThumbnail(playlistID);
+                await Playlist.removeThumbnail(playlistID);
             }
         }
     } catch (error) {
@@ -305,7 +304,7 @@ exports.showDeleteForm = async (req, res) => {
         }
         
         // Render form
-        res.render('playlists/delete-form', {user, errorMsg: false, playlist, songsList});
+        res.render('playlists/delete-form', {user, errorMsgs: false, playlist, songsList});
     } catch (error) {
         console.error(error);
         return res.status(500).send("Error calling database.")
@@ -324,25 +323,32 @@ exports.deletePlaylist = async (req, res) => {
     const {playlist, songsList} = await Playlist.getByID(playlistID, true);
 
     // Three layers of confirmation:
+    let errorMsgs = [];
     // 1. Check if declaration is both checked
     if (declaration.length < 2) {
-        return res.render('playlists/delete-form', {user, errorMsg: "Please check the boxes to confirm deletion.", playlist, songsList});
+        errorMsgs.push("Please check the boxes to confirm deletion.");
     }
 
     // 2. Check if the username matches
-    if (username === user.username) {
-        return res.render('playlists/delete-form', {user, errorMsg: "Please enter your username to confirm deletion.", playlist, songsList});
+    if (username !== user.username) {
+        errorMsgs.push("Please enter your username to confirm deletion.")
     }
-
+    
     // 3. Check if the owner matches
     if (!checkOwnership(user, playlist)) {
         return res.status(403).send("You are not allowed to delete this playlist.")
     }
 
+    // If there are errors, return to the form.
+    if (errorMsgs.length > 0) {
+        return res.render('playlists/delete-form', {user, errorMsgs, playlist, songsList});
+    }
+
     // Delete playlist
     try {
+        await Playlist.removeThumbnail(playlistID);
         await Playlist.deleteByID(playlistID);
-        res.render("playlists/delete-success", { playlist });
+        res.render("playlists/delete-success");
     } catch (error) {
         console.error(error);
         return res.status(500).send("Error deleting playlist from the database.")

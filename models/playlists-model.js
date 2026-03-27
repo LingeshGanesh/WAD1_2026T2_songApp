@@ -113,7 +113,7 @@ exports.addThumbnail = async function(playlistID, fileobject) {
     await fs.writeFile(path.join(thumbnailDir, `${playlistID}${path.extname(filename)}`), imagefile);
 }
 
-exports.deleteThumbnail = async function(playlistID) {
+exports.removeThumbnail = async function(playlistID) {
     const playlistObj = await Playlist.findById(playlistID);
     const thumbnailExt = playlistObj.thumbnailExt;
     await exports.updateByID(playlistID, {thumbnailExt: null});
