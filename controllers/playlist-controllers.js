@@ -123,8 +123,7 @@ exports.createPlaylist = async (req, res) => {
         const playlistID = playlistDoc._id;
 
         if (thumbnail) {
-            await Playlist.updateByID(playlistID, {thumbnailExt: path.extname(thumbnail.originalname)})
-            await Playlist.createThumbnail(thumbnail, playlistID);
+            await Playlist.addThumbnail(playlistID, thumbnail);
         }
     
         res.render('playlists/create-success', {playlist: playlistDoc});
@@ -194,11 +193,10 @@ exports.updatePlaylist = async (req, res) => {
         // Update thumbnail data
         if (editThumb) {
             if (thumbnail) {
-                await Playlist.updateByID(playlistID, {thumbnailExt: path.extname(thumbnail.originalname)})
-                await Playlist.createThumbnail(thumbnail, playlistID);
+                await Playlist.addThumbnail(playlistID, thumbnail);
             } else {
                 // No thumbnail provided. Clear the extension field
-                await Playlist.updateByID(playlistID, {thumbnailExt: null})
+                await Playlist.deleteThumbnail(playlistID);
             }
         }
     } catch (error) {

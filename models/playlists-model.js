@@ -7,7 +7,7 @@ const path = require('path');
 const thumbnailDir = path.join(__dirname, "../public/image/playlist-thumb");
 
 // Set the directory if it does not exist during setup
-if (!require("fs").existsSync(thumbnailDir)) {fs.mkdir(thumbnailDir);}
+if (!fileExists(".")) {fs.mkdir(thumbnailDir);}
 
 const playlistSchema = new mongoose.Schema({
     name: {
@@ -46,6 +46,10 @@ function convertTime(timeSec) {
     const second = timeSec % 60;
 
     return `${minute}:${second.toString().padStart(2, "0")}`;
+}
+
+function fileExists(filepath) {
+    return require("fs").existsSync(path.join(thumbnailDir, filepath));
 }
 
 // CRUD Functions
@@ -98,10 +102,21 @@ exports.insert = async function(newPlaylist) {
     return doc;
 }
 
-exports.createThumbnail = async function(fileobject, playlistID) {
+exports.addThumbnail = async function(playlistID, fileobject) {
+    await exports.updateByID(playlistID, {thumbnailExt: path.extname(fileobject.originalname)})
     let filename = fileobject.originalname;
     let imagefile = fileobject.buffer;
     await fs.writeFile(path.join(thumbnailDir, `${playlistID}${path.extname(filename)}`), imagefile);
+}
+
+exports.deleteThumbnail = async function(playlistID) {
+    const playlistObj = await Playlist.findById(playlistID);
+    const thumbnailExt = playlistObj.thumbnailExt;
+    await exports.updateByID(playlistID, {thumbnailExt: null});
+    if (thumbnailExt) {
+        const filename = `${playlistID}${thumbnailExt}`;
+        await fs.rm(path.join(thumbnailDir, filename));
+    }
 }
 
 exports.updateByID = async function(id, newValue) {
