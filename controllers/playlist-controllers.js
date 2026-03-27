@@ -2,6 +2,7 @@
 const mongoose = require('mongoose');
 const Playlist = require("../models/playlists-model");
 const User = require("../models/users-model");
+const Song = require("./../models/songs-model.js");
 
 // Private Method
 function checkOwnership(user, playlist) {
@@ -353,4 +354,11 @@ exports.deletePlaylist = async (req, res) => {
         console.error(error);
         return res.status(500).send("Error deleting playlist from the database.")
     }
+}
+
+// API: Search Songs
+exports.searchSongs = async (req, res) => {
+    const { query } = req.query;
+    const searchedSong = await Song.findById(query);
+    res.send(searchedSong);
 }

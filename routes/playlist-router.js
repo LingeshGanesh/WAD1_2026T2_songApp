@@ -25,6 +25,10 @@ router.post("/edit/:playlistID", thumbParser, playlistControllers.updatePlaylist
 router.get("/delete/:playlistID", playlistControllers.showDeleteForm);
 router.post("/delete/:playlistID", playlistControllers.deletePlaylist);
 
+
+// API to Fetch Song
+router.get("/search-songs", playlistControllers.searchSongs);
+
 // Playlist Info (most bottom to not block other routes)
 router.get("/:playlistID", playlistControllers.playlistInfo);
 
