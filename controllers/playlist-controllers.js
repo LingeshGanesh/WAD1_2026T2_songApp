@@ -22,10 +22,12 @@ function comparePlaylist(a, b, sortby, isAscending) {
 // Controllers
 // Read
 exports.browse = async (req, res) => {
+    // Get sorting fields
     let {sortby, isAscending} = req.query;
-    sortby = sortby || 'creationDate'
+    sortby = sortby || 'creationDate';
     isAscending = (isAscending === 'true') || false;
 
+    // Get all public playlist
     let allPlaylists;
     try {
         allPlaylists = await Playlist.retrievePublic();
@@ -34,8 +36,10 @@ exports.browse = async (req, res) => {
         return res.status(500).send("Error fetching playlists from database.")
     }
 
+    // Sort the playlists by the sorting fields
     allPlaylists.sort((a, b) => comparePlaylist(a, b, sortby, isAscending));
 
+    // Get all playlist owners' documents
     let owners = []
     try {
         for (let play of allPlaylists) {
@@ -51,7 +55,7 @@ exports.browse = async (req, res) => {
         return res.status(500).send("Error fetching owners from database.")
     }
 
-    // Render Pages
+    // Render page
     const option = {
         allPlaylists, 
         owners, 
@@ -66,7 +70,7 @@ exports.playlistInfo = async (req, res) => {
     const {playlistID} = req.params;
     const {user} = req.session;
 
-    // The given playlistID is not a playlistID.
+    // The given playlistID is not a valid ID.
     if (!mongoose.isValidObjectId(playlistID)) {
         return res.status(404).render("not-found", {url: req.url});
     }
@@ -74,25 +78,35 @@ exports.playlistInfo = async (req, res) => {
     try {
         let {playlist, songsList, songsDuration, playlistDuration} = await Playlist.getByID(playlistID, true);
 
-        // If the playlist does not exist, show not found page
-        if (!playlist) {return res.render('playlists/not-found');}
-
-        // TODO: take user object ID from session and compare to playlist owner Object ID
-        const isOwner = checkOwnership(user, playlist);
-
+        // If the playlist does not exist, show playlist not found page
+        if (!playlist) {
+            return res.status(404).render('playlists/not-found');
+        }
+        
         // If non-owner is accessing private playlist, show not found page
+        const isOwner = checkOwnership(user, playlist);
         if (playlist.visibility === 'Private' && !isOwner) {
-            return res.render('playlists/not-found');
+            return res.status(404).render('playlists/not-found');
         }
 
-        // Get the playlist owner (unless unnecessary)
+        // Get the playlist owner
         let owner = null;
         if (playlist.owner) {
             owner = await User.findUserByID(playlist.owner);
             owner = owner.username;
         }
 
-        res.render('playlists/playlist-info', {isOwner, playlist, owner, songsList, songsDuration, playlistDuration});
+        // Render page
+        const option = {
+            isOwner, // true if the current user is the owner of this playlist.
+            playlist, // playlist document
+            owner, // playlist owner (user) document
+            songsList, // array of song documents
+            songsDuration, // array of song durations
+            playlistDuration // total playlist durations
+        }
+
+        res.render('playlists/playlist-info', option);
     } catch (error) {
         console.error(error);
         return res.status(500).send("Error calling database.")
@@ -100,11 +114,13 @@ exports.playlistInfo = async (req, res) => {
 };
 
 exports.yourPlaylists = async (req, res) => {
+    // Get all sorting fields (and client info from session)
     const {user} = req.session;
     let {sortby, isAscending} = req.query;
     sortby = sortby || 'creationDate'
     isAscending = (isAscending === 'true') || false;
 
+    // Get the client's playlists
     let allPlaylists;
     try {
         allPlaylists = await Playlist.retrieveByOwnerID(user.id);
@@ -113,12 +129,13 @@ exports.yourPlaylists = async (req, res) => {
         return res.status(500).send("Error calling database.")
     }
 
+    // Sort the playlists by the sorting fields
     allPlaylists.sort((a, b) => comparePlaylist(a, b, sortby, isAscending));
 
     // all playlist is owned by one user, set "owners" to that user.
     let owners = user.username;
     
-    // Render Pages
+    // Render page
     const option = {
         allPlaylists, 
         owners, 
@@ -136,22 +153,27 @@ exports.showCreationForm = async (req, res) => {
 }
 
 exports.createPlaylist = async (req, res) => {
+    // Get all input fields
     const {user} = req.session;
     let { name, description, visibility, songs } = req.body;
     let thumbnail = req.file;
 
-    // Input Validation
-    console.log("You are:", user.username);
+    // Input Normalization & Validation
     name = name.trim();
     description = description.trim();
     description = description === ""? null : description;
     
     // There is no song.
     if (songs === "") {
-        return res.render('playlists/create-form', { user, fields: {name, description, thumbnail, visibility, songs}, error: true })
+        return res.render('playlists/create-form', {
+            user, 
+            fields: {name, description, thumbnail, visibility, songs}, 
+            error: true 
+        });
     }
-    songs = songs.split(",");
 
+    // There are songs.
+    songs = songs.split(",");
 
     // Insert into the database
     try {
@@ -168,10 +190,12 @@ exports.createPlaylist = async (req, res) => {
         const playlistDoc = await Playlist.insert(newPlaylist);
         const playlistID = playlistDoc._id;
 
+        // Add the thumbnail into the entry
         if (thumbnail) {
             await Playlist.addThumbnail(playlistID, thumbnail);
         }
     
+        // Show success page
         res.render('playlists/create-success', {playlist: playlistDoc});
     } catch (error) {
         console.error(error);
@@ -185,14 +209,22 @@ exports.showEditForm = async (req, res) => {
     const {playlistID} = req.params;
 
     try {
+        // Fetch the playlist info
         let {playlist, songsList} = await Playlist.getByID(playlistID, true);
         
         // Only allow the owner to edit (Authorization)
         if (!checkOwnership(user, playlist)) {
             return res.status(403).send("You are not allowed to edit this playlist.")
         }
-    
-        res.render('playlists/edit-form', {error: false, playlist, songsList});
+        
+        // Render page
+        const option = {
+            error: false, 
+            playlist, 
+            songsList
+        }
+
+        res.render('playlists/edit-form', option);
     } catch (error) {
         console.error(error);
         return res.status(500).send("Error calling database.")
@@ -200,12 +232,13 @@ exports.showEditForm = async (req, res) => {
 }
 
 exports.updatePlaylist = async (req, res) => {
+    // Get all input fields
     const {user} = req.session;
     const {playlistID} = req.params;
     let { name, description, editThumb, visibility, songs } = req.body;
     let thumbnail = req.file;
 
-    // Input Validation
+    // Input Normalization & Validation
     name = name.trim();
     description = description.trim();
     description = description === ""? null : description;
@@ -213,10 +246,14 @@ exports.updatePlaylist = async (req, res) => {
     
     // There is no song.
     if (songs === "") {
-        return res.render('playlists/edit-form', { user, fields: {name, description, visibility, songs}, error: true })
+        return res.render('playlists/edit-form', {
+            user, 
+            fields: {name, description, visibility, songs}, 
+            error: true 
+        });
     }
+    // There are songs.
     songs = songs.split(",");
-
 
     // Insert into the database
     try {
@@ -250,13 +287,13 @@ exports.updatePlaylist = async (req, res) => {
         return res.status(500).send("Error updating playlist in the database.")
     }
 
+    // Render success page
     res.render('playlists/edit-success', {playlist: {name, _id: playlistID}});
 }
 
 // Delete
 exports.showDeleteForm = async (req, res) => {
-    // TODO: get username/UserID from session
-    const user = null;
+    const {user} = req.session;
     const {playlistID} = req.params;
 
     try {
@@ -266,7 +303,8 @@ exports.showDeleteForm = async (req, res) => {
         if (!checkOwnership(user, playlist)) {
             return res.status(403).send("You are not allowed to delete this playlist.")
         }
-    
+        
+        // Render form
         res.render('playlists/delete-form', {user, errorMsg: false, playlist, songsList});
     } catch (error) {
         console.error(error);
@@ -275,12 +313,14 @@ exports.showDeleteForm = async (req, res) => {
 }
 
 exports.deletePlaylist = async (req, res) => {
+    // Get all fields
     const {user} = req.session;
     const {playlistID} = req.params;
     const username = req.body.username.trim();
     let declaration = req.body.declaration || [];
     declaration = Array.isArray(declaration)? declaration: [declaration];
 
+    // Fetch playlist info
     const {playlist, songsList} = await Playlist.getByID(playlistID, true);
 
     // Three layers of confirmation:
