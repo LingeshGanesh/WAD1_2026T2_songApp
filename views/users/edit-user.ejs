@@ -10,22 +10,51 @@
 <body>
     <h2>Edit your personal info</h2>
     <form action="/user/update" method="post">
-        <label for="avatar">Please choose a profile picture:</label><br>
-        <% for (let i =1; i<=5; i++){ %>
-            <input type="radio" name="newAvatar" value="/image/profilepic<%=i%>.jpg" <%= user.profilePicture === '/image/profilepic' + i + '.jpg' ? 'checked' : '' %>>
+        <!-- <label for="avatar">Please choose a profile picture:</label><br>
+        <% for (let i=1; i<=5; i++){ %>
+            <input type="radio" name="newAvatar" value="/image/profilepic<%=i%>.jpg"
+                <%=formData?.profilePicture || user.profilePicture==='/image/profilepic' + i + '.jpg' ? 'checked' : '' %>>
             <img src="/image/profilepic<%=i%>.jpg" alt="profilepic<%=i%>" width="150"><br>
-        <% }%><br>
-        
+            <% }%><br> -->
+        <table>
+            <tr>
+                <% for(let i=1; i <=5; i++) { %>
+                    <td align="center">
+                        <label>
+                            <input type="radio" name="avatar" value="/image/profilepic<%=i%>.jpg"
+                                <%=formData?.avatar || user.profilePicture ==='/image/profilepic' + i + '.jpg' ? 'checked' : '' %> required>
+                            <br>
+                            <img src="/image/profilepic<%=i%>.jpg" width="120">
+                            <br>
+                            Avatar <%=i%>
+                        </label>
+                    </td>
+                    <% } %>
+            </tr>
+        </table>
         <br><br>
         <label for="newUsername">Username:</label><br>
-        <input type="text" name="newUsername" placeholder="Username" value="<%=user.username%>" required>
+        <input type="text" name="newUsername" placeholder="Username"
+            value="<%= formData?.newUsername || user.username %>" required>
         <br><br>
         <label for="newEmail">Email:</label><br>
-        <input type="newEmail" name="newEmail" placeholder="Email" value="<%=user.email%>" required>
+        <input type="newEmail" name="newEmail" placeholder="Email" value="<%= formData?.newEmail || user.email %>"
+            required>
         <br><br>
         <label for="password">Password:(readonly)</label><br>
         <input type="password" name="password" readonly><br><br>
         <button type="submit">Update</button>
     </form><br>
+    <a href="/user/profile">Back</a>
+    <% if (errors && errors.length> 0) { %>
+        <ul style="color: red;">
+            <% errors.forEach(err=> { %>
+                <li>
+                    <%= err %>
+                </li>
+                <% }) %>
+        </ul>
+        <% } %>
 </body>
+
 </html>

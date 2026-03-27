@@ -10,39 +10,64 @@
 <body>
     <h2>Sign up to start listening</h2>
     <form action="/user/register" method="post">
-        <label for="avatar">Please choose a profile picture:</label><br>
+        <!-- <label for="avatar">Please choose a profile picture:</label><br>
         <% for (let i=1; i<=5; i++){ %>
             <label>
-                <input type="radio" name="avatar" value="/image/profilepic<%=i%>.jpg" <%=avatar==='/image/profilepic' +
+                <input type="radio" name="avatar" value="/image/profilepic<%=i%>.jpg" <%=formData.avatar==='/image/profilepic' +
                     i + '.jpg' ? 'checked' : '' %> required>
-                <img src="/image/profilepic<%=i%>.jpg" alt="profilepic<%=i%>" width="150">
+                <img src="/image/profilepic<%=i%>.jpg" alt="profilepic<%=i%>" width="150"><br>
             </label>
-            <% }%>
+            <% }%> -->
+        <table>
+            <tr>
+                <% for(let i=1; i <=5; i++) { %>
+                    <td align="center">
+                        <label>
+                            <input type="radio" name="avatar" value="/image/profilepic<%=i%>.jpg"
+                                <%=formData?.avatar==='/image/profilepic' + i + '.jpg' ? 'checked' : '' %> required>
+                            <br>
+                            <img src="/image/profilepic<%=i%>.jpg" width="120">
+                            <br>
+                            Avatar <%=i%>
+                        </label>
+                    </td>
+                    <% } %>
+            </tr>
+        </table>
+        <br>
+        <label for="username">Username:</label><br>
+        <input type="text" name="username" placeholder="Username" value="<%=formData.username%>" required>
+        <br><br>
+        <label for="email">Email:</label><br>
+        <input type="email" name="email" placeholder="Email" value="<%=formData.email%>" required>
+        <br><br>
+        <label for="password">Password:</label><br>
+        <input type="password" name="password" placeholder="Password" value="<%=formData.password%>" required><br>
+        
+        <ul style="color: red;">
+            <li>Password must be min 8 characters long</li>
+            <li>Include at least one uppercase letter (A-Z)</li>
+            <li>Include at least one lowercase letter (a-z)</li>
+            <li>Include at least one number (0-9)</li>
+            <li>Include at least one special character (@ # $ % ^ & ! ?)</li>
+            <li>No spaces allowed</li>
+        </ul>
 
-                
-                <label for="username">Username:</label><br>
-                <input type="text" name="username" placeholder="Username" value="<%=username%>" required>
-                <br><br>
-                <label for="email">Email:</label><br>
-                <input type="email" name="email" placeholder="Email" value="<%=email%>" required>
-                <br><br>
-                <label for="password">Password:</label><br>
-                <input type="password" name="password" placeholder="Password" required><br>
-                <ul style="color: red;">
-                    <li>Password must be 8-12 characters long</li>
-                    <li>Include at least one uppercase letter (A-Z)</li>
-                    <li>Include at least one lowercase letter (a-z)</li>
-                    <li>Include at least one number (0-9)</li>
-                    <li>Include at least one special character (@ # $ % ^ & ! ?)</li>
-                    <li>No spaces allowed</li>
-                </ul>
-                <button type="submit">Sign up</button><br>
-                <%if(error){%>
-                    <p style="color: red">Error: <%=error%>
-                    </p>
-                    <%}%>
+        <label for="cfmpassword">Confirm Password:</label><br>
+        <input type="password" name="cfmpassword" placeholder="Confirm Password" value="<%=formData.cfmpassword%>" required><br><br>
+
+        <button type="submit">Sign up</button><br>
+        <% if (errors && errors.length> 0) { %>
+            <ul style="color: red;">
+                <% errors.forEach(err=> { %>
+                    <li>
+                        <%= err %>
+                    </li>
+                    <% }) %>
+            </ul>
+            <% } %>
     </form>
-    <br>Already have an account? <br><a href="/user/login">Login</a>
+    Already have an account? <br><a href="/user/login">Login</a>
 </body>
 
 </html>
