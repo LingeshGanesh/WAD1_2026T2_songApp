@@ -11,7 +11,7 @@
 <body>
     <%- include("../navbar-user") %>
     <main>
-        <%- include("subpages/playlist-header", {playlist}) %>
+        <%- include("subpages/playlist-header", {playlist, owner}) %>
         <% if (isOwner) { %>
             <ul>
                 <li><a href="/playlist/edit/<%= playlist._id %>">Edit</a></li>

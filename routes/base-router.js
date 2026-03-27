@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Song = require("./../models/songs-model.js");
+const authMiddleware = require('../middleware/auth-middleware');
 
 // Import routers
 const playlistRouter = require("./playlist-router.js");
@@ -10,11 +11,8 @@ const albumRouter = require("./album-router.js")
 const songsRouter = require("./songs-router.js");
 
 // Branching Route
-router.get("/homepage", (req, res) => {
-    res.render("base");
-});
-
-router.use("/playlist", playlistRouter);
+router.get("/homepage", (req, res) => res.render("base"));
+router.use("/playlist", authMiddleware.isLoggedIn, playlistRouter);
 router.use("/user", usersRouter);
 router.use("/events", eventsRouter);
 router.use("/album", albumRouter);

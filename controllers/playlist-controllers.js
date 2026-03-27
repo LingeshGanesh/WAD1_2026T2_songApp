@@ -1,7 +1,13 @@
 // Import model
 const mongoose = require('mongoose');
 const Playlist = require("../models/playlists-model");
+const User = require("../models/users-model");
 const path = require("path");
+
+// Private Method
+function checkOwnership(user, playlist) {
+    return (playlist.owner && user.id === playlist.owner.toString());
+}
 
 // Controllers
 // Read
@@ -27,13 +33,23 @@ exports.browse = async (req, res) => {
         }
         return comp * (isAscending? 1: -1);
     });
+
+    let owners = []
+    for (let play of allPlaylists) {
+        if (play.owner) {
+            const ownerObj = await User.findUserByID(play.owner);
+            owners.push(ownerObj.username);
+        } else {
+            owners.push(null);
+        }
+    }
     
-    res.render('playlists/browse', {allPlaylists, sortby, isAscending});
+    res.render('playlists/browse', {allPlaylists, owners, sortby, isAscending});
 };
 
 exports.playlistInfo = async (req, res) => {
     const {playlistID} = req.params;
-    const user = null;
+    const {user} = req.session;
 
     // The given playlistID is not a playlistID.
     if (!mongoose.isValidObjectId(playlistID)) {
@@ -47,14 +63,21 @@ exports.playlistInfo = async (req, res) => {
         if (!playlist) {return res.render('playlists/not-found');}
 
         // TODO: take user object ID from session and compare to playlist owner Object ID
-        const isOwner = true; // (user === playlist.owner);
+        const isOwner = checkOwnership(user, playlist);
 
         // If non-owner is accessing private playlist, show not found page
         if (playlist.visibility === 'Private' && !isOwner) {
             return res.render('playlists/not-found');
         }
 
-        res.render('playlists/playlist-info', {isOwner, playlist, songsList, songsDuration, playlistDuration});
+        // Get the playlist owner (unless unnecessary)
+        let owner = null;
+        if (playlist.owner) {
+            owner = await User.findUserByID(playlist.owner);
+            owner = owner.username;
+        }
+
+        res.render('playlists/playlist-info', {isOwner, playlist, owner, songsList, songsDuration, playlistDuration});
     } catch (error) {
         console.error(error);
         return res.status(500).send("Error calling database.")
@@ -63,17 +86,16 @@ exports.playlistInfo = async (req, res) => {
 
 // Create
 exports.showCreationForm = async (req, res) => {
-    // TODO: get username/UserID from session middleware
-    const user = null;
-    res.render('playlists/create-form', {user, error: false});
+    res.render('playlists/create-form', {error: false});
 }
 
 exports.createPlaylist = async (req, res) => {
-    let { user, name, description, visibility, songs } = req.body;
+    const {user} = req.session;
+    let { name, description, visibility, songs } = req.body;
     let thumbnail = req.file;
 
     // Input Validation
-    user = user === ""? null : user; // May be taken from session instead
+    console.log("You are:", user.username);
     name = name.trim();
     description = description.trim();
     description = description === ""? null : description;
@@ -91,7 +113,7 @@ exports.createPlaylist = async (req, res) => {
             name: name,
             description: description,
             visibility: visibility,
-            owner: user,
+            owner: user.id,
             songs: songs
         }
 
@@ -114,19 +136,18 @@ exports.createPlaylist = async (req, res) => {
 
 // Update
 exports.showEditForm = async (req, res) => {
-    // TODO: get username/UserID from session
-    const user = null;
+    const {user} = req.session;
     const {playlistID} = req.params;
 
     try {
         let {playlist, songsList} = await Playlist.getByID(playlistID, true);
         
-        // TODO: do authorization here
-        if (false) {//(user !== playlist.owner) {
-            return res.status(403).send("You are not allowed to edit this form.")
+        // Only allow the owner to edit (Authorization)
+        if (!checkOwnership(user, playlist)) {
+            return res.status(403).send("You are not allowed to edit this playlist.")
         }
     
-        res.render('playlists/edit-form', {user, error: false, playlist, songsList});
+        res.render('playlists/edit-form', {error: false, playlist, songsList});
     } catch (error) {
         console.error(error);
         return res.status(500).send("Error calling database.")
@@ -134,12 +155,12 @@ exports.showEditForm = async (req, res) => {
 }
 
 exports.updatePlaylist = async (req, res) => {
-    let { user, playlistID, name, description, visibility, songs } = req.body;
+    const {user} = req.session;
+    const {playlistID} = req.params;
+    let { name, description, visibility, songs } = req.body;
     let thumbnail = req.file;
-    console.log("Thumbnail:", thumbnail);
 
     // Input Validation
-    user = user === ""? null : user;
     name = name.trim();
     description = description.trim();
     description = description === ""? null : description;
@@ -152,8 +173,13 @@ exports.updatePlaylist = async (req, res) => {
 
 
     // Insert into the database
-    // ID is required to direct user to their created playlist.
     try {
+        // Only allow the owner to edit (Authorization)
+        const playlist = await Playlist.getByID(playlistID, false);
+        if (!checkOwnership(user, playlist)) {
+            return res.status(403).send("You are not allowed to edit this playlist.")
+        }
+
         // Update non-thumbnail data
         const editedPlaylist = {
             name: name,
@@ -189,9 +215,9 @@ exports.showDeleteForm = async (req, res) => {
     try {
         let {playlist, songsList} = await Playlist.getByID(playlistID, true);
         
-        // TODO: do authorization here
-        if (false) {//(user !== playlist.owner) {
-            return res.status(403).send("You are not allowed to edit this form.")
+        // Only allow the owner to delete (Authorization)
+        if (!checkOwnership(user, playlist)) {
+            return res.status(403).send("You are not allowed to delete this playlist.")
         }
     
         res.render('playlists/delete-form', {user, errorMsg: false, playlist, songsList});
@@ -202,20 +228,28 @@ exports.showDeleteForm = async (req, res) => {
 }
 
 exports.deletePlaylist = async (req, res) => {
-    // TODO: get username/UserID from session
-    const user = null;
+    const {user} = req.session;
     const {playlistID} = req.params;
+    const username = req.body.username.trim();
     let declaration = req.body.declaration || [];
     declaration = Array.isArray(declaration)? declaration: [declaration];
 
-    // TODO: authorize playlist deletion
     const {playlist, songsList} = await Playlist.getByID(playlistID, true);
+
+    // Three layers of confirmation:
+    // 1. Check if declaration is both checked
     if (declaration.length < 2) {
         return res.render('playlists/delete-form', {user, errorMsg: "Please check the boxes to confirm deletion.", playlist, songsList});
     }
 
-    if (false) {// (user !== playlist.owner) {
+    // 2. Check if the username matches
+    if (username === user.username) {
         return res.render('playlists/delete-form', {user, errorMsg: "Please enter your username to confirm deletion.", playlist, songsList});
+    }
+
+    // 3. Check if the owner matches
+    if (!checkOwnership(user, playlist)) {
+        return res.status(403).send("You are not allowed to delete this playlist.")
     }
 
     // Delete playlist

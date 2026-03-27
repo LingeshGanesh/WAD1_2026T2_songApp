@@ -25,22 +25,19 @@
         <input type="submit" value="Sort">
     </form>
     <br>
-
     <% if (allPlaylists) { %>
         <table border="1">
             <tr>
                 <th>Playlist</th>
                 <th>Creation Date</th>
-                <th>Owner</th>
             </tr>
     
-            <% allPlaylists.forEach(playlist => { %>
+            <% allPlaylists.forEach((playlist, i) => { %>
             <tr>
                 <td><a href="/playlist/<%= playlist._id %>">
-                    <%- include("subpages/playlist-header", {playlist}) %>
+                    <%- include("subpages/playlist-header", {playlist, owner: owners[i]}) %>
                 </a></td>
                 <td><%= playlist.creationDate %></td>
-                <td><a href="#"><%= playlist.owner || "Unknown" %></a></td>
             </tr>
             <% }) %>
     

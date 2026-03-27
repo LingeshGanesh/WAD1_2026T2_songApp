@@ -4,8 +4,8 @@
         <td><img src="<%= thumbURL %>" alt="" height="128" width="128"></td>
         <td>
             <h1><%= playlist.name %></h1>
-            <% if (playlist.owner) { %>
-                <p><a href="<%= playlist.owner %>"><%= playlist.owner %></a></p>
+            <% if (owner) { %>
+                <p>@<%= owner %></p>
             <% } else { %>
                 <p><em>Unknown Owner</em></p>
             <% } %>
