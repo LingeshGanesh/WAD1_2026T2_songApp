@@ -354,3 +354,10 @@ exports.deletePlaylist = async (req, res) => {
         return res.status(500).send("Error deleting playlist from the database.")
     }
 }
+
+// API: Search Songs
+exports.searchSongs = async (req, res) => {
+    const { query } = req.query;
+    const searchedSong = await Song.findById(query);
+    res.send(searchedSong);
+}

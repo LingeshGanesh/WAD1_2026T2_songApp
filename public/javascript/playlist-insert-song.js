@@ -101,7 +101,7 @@ function showEmptySlot() {
 async function createSlot() {
     let song;
     try {
-        const songProm = await fetch(`/song/search/${searchSongID.value.trim()}`);
+        const songProm = await fetch(`/playlist/search-songs?query=${searchSongID.value}`);
         song = await songProm.json();
     } catch (error) {
         console.error(error);
@@ -164,5 +164,4 @@ function updateSongSelection() {
     });
 
     songSelection.value = songIDs;
-    console.log(songIDs);
 }
