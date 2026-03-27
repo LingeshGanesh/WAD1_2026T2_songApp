@@ -9,17 +9,8 @@
     <div>
         <h1>Playlist Deletion Successful!</h1>
         <ul>
-            <li>
-                <form action="/playlist/create/" method="post">
-                    <input type="hidden" name="name" value="<%= playlist.name %>">
-                    <input type="hidden" name="description" value="<%= playlist.description %>">
-                    <input type="hidden" name="genre" value="<%= playlist.genre %>">
-                    <input type="hidden" name="visibility" value="<%= playlist.visibility %>">
-                    <input type="hidden" name="creationDate" value="<%= playlist.creationDate %>">
-                    <input type="hidden" name="songs" value="<%= playlist.songs %>">
-                    <input type="submit" value='Undo "<%= playlist.name %>" deletion'>
-                </form>
-            </li>
+            <li><a href="/playlist/browse">Browse playlists</a></li>
+            <li><a href="/playlist/yours">Browse your playlists</a></li>
             <li><a href="/">Go to Homepage</a></li>
         </ul>
     </div>

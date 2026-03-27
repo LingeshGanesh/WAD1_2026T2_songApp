@@ -12,16 +12,13 @@
     <% } %>
     <form action="/playlist/edit/<%= playlist._id %>" method="post" enctype="multipart/form-data">
         
-    <input type="hidden" name="user" value="<%= user %>">
-    <input type="hidden" name="playlistID" value="<%= playlist._id %>">
+        <!-- error set to true to fill the fields, as if there is an error -->
+        <%- include("subpages/form-fields.ejs", {fields: playlist, editThumb: true, error: true}) %>
 
-    <!-- error set to true to fill the fields, as if there is an error -->
-    <%- include("form-fields.ejs", {fields: playlist, error: true}) %>
-
-    <!-- Song Selection -->
-    <%- include("songs-insert-table", {songs: songsList}) %>
-    <br>
-    <input type="submit" value="Save Changes">
+        <!-- Song Selection -->
+        <%- include("subpages/songs-insert-table", {songs: songsList}) %>
+        <br>
+        <input type="submit" value="Save Changes">
 
     </form>
 

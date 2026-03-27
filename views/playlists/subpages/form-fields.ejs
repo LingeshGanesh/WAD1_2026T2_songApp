@@ -1,15 +1,28 @@
+<!-- 
+ Included in:
+ - /views/playlists/create-form.ejs
+ - /views/playlists/edit-form.ejs
+-->
+
 <label for="name">Playlist Name</label><br>
 <input type="text" name="name" id="name" required value="<%= error? fields.name: "" %>"><br><br>
 
 <label for="description">Description</label><br>
 <textarea name="description" id="description" rows="2" cols="50"><%= error? fields.description : "" %></textarea><br><br>
 
-<!-- TODO: Store Genre List Externally, add dynamically. -->
-<% const allGenres = ["Pop", "Rock", "Indie", "Jazz"] %>
-<% let genreSel = error? fields.genre: "" %>
+<% if (editThumb) { %>
+    <input type="checkbox" name="editThumb" id="editThumb" value="true">
+    <label for="editThumb">Set new thumbnail</label>
+    <br>
+<% } %>
 
-<label for="thumbnail">Thumbnail</label><br>
-<input type="file" name="thumbnail" id="thumbnail" accept="image"><br><br>
+<div id="thumb-frame">
+    <label for="thumbnail">Thumbnail</label><br>
+    <input type="file" name="thumbnail" id="thumbnail" accept="image">
+    <button id="clear-thumb">Clear Thumbnail</button>
+    <br>
+</div>
+<br>
 
 <% const visList = ["Private", "Unlisted", "Public"] %>
 
@@ -20,3 +33,5 @@
         <option value="<%= vis %>" <%= vis === visSel? "selected": "" %>><%= vis %></option>
     <% }) %>
 </select><br><br>
+
+<script src="/javascript/playlist-clear-thumb.js"></script>

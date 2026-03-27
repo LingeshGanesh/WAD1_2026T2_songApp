@@ -7,6 +7,8 @@ const router = express.Router();
 // Show list of existing albums
 router.get("/browse", albumsController.showAlbumList);
 
+router.get("/song-search", albumsController.searchSongs);
+
 // Creation of album
 router.get("/create", albumsController.showAddForm);
 router.post("/create", albumsController.createAlbum);

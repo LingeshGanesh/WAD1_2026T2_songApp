@@ -11,14 +11,12 @@
         <p style="color: red;"><strong>Error:</strong> Playlist must have at least one song.</p>
     <% } %>
     <form action="/playlist/create" method="post" enctype="multipart/form-data">
-        
-    <input type="hidden" name="user" value="<%= user %>">
 
-    <%- include("form-fields.ejs", error? {fields, error}: {error}) %> 
+        <%- include("subpages/form-fields.ejs", error? {fields, editThumb: false, error}: {editThumb: false, error}) %> 
 
-    <!-- Song Selection -->
-    <%- include("songs-insert-table", {songs: []}) %>
-    <br>
+        <!-- Song Selection -->
+        <%- include("subpages/songs-insert-table", {songs: []}) %>
+        <br>
     <input type="submit" value="Create Playlist">
 
     </form>

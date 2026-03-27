@@ -37,6 +37,15 @@ exports.createAlbum = async (req,res) => {
     const year = req.body.year;
     const songs = req.body.songs 
 
+
+    if (year.toString().length !== 4) {
+        return res.render("albums/add-album", { result: "", msg: "Year must be a 4-digit number." });
+    }
+
+    if (!songs) {
+        return res.render("albums/add-album", { result: "", msg: "Please add at least one song." });
+    }
+
     const songIds = songs.split(',').map(id => new mongoose.Types.ObjectId(id.trim()));
 
     let newAlbum = {
@@ -46,57 +55,63 @@ exports.createAlbum = async (req,res) => {
         artist: artist,
         description: description
     }
-    console.log(title)
-    console.log(description)
-    console.log(artist)
-    console.log(year)
-    console.log(songIds);
-
-    if (!title || !description || !artist || !year || !songIds) {
-        return res.render("albums/add-album", { result: "", msg: "All fields are required." })
-    }
 
     try {
         let msg = "";
         let result = (await Album.addAlbum(newAlbum)); // create new album
-        //console.log("mylog:" +result);
+        result = await result.populate('songs');
 
         res.render("albums/add-album", { result: result || null, msg });
+
 
     } catch (error) {
         console.error(error);
         let result = "fail";
-        let msg = "";
+        let msg = error;
 
         res.render("albums/add-album", { result, msg });
     }
 };
 
-exports.showEditForm = async (req,res) => {
+exports.showEditForm = async (req, res) => {
     const albumID = req.params.id;
-
     try {
-        const album = await Album.findByID(albumID)
-        res.render("albums/edit-album", {album})
-    } catch(error) {
-        console.error(error)
+        const album = await Album.findByIDAndPopulate(albumID);
+        res.render("albums/edit-album", { album, msg: "" }); // add msg: ""
+    } catch (error) {
+        console.error(error);
     }
 };
 
-exports.updateAlbum = async (req,res) => {
-    const albumID = req.params.id; 
+exports.updateAlbum = async (req, res) => {
+    const albumID = req.params.id;
     const { title, artist, description, year, songs } = req.body;
+
+    if (!title || !artist || !year) {
+        const album = await Album.findByIDAndPopulate(albumID);
+        return res.render("albums/edit-album", { album, msg: "All fields are required." });
+    }
+
+    if (!songs){
+        const album = await Album.findByIDAndPopulate(albumID);
+        return res.render("albums/edit-album", { album, msg: "Please add at least one song." });
+    }
+
+    if (year.toString().length !== 4) {
+        const album = await Album.findByIDAndPopulate(albumID);
+        return res.render("albums/edit-album", {album, msg: "Year must be 4 digits"})
+    }
 
     const songIds = songs.split(',').map(id => new mongoose.Types.ObjectId(id.trim()));
 
     try {
-        const result = await Album.editAlbum(albumID, title, description, artist, songIds, year);
-
+        await Album.editAlbum(albumID, title, description, artist, songIds, year);
         res.send(`<h1>Your album has been edited!</h1>
-            <a href="/album/${albumID}">View Your Changes</a>
-            `)
-    } catch(error) {
-        console.error(error)
+            <a href="/album/${albumID}">View Your Changes</a>`);
+    } catch (error) {
+        console.error(error);
+        const album = await Album.findByIDAndPopulate(albumID);
+        res.render("albums/edit-album", { album, msg: "Error updating album." });
     }
 };
 
@@ -125,4 +140,11 @@ exports.deleteAlbum = async (req,res) => {
     } catch(error) {
         console.error(error);
     }
+};
+
+exports.searchSongs = async (req, res) => {
+    const songs = await Song.find({
+        title: { $regex: req.query.q, $options: 'i' }
+    }).select('_id title artist').limit(10);
+    res.json(songs);
 };

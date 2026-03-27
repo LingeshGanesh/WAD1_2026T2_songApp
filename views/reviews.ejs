@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Reviews</title>
+</head>
+<body>
+  <h1>All Reviews</h1>
+
+  <h2>Add Review</h2>
+  <form action="/reviews/create" method="POST">
+    User ID: <input type="text" name="userId" /><br>
+    Song ID: <input type="text" name="songId" /><br>
+    Rating (1-5): <input type="number" name="rating" min="1" max="5" /><br>
+    Comment: <input type="text" name="comment" /><br>
+    <button type="submit">Submit</button>
+  </form>
+
+  <h2>Review List</h2>
+  <ol>
+    <% reviews.forEach(function(review) { %>
+      <li>
+        <strong><%= review.songId %></strong><br>
+        Rating: <%= review.rating %><br>
+        Comment: <%= review.comment %>
+
+        <!-- UPDATE FORM -->
+        <form action="/reviews/update" method="POST">
+          <input type="hidden" name="reviewId" value="<%= review._id %>" />
+          <input type="number" name="rating" min="1" max="5" placeholder="New Rating" style="width: 15ch;" />
+          <input type="text" name="comment" placeholder="New Comment" style="width: 15ch;" /> 
+          <button type="submit">Update</button>
+        </form>
+        
+        
+        <!-- DELETE FORM -->
+        <form action="/reviews/delete" method="POST">
+          <input type="hidden" name="reviewId" value="<%= review._id %>" />
+          <br>
+          <button type="submit">Delete</button>
+        </form>
+      </li>
+      <br>
+    <% }) %>
+  </ul>
+  
+  <% if (output) { %>
+    <%= output %>
+  <% } %>
+
+</body>
+</html>

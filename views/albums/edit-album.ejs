@@ -1,31 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Album</title>
 </head>
+
 <body>
     <h1>Edit Album</h1>
-    <button type="button"><strong><a href="/album/<%= album._id %>">Back To Album</strong></a></button><br><br>
+    <button type="button"><strong><a href="/album/<%= album._id %>">Back To Album</a></strong></button><br><br>
+
     <form action="/album/edit/<%= album._id %>" method="post">
         <label>Title:</label>
         <input type="text" name="title" value="<%= album.title %>" required><br><br>
-        
+
         <label>Artist:</label>
         <input type="text" name="artist" value="<%= album.artist %>" required><br><br>
-        
+
         <label>Description:</label>
-        <textarea name="description" required><%= album.description %></textarea><br><br>
-        
+        <textarea name="description"><%= album.description %></textarea><br><br>
+
         <label>Release Year:</label>
         <input type="number" name="year" value="<%= album.yearReleased %>" required><br><br>
-        
-        <label>Songs (comma-separated ObjectIds):</label>
-        <input type="text" name="songs" value="<%= album.songs.join(', ') %>" required><br><br>
-        
+
+        <label>Songs:</label><br>
+        <input type="text" id="songSearch" placeholder="Search by song title..." autocomplete="off"
+            style="width:200px"><br>
+        <ul id="songResults"
+            style="list-style:none; padding:0; margin:0; border:1px solid #ccc; width:200px; display:none;"></ul>
+        <div id="selectedSongs"></div>
+        <input type="hidden" name="songs" id="songsHidden"><br>
+
         <button type="submit">Save Changes</button>
     </form>
 
+    <% if(msg !="" ) { %>
+        <p><strong><%= msg %></strong></p>
+    <% } %>
+
+    <script>
+        const songData = `<%- JSON.stringify(album.songs.map(s => ({ _id: s._id.toString(), title: s.title, artist: s.artist }))) %>`;
+        const selectedSongs = JSON.parse(songData);
+
+        updateHidden();
+        renderTags();
+
+        document.getElementById('songSearch').addEventListener('input', async function () {
+            const q = this.value.trim();
+            const list = document.getElementById('songResults');
+            if (!q) { list.style.display = 'none'; list.innerHTML = ''; return; }
+
+            const res = await fetch(`/album/song-search?q=${encodeURIComponent(q)}`);
+            const songs = await res.json();
+
+            list.innerHTML = '';
+            const unselected = songs.filter(s => !selectedSongs.find(x => x._id === s._id.toString()));
+            list.style.display = unselected.length ? 'block' : 'none';
+
+            unselected.forEach(song => {
+                const li = document.createElement('li');
+                li.textContent = `${song.artist} - ${song.title}`;
+                li.style.cssText = 'padding:6px 8px; cursor:pointer;';
+                li.addEventListener('mouseenter', () => li.style.background = '#f0f0f0');
+                li.addEventListener('mouseleave', () => li.style.background = '');
+                li.addEventListener('click', () => addSong(song));
+                list.appendChild(li);
+            });
+        });
+
+        function addSong(song) {
+            selectedSongs.push(song);
+            updateHidden();
+            renderTags();
+            document.getElementById('songSearch').value = '';
+            document.getElementById('songResults').style.display = 'none';
+        }
+
+        function removeSong(id) {
+            const idx = selectedSongs.findIndex(s => s._id === id);
+            if (idx !== -1) selectedSongs.splice(idx, 1);
+            updateHidden();
+            renderTags();
+        }
+
+        function updateHidden() {
+            document.getElementById('songsHidden').value = selectedSongs.map(s => s._id).join(',');
+        }
+
+        function renderTags() {
+            const container = document.getElementById('selectedSongs');
+            container.innerHTML = '';
+            selectedSongs.forEach(song => {
+                const tag = document.createElement('span');
+                tag.textContent = `${song.artist} - ${song.title} `;
+                const x = document.createElement('span');
+                x.textContent = '✕';
+                x.style.cursor = 'pointer';
+                x.addEventListener('click', () => removeSong(song._id));
+                tag.appendChild(x);
+                tag.style.cssText = 'display:inline-block; margin:4px 4px 0 0; padding:3px 8px; background:#ddd; border-radius:12px; font-size:13px;';
+                container.appendChild(tag);
+            });
+        }
+
+        document.addEventListener('click', e => {
+            if (!e.target.closest('#songSearch') && !e.target.closest('#songResults')) {
+                document.getElementById('songResults').style.display = 'none';
+            }
+        });
+    </script>
 </body>
+
 </html>
