@@ -7,8 +7,12 @@ const path = require('path');
 const thumbnailDir = path.join(__dirname, "../public/image/playlist-thumb");
 
 // Set the directory if it does not exist during setup
-if (!fileExists(".")) {fs.mkdir(thumbnailDir);}
+if (!require("fs").existsSync(path.join(thumbnailDir))) {
+    fs.mkdir(thumbnailDir);
+}
 
+
+// Schema
 const playlistSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -40,6 +44,7 @@ const playlistSchema = new mongoose.Schema({
 
 const Playlist = mongoose.model('Playlist', playlistSchema, 'playlists');
 
+
 // Private Functions
 function convertTime(timeSec) {
     const minute = Math.floor(timeSec / 60);
@@ -48,9 +53,6 @@ function convertTime(timeSec) {
     return `${minute}:${second.toString().padStart(2, "0")}`;
 }
 
-function fileExists(filepath) {
-    return require("fs").existsSync(path.join(thumbnailDir, filepath));
-}
 
 // CRUD Functions
 exports.retrieveAll = async function() {
