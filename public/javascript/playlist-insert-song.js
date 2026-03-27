@@ -1,3 +1,9 @@
+/**
+ * Included in:
+ * - /views/playlists/create-form.ejs
+ * - /views/playlists/edit-form.ejs
+ */
+
 const insertBtn = document.getElementById("insertBtn");
 const tbody = document.querySelector("tbody");
 const emptySlot = document.getElementById("empty-slot");

@@ -1,3 +1,9 @@
+/**
+ * Included in:
+ * - /views/playlists/create-form.ejs
+ * - /views/playlists/edit-form.ejs
+ */
+
 const clearThumbBtn = document.getElementById("clear-thumb");
 const fileField = document.querySelector("input[type='file']");
 
