@@ -61,6 +61,10 @@ exports.retrievePublic = async function() {
     return await Playlist.find({visibility: "Public"});
 }
 
+exports.retrieveByOwnerID = async function(ownerID) {
+    return await Playlist.find({owner: ownerID});
+}
+
 exports.getByID = async function(id, loadSong = false) {
     const playlist =  await Playlist.findById(id);
     // The playlist returned is either null or not.

@@ -9,6 +9,16 @@ function checkOwnership(user, playlist) {
     return (playlist.owner && user.id === playlist.owner.toString());
 }
 
+function comparePlaylist(a, b, sortby, isAscending) {
+    let comp;
+    if (sortby === 'name') {
+        comp = (a.name > b.name)? 1: -1;
+    } else {
+        comp = a.creationDate - b.creationDate;
+    }
+    return comp * (isAscending? 1: -1);
+}
+
 // Controllers
 // Read
 exports.browse = async (req, res) => {
@@ -21,30 +31,35 @@ exports.browse = async (req, res) => {
         allPlaylists = await Playlist.retrievePublic();
     } catch (error) {
         console.error(error);
-        return res.status(500).send("Error calling database.")
+        return res.status(500).send("Error fetching playlists from database.")
     }
 
-    allPlaylists.sort((a, b) => {
-        let comp;
-        if (sortby === 'name') {
-            comp = (a.name > b.name)? 1: -1;
-        } else {
-            comp = a.creationDate - b.creationDate;
-        }
-        return comp * (isAscending? 1: -1);
-    });
+    allPlaylists.sort((a, b) => comparePlaylist(a, b, sortby, isAscending));
 
     let owners = []
-    for (let play of allPlaylists) {
-        if (play.owner) {
-            const ownerObj = await User.findUserByID(play.owner);
-            owners.push(ownerObj.username);
-        } else {
-            owners.push(null);
+    try {
+        for (let play of allPlaylists) {
+            if (play.owner) {
+                const ownerObj = await User.findUserByID(play.owner);
+                owners.push(ownerObj.username);
+            } else {
+                owners.push(null);
+            }
         }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send("Error fetching owners from database.")
     }
-    
-    res.render('playlists/browse', {allPlaylists, owners, sortby, isAscending});
+
+    // Render Pages
+    const option = {
+        allPlaylists, 
+        owners, 
+        sortby, 
+        isAscending, 
+        subroute: "browse"}
+
+    res.render('playlists/browse', option);
 };
 
 exports.playlistInfo = async (req, res) => {
@@ -83,6 +98,37 @@ exports.playlistInfo = async (req, res) => {
         return res.status(500).send("Error calling database.")
     }
 };
+
+exports.yourPlaylists = async (req, res) => {
+    const {user} = req.session;
+    let {sortby, isAscending} = req.query;
+    sortby = sortby || 'creationDate'
+    isAscending = (isAscending === 'true') || false;
+
+    let allPlaylists;
+    try {
+        allPlaylists = await Playlist.retrieveByOwnerID(user.id);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send("Error calling database.")
+    }
+
+    allPlaylists.sort((a, b) => comparePlaylist(a, b, sortby, isAscending));
+
+    // all playlist is owned by one user, set "owners" to that user.
+    let owners = user.username;
+    
+    // Render Pages
+    const option = {
+        allPlaylists, 
+        owners, 
+        sortby, 
+        isAscending, 
+        subroute: "yours"}
+
+    res.render('playlists/browse', option);
+};
+
 
 // Create
 exports.showCreationForm = async (req, res) => {
@@ -261,5 +307,4 @@ exports.deletePlaylist = async (req, res) => {
         console.error(error);
         return res.status(500).send("Error deleting playlist from the database.")
     }
-
 }
