@@ -8,12 +8,13 @@
 </head>
 
 <body>
+    <a href="/user/profile">Back</a><br><br>
     <form action="/user/search-friend" method="get">
         <input type="text" name="query" placeholder="Search friends" value="<%=query%>">
         <button type="submit">Search</button>
     </form>
     <br>
-    <%if(result){%>
+    <%if(result && result.length>0){%>
         <table border="1">
             <tr>
                 <th>Username</th>
@@ -29,9 +30,13 @@
                 </tr>
                 <% }) %>
         </table>
-
-        <%}%>
-
+        <%}else if(errors && errors.length>0){%>
+            <% errors.forEach(error=>{%>
+                    <ul style="color: red;">
+                        <li><%=error%></li>
+                    </ul>
+                <%})%>
+                    <%}%>
 </body>
 
 </html>
