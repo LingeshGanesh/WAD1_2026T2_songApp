@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const Song = require("./../models/songs-model.js");
 
 // Set up middleware to parse multipart files
 const multer = require("multer");
