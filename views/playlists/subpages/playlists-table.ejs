@@ -1,0 +1,26 @@
+<!-- 
+ Included in:
+ - /views/playlists/browse.ejs
+-->
+
+<% if (allPlaylists) { %>
+    <table border="1">
+        <tr>
+            <th>Playlist</th>
+            <th>Creation Date</th>
+        </tr>
+
+        <% allPlaylists.forEach((playlist, i) => { %>
+        <tr>
+            <td><a href="/playlist/<%= playlist._id %>">
+                <% const owner = typeof(owners)==='string'? owners: owners[i] %>
+                <%- include("playlist-header", {playlist, owner}) %>
+            </a></td>
+            <td><%= playlist.creationDate %></td>
+        </tr>
+        <% }) %>
+
+    </table>
+<% } else { %>
+    <p>No playlists yet.</p>
+<% } %>

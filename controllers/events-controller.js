@@ -2,27 +2,32 @@ const fs = require('fs/promises');
 
 // Get Service model
 const Event = require('./../models/events-model');
+const User = require('./../models/users-model');
 
 exports.getIndex = async (req, res) => {
   res.render("events/home-events");
 };
 
 //DUMMY USER ID TO BE USED ONLY UNTIL AUTH AND SESSION IS ONLINE
-const userId = "69bc23ebd3cd6548aad26bdb";
-// DUMMY
-// DUMMY
-// DUMMY
-// REMEMBER TO CHANGE LATER PLEASE
+//const userId = req.session.user.id;
+
 
 // Controller function to get all the documents in the db and display it
 exports.showEvents = async (req, res) => {
   try {
-    let eventList = await Event.retrieveAll();// fetch all the list    
-    console.log(eventList);
-    res.render("events/display-events", { eventList }); // Render the EJS form view and pass the posts
+    let eventList = await Event.retrieveAll();
+    const userId = req.session.user?.id;
+
+    if (!userId) {
+      return res.redirect("/login");
+    }
+
+    const user = await User.findUserByEmail(req.session.user.email); // ADD THIS
+
+    res.render("events/display-events", { eventList, userId, userEvents: user.events }); // ADD userEvents
   } catch (error) {
     console.error(error);
-    res.send("Error reading database"); // Send error message if fetching fails
+    res.send("Error reading database");
   }
 };
 
@@ -39,32 +44,45 @@ exports.createEvent = async (req, res) => {
         const entryFee = req.body.entryFee;
         const location = req.body.location;
 
+        const userId = req.session.user?.id;
+
+        if (!userId) {
+        return res.redirect("/login");
+        }
+
         // form validation
 
         // create structure that stores new event
         let newEvent = { name: name, desc: desc, date: date, entryFee: entryFee, location: location, author: userId };
 
         try {
-            let msg = `Event has been added successfully.<br><br>Name: ${name}<br>Description: ${desc}<br>Date: ${date}<br>Entry Fee: ${entryFee}<br>Location: ${location}`;
+            let msg = `Event ${name} has been added successfully`;
             let result = await Event.addEvent(newEvent);
             console.log("event added:" + result);
 
-            res.render("events/add-event", { result: result || null, msg });
+            res.render("events/success", { msg: msg, redirectUrl: "/events/edit-events"});
 
         } catch (error) {
-            console.error(error);
+            console.log(error);
+
+            let msg = "Please fix the following issues:";
+
+        if (error.name === "ValidationError") {
+            msg += "<br><ul>" + Object.values(error.errors)
+                .map(err => `<li>${err.message}</li>`)
+                .join("") + "</ul>";
+        }
             let result = "fail";
-            let msg = "Error adding event";
             res.render("events/add-event", { result, msg });
         }
 
     } catch (error) {
-
+        console.error(error);
     }
 };
 
 exports.showEventList = async (req, res) => {
-    const userId = "69bc23ebd3cd6548aad26bdb";
+    const userId = req.session.user.id;
 
     try {
         let events = await Event.retrieveByAuthor(userId);
@@ -77,13 +95,15 @@ exports.showEventList = async (req, res) => {
 };
 
 exports.getEvent = async (req, res) => {
-    const userId = "69bc23ebd3cd6548aad26bdb";
+    const userId = req.session.user.id;
     const id = req.query.id;
+    const msg = req.query.msg;
     console.log(id);
+    console.log("getting event")
 
     try {
         const result = await Event.findByIdAndAuthor(id, userId);
-        res.render("events/update-event", { result });
+        res.render("events/update-event", { result, msg });
     } catch (error) {
         console.log(error);
         res.status(500).send("Something went wrong");
@@ -91,35 +111,50 @@ exports.getEvent = async (req, res) => {
 };
 
 exports.updateEvent = async (req, res) => {
-    const userId = "69bc23ebd3cd6548aad26bdb";
+    const userId = req.session.user.id;
 
     const id = req.body.id;
-    console.log(id);
+    console.log('id'+id);
     const name = req.body.name;
+    console.log('name:'+name);
     const desc = req.body.desc;
     const date = req.body.date;
     const entryFee = req.body.entryFee;
     const location = req.body.location;
 
     try {
+        let msg = `Event ${name} has been editted successfully`;
         let success = await Event.editEvent(id, userId, name, desc, date, entryFee, location);
         console.log(success);
-        res.send('Event has been successfully updated. <a href="/events/edit-events">Go back to event list</a>');
+        res.render("events/success", { msg: msg, redirectUrl: "/events/edit-events"});
     } catch (error) {
-        console.error(error);
+        console.log(error);
+
+        let msg = "Please fix the following issues:";
+
+    if (error.name === "ValidationError") {
+        msg += "<br><ul>" + Object.values(error.errors)
+            .map(err => `<li>${err.message}</li>`)
+            .join("") + "</ul>";
+    }
+        const result = await Event.findByIdAndAuthor(id, userId);
+         res.render("events/update-event", { result, msg });
     }
 };
 
 exports.deleteAnEvent = async (req, res) => {
-    const userId = "69bc23ebd3cd6548aad26bdb";
+    const userId = req.session.user.id;
     const id = req.body.id;
+    const name = req.body.name;
+    console.log("name"+name);
 
     try {
         let success = await Event.deleteEvent(id, userId);
         console.log(success);
 
         if (success.deletedCount === 1) {
-            res.send('Event has been successfully deleted. <a href="/events/edit-events">Go back to event list</a>');
+            let msg = `Event ${name} has been deleted successfully`;
+            res.render("events/success", { msg: msg, redirectUrl: "/events/edit-events"});
         }
 
     } catch (error) {
@@ -128,7 +163,7 @@ exports.deleteAnEvent = async (req, res) => {
 };
 
 exports.getMarkedEvent = async (req, res) => {
-    const userId = "69bc23ebd3cd6548aad26bdb";
+    const userId = req.session.user.id;
     const id = req.query.id;
     console.log(id);
 
@@ -164,4 +199,31 @@ exports.submitEvent = async (req, res) => {
         console.log(error);
         res.status(500).send("Something went wrong");
     }
+};
+
+exports.attendEvent = async (req, res) => {
+  try {
+    const userId = req.session.user.id;
+    const eventId = req.body.eventId;
+
+    const event = await Event.findById({ _id: eventId });
+
+    if (!event) {
+      return res.send("Event not found");
+    }
+
+    if (event.author.toString() === userId) {
+      return res.send("You cannot add your own event");
+    }
+
+    await User.updateOne({ _id: userId }, { $addToSet: { events: eventId } });
+
+    res.render("events/success", {
+      msg: "Event added successfully",
+      redirectUrl: "/events/event-list"
+    });
+  } catch (error) {
+    console.error(error);
+    res.send("Error adding event");
+  }
 };

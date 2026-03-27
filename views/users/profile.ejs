@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+</head>
+
+<body>
+    <h2>Welcome, <%= user.username %>!</h2>
+    <a href="/user/search">Search Friends</a><br>
+    <a href="/user/logout">Logout</a><br>
+    <a href="/user/edit/">Edit</a><br>
+    <a href="/user/delete/">Delete</a><br>
+    <img src="<%=user.profilePicture%>" width="150"><br>
+    Email: <%= user.email %> <br>
+    
+    <a href="/playlist/yours">Browse your playlist!</a>
+</body>
+
+</html>

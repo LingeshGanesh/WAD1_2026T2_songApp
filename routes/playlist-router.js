@@ -1,20 +1,36 @@
 const express = require("express");
 const router = express.Router();
+const Song = require("./../models/songs-model.js");
+
+// Set up middleware to parse multipart files
+const multer = require("multer");
+const thumbParser = multer().single("thumbnail");
 
 // Import controllers
 const playlistControllers = require("../controllers/playlist-controllers.js");
 
 // Routes
+// Read
 router.get("/browse", playlistControllers.browse);
+router.get("/yours", playlistControllers.yourPlaylists);
 
 // Creation
 router.get("/create", playlistControllers.showCreationForm);
-router.post("/create", playlistControllers.create);
+router.post("/create", thumbParser, playlistControllers.createPlaylist);
 
 // Edit
 router.get("/edit/:playlistID", playlistControllers.showEditForm);
-router.post("/edit/:playlistID", playlistControllers.update);
+router.post("/edit/:playlistID", thumbParser, playlistControllers.updatePlaylist);
 
+// Delete
+router.get("/delete/:playlistID", playlistControllers.showDeleteForm);
+router.post("/delete/:playlistID", playlistControllers.deletePlaylist);
+
+
+// API to Fetch Song
+router.get("/search-songs", playlistControllers.searchSongs);
+
+// Playlist Info (most bottom to not block other routes)
 router.get("/:playlistID", playlistControllers.playlistInfo);
 
 // Export

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Album</title>
+</head>
+<body>
+    <h1>Create Album</h1>
+    <a href="/album/browse"><strong>Back to Main Page</strong></a><br><br>
+
+    <form action="/album/create" method="POST">
+        <table border="1">
+            Album Title:
+            <br><input type="text" name="title"><br><br>                                          
+            Album Description:<br>
+            <textarea id="description" name="description" rows="4" cols="25"></textarea><br><br>
+            Album Artist:
+            <br><input type="text" name="artist"><br><br>
+            Album Release Year:
+            <br><input type="number" name="year"><br><br>
+            Insert Songs (comma-separated ObjectIds):<br>
+            <textarea id="songs" name="songs" rows="4" cols="25" placeholder="e.g., 609bc6fae7419e6b2c5d0f67, 609bc6fae7419e6b2c5d0f68" required></textarea><br>
+            <!-- <input type="text" name="songs" size="50" placeholder="e.g., 609bc6fae7419e6b2c5d0f67, 609bc6fae7419e6b2c5d0f68" required><br> -->
+        <br>
+        <button type="submit">Create Album</button>
+        </table>
+    </form>
+
+    <br><br>
+    <% if(msg!="" ){ %>
+        <p><strong>All fields are required.</strong></p>
+    <% } %>
+        <%if(result.title){ %>
+            <a href="/album/browse">Back to Browse Page</a>
+            <p>Your album has been added successfully.</p>
+            Title: <%= result.title %><br>
+            Release Date: <%= result.yearReleased %><br>
+            Songs: <%= result.songs.join(",") %><br>
+            Artist:  <%= result.artist %><br>
+            Description: <%= result.description %> <br>
+        <% }else if(result==="fail" ){%>
+            <p>Error creating album</p>
+        <%} %>
+
+</body>
+</html>

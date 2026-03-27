@@ -1,3 +1,9 @@
+/**
+ * Included in:
+ * - /views/playlists/create-form.ejs
+ * - /views/playlists/edit-form.ejs
+ */
+
 const insertBtn = document.getElementById("insertBtn");
 const tbody = document.querySelector("tbody");
 const emptySlot = document.getElementById("empty-slot");
@@ -20,7 +26,10 @@ updateSongSelection()
 insertBtn.addEventListener("click", async event => {
     event.preventDefault(); // Prevents button from submitting the form
     insertBtn.disabled = true;
-    tbody.appendChild(await createSlot())
+    const newSlot = await createSlot()
+    if (newSlot) {
+        tbody.appendChild(newSlot);
+    }
     
     showEmptySlot();
     updateSongSelection();
@@ -70,6 +79,7 @@ function removeRow(event) {
     showEmptySlot();
 }
 
+// Extra methods
 function updateRowNum(start, end = null) {
     if (end === null) {
         end = getSlotRows().length;
@@ -80,7 +90,8 @@ function updateRowNum(start, end = null) {
     for (let i = start; i <= end; i++) {
         childNodes.item(i - 1).firstElementChild.innerText = i.toString().padStart(2, "0");
     }
-    updateSongSelection()
+
+    updateSongSelection();
 }
 
 function showEmptySlot() {
@@ -88,8 +99,14 @@ function showEmptySlot() {
 }
 
 async function createSlot() {
-    const songProm = await fetch(`/song/search/${searchSongID.value.trim()}`);
-    const song = await songProm.json();
+    let song;
+    try {
+        const songProm = await fetch(`/playlist/search-songs?query=${searchSongID.value}`);
+        song = await songProm.json();
+    } catch (error) {
+        console.error(error);
+        return;
+    }
 
     let row = document.createElement("tr");
     let c_no = document.createElement("th");
@@ -141,9 +158,10 @@ function getSlotRows() {
 
 function updateSongSelection() {
     let songIDs = [];
+
     getSlotRows().forEach(slotRow => {
         songIDs.push(slotRow.id);
-    })
+    });
+
     songSelection.value = songIDs;
-    console.log(songIDs);
 }

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Playlists</title>
+</head>
+
+<body>
+    <%- include("../navbar-user") %>
+        <h1>Browse Albums</h1>
+        <button type="button"><a href="/album/create"><strong>Create Album</strong></a><br><br></button><br><br>
+        <% if (allAlbums && allAlbums.length ) { %>
+            <table border="1">
+                <tr>
+                    <th>Actions</th>
+                    <th>Album Name</th>
+                    <th>Year Created</th>
+                    <th>Artist</th>
+                </tr>
+                <% allAlbums.forEach(album=> { %>
+                    <tr>
+                        <td><a href="/album/<%= album._id %>">View/Edit/Delete</a></td>
+                        <td><%= album.title %></td>
+                        <td><%= album.yearReleased %></td>
+                        <td><%= album.artist %></td>
+                    </tr>
+                <% }) %>
+            </table>
+            <% } else { %>
+                <p>No albums yet.</p>
+                <% } %>
+                    <%- include("../footer") %>
+</body>
+</html>
