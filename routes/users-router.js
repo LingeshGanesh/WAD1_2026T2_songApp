@@ -3,6 +3,8 @@ const router = express.Router();
 const usersController = require('../controllers/user-controllers');
 const authMiddleware = require('../middleware/auth-middleware');
 
+router.get('/stats', usersController.stats);
+
 // register
 router.get('/register', usersController.registerGet);
 router.post('/register', usersController.registerPost);
@@ -12,7 +14,7 @@ router.get('/login', usersController.loginGet);
 router.post('/login', usersController.loginPost);
 
 //profile
-router.get('/profile',authMiddleware.isLoggedIn, usersController.profile);
+router.get('/',authMiddleware.isLoggedIn, usersController.profile);
 
 //log out (kill session)
 router.get('/logout', usersController.logout);

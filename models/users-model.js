@@ -44,6 +44,11 @@ exports.createUser = function (newUser) {
     return User.create(newUser);
 }
 
+//find user by id
+exports.findUserByID = function (id) {
+    return User.findOne({ _id: id })
+}
+
 //find user by email
 exports.findUserByEmail = function (email) {
     return User.findOne({ email: email })
@@ -66,3 +71,7 @@ exports.searchUsers = function(query, currentUserId) {
         _id: { $ne: currentUserId } // exclude yourself
     }).limit(10);
 };
+
+exports.updateOne = function(filter, update) {
+    return User.updateOne(filter, update);
+}

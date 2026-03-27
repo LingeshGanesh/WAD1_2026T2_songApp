@@ -1,6 +1,11 @@
 const User = require('../models/users-model');
 const bcrypt = require('bcrypt');
 
+exports.stats = (req, res) => {
+    req.session.visit_count = req.session.visit_count + 1 || 1;
+    res.send('Number of visits: ' + req.session.visit_count);
+}
+
 exports.registerGet = (req, res) => {
     res.render('users/register', {
         error:null,
@@ -13,7 +18,7 @@ exports.registerGet = (req, res) => {
 exports.registerPost = async (req, res) => {
     try {
         const { username, email, password, avatar } = req.body || '';
-        console.log(username,email,password,avatar)
+        console.log(username,email,avatar, password)
 
         //check empty fields
         if (!username || !email || !password || !avatar) {
@@ -23,7 +28,7 @@ exports.registerPost = async (req, res) => {
                 email,
                 avatar
             })
-        }
+        };
 
         //password validation https://stackoverflow.com/questions/2370015/regular-expression-for-password-validation
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&!?]).{8,12}$/;
@@ -34,7 +39,7 @@ exports.registerPost = async (req, res) => {
                 email,
                 avatar
             });
-        }
+        };
 
         const user = {
             username: username.trim(),
@@ -46,35 +51,51 @@ exports.registerPost = async (req, res) => {
         console.log(`Successfully register with
             user:${user.username}
             email:${user.email}`)
-        res.redirect('/user/login');
+        return res.redirect('/user/login');
 
     } catch (error) {
         console.log('Error while registering\n', error);
-        res.redirect('/user/register')
+        return res.redirect('/user/register')
     }
 }
 
 exports.loginGet = (req, res) => {
-    res.render('users/login');
+    res.render('users/login',{
+        email:'',
+        error:null
+    });
 }
 
 exports.loginPost = async (req, res) => {
     try {
-        const email = req.body.email.trim();
+        const email = req.body.email.trim()||'';
         const password = req.body.password.trim();
+
+        if(!email || !password){
+            return res.render('users/login', {
+                error: "All fileds are required",
+                email
+            })
+        };
 
         const user = await User.findUserByEmail(email);
 
         if (!user) {
             console.log("User not found");
-            return res.redirect('/user/login');
+            return res.render('users/login',{
+                error: "User not found",
+                email
+            });
         }
 
         const match = await bcrypt.compare(password, user.password);
 
         if (!match) {
             console.log("Wrong password");
-            return res.redirect('/user/login');
+            return res.render('users/login',{
+                error: "Wrong password",
+                email
+            });
         }
 
         req.session.user = {
@@ -85,32 +106,31 @@ exports.loginPost = async (req, res) => {
 
         console.log("Login successful");
         //need to link to index.html
-        res.redirect('/user/profile');
+        return res.redirect('/homepage');
     } catch (error) {
         console.error('Error occured while trying to login', error);
-        res.redirect('/user/login');
+        return res.redirect('/user/login');
     }
 }
 
 exports.profile = async (req, res) => {
-    const email = req.session.user.email;
-    const user = await User.findUserByEmail(email);
+    const id = req.session.user.id;
+    const user = await User.findUserByID(id);
 
     res.render('users/profile', { user });
 }
 
 exports.editUser = async (req, res) => {
-    const email = req.session.user.email;
-    const user = await User.findUserByEmail(email);
+    const id = req.session.user.id;
+    const user = await User.findUserByID(id);
 
     res.render('users/edit-user', { user })
 }
 
 exports.updateUser = async (req, res) => {
 
-    const email = req.session.user.email;
     const id = req.session.user.id;
-    const user = await User.findUserByEmail(email);
+    const user = await User.findUserByID(id);
 
     const newAvatar = req.body.newAvatar;
     const newUsername = req.body.newUsername;
@@ -122,12 +142,15 @@ exports.updateUser = async (req, res) => {
 
     try {
         let newUser = await User.updateUserByID(id, newUsername, newEmail, newAvatar);
-        const updatedUser = await User.findUserByEmail(newEmail);
+        ///continue
+        const updatedUser = await User.findUserByID(id);
+
         req.session.user = {
             id: updatedUser._id,
             username: updatedUser.username,
             email: updatedUser.email
         };
+
         console.log(`Updated successful: ${newUser}`)
         res.render('users/profile', { user: updatedUser });
     } catch (error) {
@@ -138,7 +161,7 @@ exports.updateUser = async (req, res) => {
 
 exports.displayUser = async (req, res) => {
     const email = req.session.user.email;
-    const user = await User.findUserByEmail(email);
+    const user = await User.findUserByID(email);
 
     res.render('users/delete-user', { user });
 }
@@ -147,7 +170,7 @@ exports.displayUser = async (req, res) => {
 exports.deleteUser = async (req, res) => {
     const email = req.session.user.email;
     const id = req.session.user.id;
-    const user = await User.findUserByEmail(email);
+    const user = await User.findUserByID(email);
 
     try {
         let user = await User.deleteUser(id);

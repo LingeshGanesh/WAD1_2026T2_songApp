@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Album</title>
+</head>
+<body>
+    <h1>Edit Album</h1>
+    <button type="button"><strong><a href="/album/<%= album._id %>">Back To Album</strong></a></button><br><br>
+    <form action="/album/edit/<%= album._id %>" method="post">
+        <label>Title:</label>
+        <input type="text" name="title" value="<%= album.title %>" required><br><br>
+        
+        <label>Artist:</label>
+        <input type="text" name="artist" value="<%= album.artist %>" required><br><br>
+        
+        <label>Description:</label>
+        <textarea name="description" required><%= album.description %></textarea><br><br>
+        
+        <label>Release Year:</label>
+        <input type="number" name="year" value="<%= album.yearReleased %>" required><br><br>
+        
+        <label>Songs (comma-separated ObjectIds):</label>
+        <input type="text" name="songs" value="<%= album.songs.join(', ') %>" required><br><br>
+        
+        <button type="submit">Save Changes</button>
+    </form>
+
+</body>
+</html>

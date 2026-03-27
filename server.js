@@ -7,6 +7,7 @@ const session = require('express-session');
 
 // Load Env variable
 dotenv.config({ path: './config.env' });
+require("node:dns/promises").setServers(["1.1.1.1", "8.8.8.8"]);
 
 // Middleware
 server.use(express.static(path.join(__dirname, "public")));
@@ -22,8 +23,8 @@ server.use(session({
   resave: false, // Prevents the session from being saved back to the session store if nothing has changed.
   saveUninitialized: false, // Prevents a new, empty session from being saved to the store.
   cookie: {
-        secure: false // even if I reload, session will stay
-    }
+    secure: false // even if I reload, session will stay
+  }
 }));
 
 // Routes
