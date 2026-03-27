@@ -157,13 +157,14 @@ exports.showEditForm = async (req, res) => {
 exports.updatePlaylist = async (req, res) => {
     const {user} = req.session;
     const {playlistID} = req.params;
-    let { name, description, visibility, songs } = req.body;
+    let { name, description, editThumb, visibility, songs } = req.body;
     let thumbnail = req.file;
 
     // Input Validation
     name = name.trim();
     description = description.trim();
     description = description === ""? null : description;
+    editThumb = (editThumb === "true");
     
     // There is no song.
     if (songs === "") {
@@ -191,12 +192,14 @@ exports.updatePlaylist = async (req, res) => {
         await Playlist.updateByID(playlistID, editedPlaylist);
 
         // Update thumbnail data
-        if (thumbnail) {
-            await Playlist.updateByID(playlistID, {thumbnailExt: path.extname(thumbnail.originalname)})
-            await Playlist.createThumbnail(thumbnail, playlistID);
-        } else {
-            // No thumbnail provided. Clear the extension field
-            await Playlist.updateByID(playlistID, {thumbnailExt: null})
+        if (editThumb) {
+            if (thumbnail) {
+                await Playlist.updateByID(playlistID, {thumbnailExt: path.extname(thumbnail.originalname)})
+                await Playlist.createThumbnail(thumbnail, playlistID);
+            } else {
+                // No thumbnail provided. Clear the extension field
+                await Playlist.updateByID(playlistID, {thumbnailExt: null})
+            }
         }
     } catch (error) {
         console.error(error);

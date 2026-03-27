@@ -13,7 +13,7 @@
     <form action="/playlist/edit/<%= playlist._id %>" method="post" enctype="multipart/form-data">
         
         <!-- error set to true to fill the fields, as if there is an error -->
-        <%- include("subpages/form-fields.ejs", {fields: playlist, error: true}) %>
+        <%- include("subpages/form-fields.ejs", {fields: playlist, editThumb: true, error: true}) %>
 
         <!-- Song Selection -->
         <%- include("subpages/songs-insert-table", {songs: songsList}) %>
