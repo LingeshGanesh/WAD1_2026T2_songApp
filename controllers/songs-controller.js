@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Song = require("../models/songs-model");
 
-// Controllers
+// HELPER FUNCTIONS
 // Helper function for normalizing and formating song fields from form data
 function normalizeSongFields(body) {
     return {
@@ -13,6 +13,19 @@ function normalizeSongFields(body) {
         duration: Number(body.duration),
         youtubeUrl: (body.youtubeUrl || "").trim()
     };
+}
+
+// Helper function for validating song fields
+function validateSong(fields) {
+    // Required fields: uploader, title, artist
+    if (!fields.uploader || !fields.title || !fields.artist) {
+        return "Uploader, title, and artist are required.";
+    }
+    // Duration must be a positive number
+    if (!Number.isFinite(fields.duration) || fields.duration <= 0) {
+        return "Duration must be a positive number of seconds.";
+    }
+    return null;
 }
 
 // Helper functions for validating and building song data
@@ -28,39 +41,14 @@ function buildSongPayload(fields) {
     };
 }
 
-// Validation rules for song fields
-function validateSong(fields) {
-    // Required fields: uploader, title, artist
-    if (!fields.uploader || !fields.title || !fields.artist) {
-        return "Uploader, title, and artist are required.";
-    }
-    // Duration must be a positive number
-    if (!Number.isFinite(fields.duration) || fields.duration <= 0) {
-        return "Duration must be a positive number of seconds.";
-    }
-    return null;
-}
-
-// Convert duration in seconds to M:SS format for display
+// Helper function to convert duration in seconds to M:SS format for display
 function formatDuration(seconds) {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, "0")}`;
 }
 
-// Browse all songs
-exports.browse = async (req, res) => {
-    try {
-        // For simplicity, we are not implementing sorting and filtering in this function, but it can be added later by parsing query parameters from req.query
-        const songs = await Song.find().sort({ artist: 1, title: 1 });
-        res.render("songs/browse", { songs, formatDuration });
-    } catch (error) {
-        // Log the error and show a generic error message to the user
-        console.error(error);
-        res.status(500).send("Error loading songs from the database.");
-    }
-};
-
+// RENDER FUNCTIONS
 // Show form to create new song
 exports.showCreationForm = (req, res) => {
     res.render("songs/create-form", {
@@ -78,7 +66,66 @@ exports.showCreationForm = (req, res) => {
     });
 };
 
-// Create new song
+// Show form to edit existing song
+exports.showEditForm = async (req, res) => {
+    const { songID } = req.params;
+
+    // Validate songID format
+    if (!mongoose.isValidObjectId(songID)) {
+        return res.status(404).render("not-found", { url: req.url });
+    }
+    // Load song data from the database
+    try {
+        // Check if song exists before rendering edit form
+        const song = await Song.findByID(songID);
+        if (!song) {
+            return res.status(404).render("not-found", { url: req.url });
+        }
+        // Render edit form with existing song data
+        res.render("songs/edit-form", { error: null, song });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error loading song for editing.");
+    }
+};
+
+// Show form to confirm deletion of song and handle deletion
+exports.showDeleteForm = async (req, res) => {
+    const { songID } = req.params;
+    // Validate songID format
+    if (!mongoose.isValidObjectId(songID)) {
+        return res.status(404).render("not-found", { url: req.url });
+    }
+    // Load song data from the database
+    try {
+        const song = await Song.findByID(songID);
+        // If song not found, show 404 page
+        if (!song) {
+            return res.status(404).render("not-found", { url: req.url });
+        }
+        // Render delete confirmation form with song data
+        res.render("songs/delete-form", { error: null, song, formatDuration });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error loading song for deletion.");
+    }
+};
+
+// CRUD FUNCTIONS
+// READ: Browse all songs
+exports.browse = async (req, res) => {
+    try {
+        // For simplicity, we are not implementing sorting and filtering in this function, but it can be added later by parsing query parameters from req.query
+        const songs = await Song.retrieveAll().sort({ artist: 1, title: 1 });
+        res.render("songs/browse", { songs, formatDuration });
+    } catch (error) {
+        // Log the error and show a generic error message to the user
+        console.error(error);
+        res.status(500).send("Error loading songs from the database.");
+    }
+};
+
+// CREATE: Create new song
 exports.createSong = async (req, res) => {
     const fields = normalizeSongFields(req.body);
     const validationError = validateSong(fields);
@@ -90,19 +137,16 @@ exports.createSong = async (req, res) => {
 
     // If validation succeeds, attempt to create new song in the database
     try {
-        const song = await Song.create(buildSongPayload(fields));
+        const song = await Song.createSong(buildSongPayload(fields));
         res.redirect(`/songs/${song._id}`);
     } catch (error) {
         console.error(error);
-        const message = error && error.code === 11000
-        // Duplicate key error, likely due to unique index on combination of title, artist, and album
-            ? "That song already exists in the database."
-            : "Error saving song to the database.";
+        const message = "Error saving song to the database.";
         res.status(500).render("songs/create-form", { error: message, fields });
     }
 };
 
-// Browse songs with sorting and filtering
+// READ: View details of a specific song
 exports.songInfo = async (req, res) => {
     const { songID } = req.params;
 
@@ -111,7 +155,7 @@ exports.songInfo = async (req, res) => {
     }
 
     try {
-        const song = await Song.findById(songID);
+        const song = await Song.findByID(songID);
 
         if (!song) {
             return res.status(404).render("not-found", { url: req.url });
@@ -124,30 +168,7 @@ exports.songInfo = async (req, res) => {
     }
 };
 
-// Show form to edit existing song
-exports.showEditForm = async (req, res) => {
-    const { songID } = req.params;
-
-    // Validate songID format
-    if (!mongoose.isValidObjectId(songID)) {
-        return res.status(404).render("not-found", { url: req.url });
-    }
-    // Load song data from the database
-    try {
-        const song = await Song.findById(songID);
-        // If song not found, show 404 page
-        if (!song) {
-            return res.status(404).render("not-found", { url: req.url });
-        }
-        // Render edit form with existing song data
-        res.render("songs/edit-form", { error: null, song });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Error loading song for editing.");
-    }
-};
-
-// Update existing song
+// UPDATE: Update existing song
 exports.updateSong = async (req, res) => {
     const { songID } = req.params;
     const fields = normalizeSongFields(req.body);
@@ -166,10 +187,7 @@ exports.updateSong = async (req, res) => {
     }
     // If validation succeeds, attempt to update song in the database
     try {
-        const updatedSong = await Song.findByIdAndUpdate(songID, buildSongPayload(fields), {
-            new: true,
-            runValidators: true
-        });
+        const updatedSong = await Song.updateSongByID(songID, buildSongPayload(fields));
 
         if (!updatedSong) {
             return res.status(404).render("not-found", { url: req.url });
@@ -178,35 +196,11 @@ exports.updateSong = async (req, res) => {
         res.redirect(`/songs/${updatedSong._id}`);
     } catch (error) {
         console.error(error);
-        const message = error && error.code === 11000
-            ? "Another song with the same title, artist, and album already exists."
-            : "Error updating song in the database.";
+        const message = "Error updating song in the database.";
         res.status(500).render("songs/edit-form", {
             error: message,
             song: { _id: songID, ...fields }
         });
-    }
-};
-
-// Show form to confirm deletion of song and handle deletion
-exports.showDeleteForm = async (req, res) => {
-    const { songID } = req.params;
-    // Validate songID format
-    if (!mongoose.isValidObjectId(songID)) {
-        return res.status(404).render("not-found", { url: req.url });
-    }
-    // Load song data from the database
-    try {
-        const song = await Song.findById(songID);
-        // If song not found, show 404 page
-        if (!song) {
-            return res.status(404).render("not-found", { url: req.url });
-        }
-        // Render delete confirmation form with song data
-        res.render("songs/delete-form", { error: null, song, formatDuration });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Error loading song for deletion.");
     }
 };
 
@@ -221,7 +215,7 @@ exports.deleteSong = async (req, res) => {
     }
 
     try {
-        const song = await Song.findById(songID);
+        const song = await Song.findByID(songID);
         // If song not found, show 404 page
         if (!song) {
             return res.status(404).render("not-found", { url: req.url });
@@ -243,7 +237,7 @@ exports.deleteSong = async (req, res) => {
             });
         }
         // If validation passes, delete the song from the database
-        await Song.findByIdAndDelete(songID);
+        await Song.deleteSongByID(songID);
         res.redirect("/songs/browse");
     } catch (error) {
         console.error(error);

@@ -28,8 +28,36 @@ const songSchema = new mongoose.Schema({
     }
 });
 
-songSchema.index({ title: 1, artist: 1, album: 1 }, { unique: true });
-
 const Song = mongoose.model('Song', songSchema, 'songs');
+
+// Mongoose static methods for CRUD operations
+// Used in browse page to load all songs from the database
+Song.retrieveAll = function () {
+    return Song.find();
+};
+
+// Used in edit form 
+// Used in delete confirmation page to check if song exists before allowing delete
+Song.findByID = function (songID) {
+    return Song.findOne({ _id: songID });
+};
+
+// Used in create form to save new song to the database
+Song.createSong = function (newSong) {
+    return Song.create(newSong);
+};
+
+// Used in edit form to update existing song in the database
+Song.updateSongByID = function (songID, updatedSong) {
+    return Song.findByIdAndUpdate(songID, updatedSong, {
+        new: true,
+        runValidators: true
+    });
+};
+
+// Used in delete confirmation page to delete song from the database
+Song.deleteSongByID = function (songID) {
+    return Song.findByIdAndDelete(songID);
+};
 
 module.exports = Song;
