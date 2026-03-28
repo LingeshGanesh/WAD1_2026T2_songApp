@@ -21,7 +21,11 @@ router.get('/logout', usersController.logout);
 
 //edit user
 router.get('/edit',authMiddleware.isLoggedIn, usersController.editUser);
-router.post('/update',authMiddleware.isLoggedIn, usersController.updateUser)
+router.post('/update',authMiddleware.isLoggedIn, usersController.updateUser);
+
+//update password
+router.get('/change-password',authMiddleware.isLoggedIn,usersController.getEditPswForm);
+router.post('/change-password',authMiddleware.isLoggedIn,usersController.updatePassword);
 
 //delete user
 router.get('/delete',authMiddleware.isLoggedIn, usersController.displayUser)

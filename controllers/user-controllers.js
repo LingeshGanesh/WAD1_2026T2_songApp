@@ -9,7 +9,7 @@ exports.stats = (req, res) => {
 exports.registerGet = (req, res) => {
     res.render('users/register', {
         errors: null,
-        formData: { username: '', email: '', avatar: '', password:'', cfmpassword:'' }
+        formData: { username: '', email: '', avatar: '', password: '', cfmpassword: '' }
     })
 }
 
@@ -88,9 +88,15 @@ exports.registerPost = async (req, res) => {
 }
 
 exports.loginGet = (req, res) => {
+    const msg = req.query.msg || '';
+    if (req.session.user) {
+        return res.redirect('/');
+    }
+
     res.render('users/login', {
         formData: { email: '' },
-        errors: null
+        errors: null,
+        msg
     });
 }
 
@@ -109,7 +115,8 @@ exports.loginPost = async (req, res) => {
         if (errors.length > 0) {
             return res.render('users/login', {
                 errors,
-                formData: { email: trimmedEmail }
+                formData: { email: trimmedEmail },
+                msg: null
             });
         }
 
@@ -118,7 +125,8 @@ exports.loginPost = async (req, res) => {
         if (!user) {
             return res.render('users/login', {
                 errors: ["Invalid email or password"],
-                formData: { email: trimmedEmail }
+                formData: { email: trimmedEmail },
+                msg: null,
             });
         }
 
@@ -127,7 +135,8 @@ exports.loginPost = async (req, res) => {
         if (!match) {
             return res.render('users/login', {
                 errors: ["Invalid email or password"],
-                formData: { email: trimmedEmail }
+                formData: { email: trimmedEmail },
+                msg: null
             });
         }
         //regenerate?
@@ -144,12 +153,13 @@ exports.loginPost = async (req, res) => {
         console.error('Error occured while trying to login', error);
         return res.render('users/login', {
             errors: ["Something went wrong. Please try again."],
-            formData: req.body
+            formData: req.body,
+            msg: null
         });
     }
 }
 
-exports.profile = async (req, res) => {
+exports.profile = (req, res) => {
     try {
         res.render('users/profile', { user: req.user });
     } catch (error) {
@@ -158,7 +168,7 @@ exports.profile = async (req, res) => {
     }
 }
 
-exports.editUser = async (req, res) => {
+exports.editUser = (req, res) => {
     try {
 
         res.render('users/edit-user', {
@@ -239,20 +249,87 @@ exports.updateUser = async (req, res) => {
     }
 }
 
-exports.displayUser = async (req, res) => {
+exports.getEditPswForm = (req, res) => {
+    console.log("Updating password")
+    res.render('users/change-password', {
+        errors: null,
+        formData: {
+            currentPassword: '',
+            newPassword: '',
+            cfmPassword: ''
+        }
+    })
+}
+
+exports.updatePassword = async (req, res) => {
+
     try {
         const id = req.session.user.id;
+        const { currentPassword = '', newPassword = '', cfmPassword = '' } = req.body;
+        // console.log(currentPassword, cfmPassword, newPassword);
+        let errors = [];
+
+        if (!currentPassword) errors.push('Please type in current password!');
+
         const user = await User.findUserByID(id);
 
-        if (!user) {
-            return res.redirect('/user/login');
+        const match = await bcrypt.compare(currentPassword, user.password);
+        if (!match) {
+            errors.push('Current password is wrong')
         }
 
-        res.render('users/delete-user', { user });
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&!?]).{8,}$/;
 
+        if (!newPassword) {
+            errors.push('Please type in new password!');
+        } else if (!passwordRegex.test(newPassword)) {
+            errors.push("Password must be at least 8 characters and include uppercase, lowercase, number, and special character (@#$%^&!?)");
+        }
+
+        if (!cfmPassword) {
+            errors.push("Please confirm your password");
+        } else if (newPassword !== cfmPassword) {
+            errors.push("Passwords do not match");
+        }
+
+        if (newPassword === currentPassword) {
+            errors.push("New password must be different from current password");
+        }
+
+        if (errors.length > 0) {
+            return res.render('users/change-password', {
+                errors,
+                formData: req.body
+            });
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        await User.updatePasswordByID(id, hashedPassword);
+
+        console.log('Successfully updated password');
+        req.session.destroy(err => {
+            if (err) {
+                console.log(err);
+                return res.redirect('/user/profile');
+            }
+
+            res.redirect('/user/login?msg=Password updated, please login again');
+        });
     } catch (error) {
-        console.error("Error loading delete page:", error);
-        res.redirect('/user/login');
+        console.error("Error while updating password", error);
+        res.render('users/change-password', {
+            errors: ["Something went wrong. Try again."],
+            formData: req.body
+        })
+    }
+}
+
+exports.displayUser = async (req, res) => {
+    try {
+        res.render('users/delete-user', { user: req.user });
+    } catch (error) {
+        console.error("Error loading profile:", error);
+        res.redirect('/homepage');
     }
 };
 
@@ -279,7 +356,7 @@ exports.deleteUser = async (req, res) => {
     }
 }
 
-exports.search = async (req, res) => {
+exports.search = (req, res) => {
     res.render('users/search-friend', {
         result: [],
         query: '',

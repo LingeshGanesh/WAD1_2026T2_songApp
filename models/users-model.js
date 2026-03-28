@@ -69,6 +69,11 @@ exports.updateUserByID = function(id, username, email, profilePicture){
     return User.updateOne({_id:id},{username:username, email:email, profilePicture: profilePicture})
 }
 
+//update password by id
+exports.updatePasswordByID = function(id, password) {
+    return User.updateOne({_id: id}, {password:password});
+}
+
 //delete user
 exports.deleteUser = function(id){
     return User.deleteOne({_id:id})
@@ -88,8 +93,10 @@ exports.searchUsers = function(query, currentUserId) {
         //https://www.mongodb.com/docs/manual/reference/mql/query-predicates/ 
         _id: { $ne: currentUserId } // exclude yourself
     }).limit(10);
-};
+}
 
+//update event in user
 exports.updateOne = function(filter, update) {
     return User.updateOne(filter, update);
 }
+
