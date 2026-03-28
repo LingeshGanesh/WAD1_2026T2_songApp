@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display Profile</title>
+</head>
+
+<body>
+    <a href="/user/search">Back to search</a>
+    <h2>Profile: Username - <%=user.username%>
+    </h2>
+    <p><img src="<%=user.profilePicture%>" width="120"></p>
+
+    <p>
+        <%=user.followers.length%>
+            <%= user.followers.length===1 ? 'follower' : 'followers' %>
+    </p>
+    <p>
+        <%=user.followings.length%> following
+    </p>
+    <form action="/user/<%= isFollowing ? 'unfollowUser' : 'followUser' %>" method="post">
+        <input type="hidden" name="targetUserId" value="<%=user._id%>">
+        <button type="submit">
+            <%= isFollowing ? 'Following' : 'Follow' %>
+        </button>
+    </form>
+
+
+</body>
+
+</html>

@@ -28,11 +28,16 @@ router.get('/change-password',authMiddleware.isLoggedIn,usersController.getEditP
 router.post('/change-password',authMiddleware.isLoggedIn,usersController.updatePassword);
 
 //delete user
-router.get('/delete',authMiddleware.isLoggedIn, usersController.displayUser)
-router.post('/delete',authMiddleware.isLoggedIn, usersController.deleteUser)
+router.get('/delete',authMiddleware.isLoggedIn, usersController.displayUser);
+router.post('/delete',authMiddleware.isLoggedIn, usersController.deleteUser);
 
 //search friends
-router.get('/search', authMiddleware.isLoggedIn, usersController.search)
-router.get('/search-friend',authMiddleware.isLoggedIn, usersController.searchUser)
+router.get('/search', authMiddleware.isLoggedIn, usersController.search);
+router.get('/search-friend',authMiddleware.isLoggedIn, usersController.searchUser);
+router.get('/displayProfile',authMiddleware.isLoggedIn,usersController.displayProfile);
+
+//follow & unfollow
+router.post('/followUser', authMiddleware.isLoggedIn, usersController.followUser);
+router.post('/unfollowUser', authMiddleware.isLoggedIn, usersController.unfollowUser);
 
 module.exports = router;

@@ -402,7 +402,72 @@ exports.searchUser = async (req, res) => {
         });
     }
 
-};
+}
+
+exports.displayProfile = async (req, res) => {
+    const id = req.query.id;
+    try {
+        const targetUser = await User.findUserByID(id);
+        const currentUser = await User.findUserByID(req.session.user.id);
+
+        const isFollowing = currentUser.followings?.some(f =>
+            f.equals(targetUser._id)
+        ) || false;
+
+        //console.log(isFollowing, currentUser.followings, currentUser.followers, targetUser.followers, targetUser.followings);
+
+        if (targetUser) {
+            return res.render('users/profile-display', {
+                user: targetUser,
+                errors: [],
+                isFollowing
+            })
+        } else {
+            return res.render('users/search-friend', {
+                result: [],
+                errors: ["Something went wrong while displaying the profile"],
+                isFollowing
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        return res.render('users/search-friend', {
+            result: [],
+            errors: ["Server error occurred"],
+            isFollowing
+        });
+    }
+}
+
+exports.unfollowUser = async (req, res) => {
+    console.log("Unfollowing user")
+    try {
+        const currentUserId = req.session.user.id;
+        const targetUserId = req.body.targetUserId;
+
+        await User.unfollowUser(currentUserId, targetUserId);
+
+        res.redirect(`/user/displayProfile?id=${targetUserId}`);
+    } catch (error) {
+        console.log('Error occurs while unfollowing user',error);
+        res.redirect('/user/search-friend');
+    }
+}
+
+exports.followUser = async (req, res) => {
+    console.log("Following user")
+     try {
+        const currentUserId = req.session.user.id;
+        const targetUserId = req.body.targetUserId;
+
+        await User.followUser(currentUserId, targetUserId);
+
+        res.redirect(`/user/displayProfile?id=${targetUserId}`);
+    } catch (error) {
+        console.log('Error occurs while following user',error);
+        res.redirect('/user/search-friend');
+    }
+}
 
 exports.logout = (req, res) => {
     req.session.destroy(() => {
