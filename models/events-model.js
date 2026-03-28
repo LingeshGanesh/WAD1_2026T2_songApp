@@ -45,7 +45,16 @@ const eventSchema = new mongoose.Schema({
         type: String,
         required: [true, 'An event must have a location'],
         trim: true
-    }
+    },
+    capacity: {
+        type: Number,
+        required: [true, 'An event must have a participant limit'],
+        min: [1, 'Capacity must be at least 1']
+    },
+    participants: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }]
 });
 
 const Event = mongoose.model('Event', eventSchema, 'events');
@@ -63,9 +72,16 @@ exports.addEvent = function(newEvent) {
     return Event.create(newEvent);
 };
 
-exports.editEvent =  async function(id, authorId, name, desc, date, entryFee, location) {
+exports.editEvent =  async function(id, authorId, name, desc, date, entryFee, location, capacity) {
     const doc = await Event.findOne({ _id: id, author: authorId });
-    Object.assign(doc, { name, desc, date, entryFee, location });
+
+    if (capacity < doc.participants.length) {
+        const err = new Error('Capacity cannot be lower than current number of registered participants');
+        err.name = 'CapacityError';
+        throw err;
+    }
+
+    Object.assign(doc, { name, desc, date, entryFee, location, capacity });
     return doc.save();
 };
 
@@ -88,3 +104,7 @@ exports.deleteEvent = function(id, authorId) {
 exports.getUpcomingEvents = function() {
     return Event.find().sort({ date: 1 }).limit(3);
 };
+
+exports.updateOne = function(filter, update) {
+    return Event.updateOne(filter, update);
+}

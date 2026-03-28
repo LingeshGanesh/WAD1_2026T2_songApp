@@ -43,6 +43,7 @@ exports.createEvent = async (req, res) => {
         const date = req.body.date;
         const entryFee = req.body.entryFee;
         const location = req.body.location;
+        const capacity = req.body.capacity;
 
         const userId = req.session.user?.id;
 
@@ -53,7 +54,7 @@ exports.createEvent = async (req, res) => {
         // form validation
 
         // create structure that stores new event
-        let newEvent = { name: name, desc: desc, date: date, entryFee: entryFee, location: location, author: userId };
+        let newEvent = { name: name, desc: desc, date: date, entryFee: entryFee, location: location, author: userId, capacity: capacity };
 
         try {
             let msg = `Event ${name} has been added successfully`;
@@ -103,6 +104,10 @@ exports.getEvent = async (req, res) => {
 
     try {
         const result = await Event.findByIdAndAuthor(id, userId);
+        // prevents bypassing using url
+        if (new Date() > new Date(result.date)){
+            return res.redirect("/events/edit-events");
+        }
         res.render("events/update-event", { result, msg });
     } catch (error) {
         console.log(error);
@@ -121,10 +126,11 @@ exports.updateEvent = async (req, res) => {
     const date = req.body.date;
     const entryFee = req.body.entryFee;
     const location = req.body.location;
+    const capacity = req.body.capacity;
 
     try {
         let msg = `Event ${name} has been editted successfully`;
-        let success = await Event.editEvent(id, userId, name, desc, date, entryFee, location);
+        let success = await Event.editEvent(id, userId, name, desc, date, entryFee, location, capacity);
         console.log(success);
         res.render("events/success", { msg: msg, redirectUrl: "/events/edit-events"});
     } catch (error) {
@@ -169,6 +175,10 @@ exports.getMarkedEvent = async (req, res) => {
 
     try {
         const result = await Event.findByIdAndAuthor(id, userId);
+        // prevents bypassing using url
+        if (new Date() > new Date(result.date)){
+            return res.redirect("/events/edit-events");
+        }
         res.render("events/show-an-event", { result });
 
     } catch (error) {
@@ -216,7 +226,12 @@ exports.attendEvent = async (req, res) => {
       return res.send("You cannot add your own event");
     }
 
+    if (event.participants.length >= event.capacity) {
+        return res.send("Event is full")
+    }
+
     await User.updateOne({ _id: userId }, { $addToSet: { events: eventId } });
+    await Event.updateOne({ _id: eventId }, { $addToSet: { participants: userId } });
 
     res.render("events/success", {
       msg: "Event added successfully",
@@ -234,6 +249,7 @@ exports.removeEvent = async (req, res) => {
     const eventId = req.body.eventId;
 
     await User.updateOne({ _id: userId }, { $pull: { events: eventId } });
+    await Event.updateOne({ _id: eventId }, { $pull: { participants: userId } });
 
     res.render("events/success", {
       msg: "Event removed successfully",
