@@ -1,29 +1,23 @@
 const express = require('express');
 
 const albumsController = require('./../controllers/album-controllers');
+const authMiddleware = require('../middleware/auth-middleware');
 
 const router = express.Router();
 
-// Show list of existing albums
-router.get("/browse", albumsController.showAlbumList);
+router.get("/browse", authMiddleware.isLoggedIn, albumsController.showAlbumList);
+router.get("/song-search", authMiddleware.isLoggedIn, albumsController.searchSongs);
+router.get("/create", authMiddleware.isLoggedIn, albumsController.showAddForm);
+router.post("/create", authMiddleware.isLoggedIn, albumsController.createAlbum);
 
-router.get("/song-search", albumsController.searchSongs);
+// Specific routes before /:id
+router.get("/edit/:id", authMiddleware.isLoggedIn, albumsController.showEditForm);
+router.post("/edit/:id", authMiddleware.isLoggedIn, albumsController.updateAlbum);
+router.get("/delete/:id", authMiddleware.isLoggedIn, albumsController.getMarkedAlbum);
+router.post("/delete/:id", authMiddleware.isLoggedIn, albumsController.deleteAlbum);
 
-// Creation of album
-router.get("/create", albumsController.showAddForm);
-router.post("/create", albumsController.createAlbum);
-
-// Get album info after clicking on href from /browse
-router.get("/:id", albumsController.albumInfo);
-
-// Edit Albums
-router.get("/edit/:id", albumsController.showEditForm);
-router.post("/edit/:id", albumsController.updateAlbum);
-
-
-// Delete Albums
-router.get("/delete/:id", albumsController.getMarkedAlbum);
-router.post("/delete/:id", albumsController.deleteAlbum);
+// /:id must be last
+router.get("/:id", authMiddleware.isLoggedIn, albumsController.albumInfo);
 
 
 module.exports = router;
