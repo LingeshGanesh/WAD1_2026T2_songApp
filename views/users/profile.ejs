@@ -15,17 +15,18 @@
     <a href="/user/change-password/">Change Password</a><br>
     <a href="/user/delete/">Delete</a><br>
     <img src="<%=user.profilePicture%>" width="150"><br>
-     <p>
+    <p>
         <%=user.followers.length%>
-            <%= user.followers.length===1 ? 'follower' : 'followers' %>
+            <%- user.followers.length <=1 ? '<a href="/user/showConnection?type=followers">follower</a>'
+                : '<a href="/user/showConnection?type=followers">followers</a>' %>
     </p>
     <p>
-        <%=user.followings.length%> following
+        <%=user.followings.length%> <a href="/user/showConnection?type=following">following</a>
     </p>
-    
+
     Email: <%= user.email %> <br>
-    
-    <a href="/playlist/yours">Browse your playlist!</a>
+
+        <a href="/playlist/yours">Browse your playlist!</a>
 </body>
 
 </html>

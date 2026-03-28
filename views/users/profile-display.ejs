@@ -8,17 +8,19 @@
 </head>
 
 <body>
-    <a href="/user/search">Back to search</a>
+    <a href="javascript:history.back()">Back</a>
+
     <h2>Profile: Username - <%=user.username%>
     </h2>
     <p><img src="<%=user.profilePicture%>" width="120"></p>
 
     <p>
         <%=user.followers.length%>
-            <%= user.followers.length===1 ? 'follower' : 'followers' %>
+            <%- user.followers.length <=1 ? '<a href="/user/showConnection?type=followers">follower</a>'
+                : '<a href="/user/showConnection?type=followers">followers</a>' %>
     </p>
     <p>
-        <%=user.followings.length%> following
+        <%=user.followings.length%> <a href="/user/showConnection?type=following">following</a>
     </p>
     <form action="/user/<%= isFollowing ? 'unfollowUser' : 'followUser' %>" method="post">
         <input type="hidden" name="targetUserId" value="<%=user._id%>">

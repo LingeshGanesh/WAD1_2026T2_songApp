@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display connections</title>
+    <link rel="stylesheet" href="/css/events-styles.css">
+</head>
+
+<body>
+    <a href="/user/profile" class="back-link">Back</a>
+    <h2>
+        <%= type==='followers' ? 'Followers' : 'Following' %>
+    </h2>
+
+    <% if (list.length===0) { %>
+        <p class="empty-state">No <%= type %> found</p>
+        <% } else { %>
+            <div class="connections-grid">
+                <% list.forEach(user=> { %>
+                    <a href="/user/displayProfile?id=<%= user._id %>" class="profile-card">
+                        <div class="avatar-wrapper">
+                            <img src="<%= user.profilePicture %>" alt="<%= user.username %>">
+                        </div>
+                        <span class="profile-username">
+                            <%= user.username %>
+                        </span>
+                    </a>
+                    <% }) %>
+            </div>
+            <% } %>
+</body>
+
+</html>
