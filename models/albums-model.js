@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { createIndexes } = require('./songs-model');
 
 const albumSchema = new mongoose.Schema({
     title: {
@@ -19,12 +20,13 @@ const albumSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'Song'
     }],
-    artist: {
-        type: String, 
-        required: [true, 'An album must have an artist']    
-    },
     description: {
         type: String
+    },
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     }
 });
 
@@ -42,10 +44,9 @@ exports.findByID = function(albumID) {
     return Album.findOne({ _id: albumID})
 }
 
-exports.editAlbum = function(albumID, title, description, artist, songs, yearReleased) {
+exports.editAlbum = function(albumID, title, description, songs, yearReleased) {
     return Album.updateOne({_id: albumID}, {title: title,
         description: description,
-        artist: artist,
         songs: songs,
         yearReleased: yearReleased
     });
@@ -56,5 +57,5 @@ exports.deleteAlbum = function(albumID) {
 };
 
 exports.findByIDAndPopulate = function (albumID) {
-    return Album.findOne({ _id: albumID }).populate('songs');
+    return Album.findOne({ _id: albumID }).populate('songs').populate('createdBy');
 };
