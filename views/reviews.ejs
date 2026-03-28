@@ -4,9 +4,9 @@
   <title>Reviews</title>
 </head>
 <body>
-  <h1>All Reviews</h1>
+  <a href="/homepage"><strong>Back to Main Page</strong></a><br>
 
-  <h2>Add Review</h2>
+  <h1>Add Your Reviews Here</h1>
   <form action="/reviews/create" method="POST">
     User ID: <input type="text" name="userId" /><br>
     Song ID: <input type="text" name="songId" /><br>
@@ -15,7 +15,7 @@
     <button type="submit">Submit</button>
   </form>
 
-  <h2>Review List</h2>
+  <h1><u>Review List:</u></h1>
   <ol>
     <% reviews.forEach(function(review) { %>
       <li>
