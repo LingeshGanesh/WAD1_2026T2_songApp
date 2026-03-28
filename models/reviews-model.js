@@ -50,5 +50,3 @@ exports.updateReview = async (reviewId, rating, comment) => {
 exports.deleteReview = async (reviewId) => {
   return await Review.findByIdAndDelete(reviewId);
 };
-
-

@@ -71,3 +71,12 @@ exports.deleteReview = async (req, res) => {
     res.send('Error deleting review');
   }
 };
+
+// LOGGED IN (AUTHENTICATION)
+
+// exports.isLoggedIn = (req, res, next) => {
+//   if (!req.session.user) {
+//     return res.redirect('/login');
+//   }
+//   next();
+// };
