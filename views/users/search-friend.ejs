@@ -8,7 +8,7 @@
 </head>
 
 <body>
-    <a href="/user/profile">Back</a><br><br>
+    <a href="/user/profile">Back</a><br>
     <h2>Search friends</h2>
     <form action="/user/search-friend" method="get">
         <input type="text" name="query" placeholder="Search friends" value="<%=query%>">
@@ -27,7 +27,7 @@
                     <td>
                         <%= user.username %>
                     </td>
-                    <td><a href="/user/addFriend/<%= user._id %>">Add</a></td>
+                    <td><a href="/user/displayProfile?id=<%= user._id %>&query=<%= query %>">Profile</a></td>
                 </tr>
                 <% }) %>
         </table>
