@@ -406,6 +406,7 @@ exports.searchUser = async (req, res) => {
 
 exports.displayProfile = async (req, res) => {
     const id = req.query.id;
+    
     try {
         const targetUser = await User.findUserByID(id);
         const currentUser = await User.findUserByID(req.session.user.id);
@@ -468,6 +469,40 @@ exports.followUser = async (req, res) => {
         res.redirect('/user/search-friend');
     }
 }
+
+exports.showConnection = async (req, res) => {
+    try {
+        const type = req.query.type; 
+        const user = req.user;
+
+        let userIds = [];
+
+        if (type === 'followers') {
+            userIds = user.followers;
+            
+        } else if (type === 'following') {
+            userIds = user.followings;
+            
+        }
+
+        const list = await User.findUsers(userIds);
+
+        return res.render('users/display-connection', {
+            list,
+            type,
+            errors: []
+        });
+
+    } catch (error) {
+        console.log("Error while trying to load connections",error);
+
+        return res.render('users/display-connection', {
+            list: [],
+            type: '',
+            errors: ['Server error occurred']
+        });
+    }
+};
 
 exports.logout = (req, res) => {
     req.session.destroy(() => {

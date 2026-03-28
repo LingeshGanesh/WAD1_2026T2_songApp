@@ -40,4 +40,6 @@ router.get('/displayProfile',authMiddleware.isLoggedIn,usersController.displayPr
 router.post('/followUser', authMiddleware.isLoggedIn, usersController.followUser);
 router.post('/unfollowUser', authMiddleware.isLoggedIn, usersController.unfollowUser);
 
+router.get('/showConnection', authMiddleware.isLoggedIn, usersController.showConnection);
+
 module.exports = router;

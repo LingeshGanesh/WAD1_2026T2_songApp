@@ -58,6 +58,12 @@ exports.findUserByID = function (id) {
     return User.findOne({ _id: id })
 }
 
+//find multiple users by ids
+//https://www.mongodb.com/docs/manual/reference/operator/query/in/
+exports.findUsers = function (id) {
+    return User.find({ _id: {$in: id} })
+}
+
 //find user by email
 exports.findUserByEmail = function (email) {
     return User.findOne({ email: email })
