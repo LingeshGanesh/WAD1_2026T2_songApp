@@ -5,7 +5,6 @@ const Song = require("../models/songs-model");
 // Helper function for normalizing and formating song fields from form data
 function normalizeSongFields(body) {
     return {
-        uploader: (body.uploader || "").trim(),
         title: (body.title || "").trim(),
         artist: (body.artist || "").trim(),
         album: (body.album || "").trim(),
@@ -17,9 +16,9 @@ function normalizeSongFields(body) {
 
 // Helper function for validating song fields
 function validateSong(fields) {
-    // Required fields: uploader, title, artist
-    if (!fields.uploader || !fields.title || !fields.artist) {
-        return "Uploader, title, and artist are required.";
+    // Required fields: title, artist
+    if (!fields.title || !fields.artist) {
+        return "Title and artist are required.";
     }
     // Duration must be a positive number
     if (!Number.isFinite(fields.duration) || fields.duration <= 0) {
@@ -129,6 +128,7 @@ exports.browse = async (req, res) => {
 exports.createSong = async (req, res) => {
     const fields = normalizeSongFields(req.body);
     const validationError = validateSong(fields);
+    fields.uploader = req.user.username; // Use the username as the uploader
 
     // If validation fails, re-render form with error message and previously entered values
     if (validationError) {
@@ -173,6 +173,7 @@ exports.updateSong = async (req, res) => {
     const { songID } = req.params;
     const fields = normalizeSongFields(req.body);
     const validationError = validateSong(fields);
+    const uploader = req.user.username; // Get the username of the logged-in user from the session
 
     // Validate songID format
     if (!mongoose.isValidObjectId(songID)) {
@@ -188,11 +189,18 @@ exports.updateSong = async (req, res) => {
     // If validation succeeds, attempt to update song in the database
     try {
         const updatedSong = await Song.updateSongByID(songID, buildSongPayload(fields));
-
+        // If song not found, show 404 page
         if (!updatedSong) {
             return res.status(404).render("not-found", { url: req.url });
         }
-
+        // Only allow updates if uploader matches
+        if (uploader !== updatedSong.uploader) {
+            return res.status(403).render("songs/edit-form", {
+                error: "Only the original uploader can edit this song.",
+                song: { _id: songID, ...fields }
+            });
+        }
+        // If update is successful, redirect to the song info page
         res.redirect(`/songs/${updatedSong._id}`);
     } catch (error) {
         console.error(error);
@@ -208,8 +216,8 @@ exports.updateSong = async (req, res) => {
 exports.deleteSong = async (req, res) => {
     const { songID } = req.params;
     const confirmation = req.body.confirmation;
-    const uploader = (req.body.uploader || "").trim();
-
+    const uploader = req.user.username; // Get the username of the logged-in user from the session
+    // Validate songID format
     if (!mongoose.isValidObjectId(songID)) {
         return res.status(404).render("not-found", { url: req.url });
     }

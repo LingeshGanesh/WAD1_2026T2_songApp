@@ -1,0 +1,92 @@
+[
+    {
+        "uploader": "admin",
+        "title": "Love Story",
+        "artist": "Taylor Swift",
+        "album": "Fearless",
+        "genre": "Country Pop",
+        "duration": 235,
+        "youtubeUrl": "https://youtu.be/8xg3vE8Ie_E"
+    },
+    {
+        "uploader": "admin",
+        "title": "You Belong With Me",
+        "artist": "Taylor Swift",
+        "album": "Fearless",
+        "genre": "Country Pop",
+        "duration": 231,
+        "youtubeUrl": "https://youtu.be/VuNIsY6JdUw"
+    },
+    {
+        "uploader": "admin",
+        "title": "Blank Space",
+        "artist": "Taylor Swift",
+        "album": "1989",
+        "genre": "Pop",
+        "duration": 231,
+        "youtubeUrl": "https://youtu.be/e-ORhEE9VVg"
+    },
+    {
+        "uploader": "admin",
+        "title": "Style",
+        "artist": "Taylor Swift",
+        "album": "1989",
+        "genre": "Pop",
+        "duration": 231,
+        "youtubeUrl": "https://youtu.be/-CmadmM5cOk"
+    },
+    {
+        "uploader": "admin",
+        "title": "Cruel Summer",
+        "artist": "Taylor Swift",
+        "album": "Lover",
+        "genre": "Pop",
+        "duration": 178,
+        "youtubeUrl": "https://youtu.be/ic8j13piAhQ"
+    },
+    {
+        "uploader": "jon",
+        "title": "Shake It Off",
+        "artist": "Taylor Swift",
+        "album": "1989",
+        "genre": "Pop",
+        "duration": 219,
+        "youtubeUrl": "https://youtu.be/nfWlot6h_JM"
+    },
+    {
+        "uploader": "jon",
+        "title": "Wildest Dreams",
+        "artist": "Taylor Swift",
+        "album": "1989",
+        "genre": "Dream Pop",
+        "duration": 220,
+        "youtubeUrl": "https://youtu.be/IdneKLhsWOQ"
+    },
+    {
+        "uploader": "jon",
+        "title": "Anti-Hero",
+        "artist": "Taylor Swift",
+        "album": "Midnights",
+        "genre": "Pop",
+        "duration": 201,
+        "youtubeUrl": "https://youtu.be/b1kbLwvqugk"
+    },
+    {
+        "uploader": "jon",
+        "title": "Enchanted",
+        "artist": "Taylor Swift",
+        "album": "Speak Now",
+        "genre": "Pop",
+        "duration": 353,
+        "youtubeUrl": "https://youtu.be/fvg01l43XBc"
+    },
+    {
+        "uploader": "jon",
+        "title": "All Too Well",
+        "artist": "Taylor Swift",
+        "album": "Red",
+        "genre": "Pop",
+        "duration": 329,
+        "youtubeUrl": "https://youtu.be/tollGa3S0o8"
+    }
+]
