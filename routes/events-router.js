@@ -11,6 +11,7 @@ router.get('/', authMiddleware.isLoggedIn, eventsController.getIndex);
 // Define a GET route to display the list of events
 router.get("/event-list", authMiddleware.isLoggedIn, eventsController.showEvents);
 router.post("/event-list", authMiddleware.isLoggedIn, eventsController.attendEvent);
+router.post("/event-list/remove", authMiddleware.isLoggedIn, eventsController.removeEvent);
 
 // Define a GET and POST route to display the search page for events
 router.get("/search-event", authMiddleware.isLoggedIn, eventsController.showForm);

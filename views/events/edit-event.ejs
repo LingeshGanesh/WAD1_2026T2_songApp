@@ -17,8 +17,12 @@
         Date: <%= event.date %><br>
         Entry Fee: <%= event.entryFee %><br>
         Location: <%= event.location %><br>
-        <a href="/events/update-event?id=<%= event._id %>">Edit</a> |
-        <a href="/events/delete-event?id=<%= event._id %>">Delete</a>
+        <% if (new Date() > new Date(event.date)) { %>
+          <button disabled>Can't make changes after event has passed</button>
+        <% } else { %>
+          <button><a href="/events/update-event?id=<%= event._id %>">Edit</a></button> |
+          <button><a href="/events/delete-event?id=<%= event._id %>">Delete</a></button>
+        <% } %>
         <hr>
     <% }); %>
     
