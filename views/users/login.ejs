@@ -27,7 +27,12 @@
                 <% }) %>
         </ul>
         <% } %>
-            Don't have an account? <br><a href="/user/register"> Register</a>
+            <% if (msg) { %>
+                <p style="color: green;">
+                    <%= msg %>
+                </p>
+                <% } %>
+                    Don't have an account? <br><a href="/user/register"> Register</a>
 </body>
 
 </html>
