@@ -13,32 +13,44 @@
     <button type="button"><a href="/album/browse"><strong>Back To Main Page</strong></a></button>
     <button type="button"><a href="/album/edit/<%= album._id%>"><strong>Edit Album</strong></a></button>
     <button type="button"><a href="/album/delete/<%= album._id%>"><strong>Delete Album</strong></a></button>
+    <p>Album</p>
     <h1><%= album.title %></h1>
 
-    <h2>Album Details:</h2>
+    <strong><%= album.createdBy.username %></strong> • <%= album.yearReleased %> • <%= album.songs.length %> <%= album.songs.length === 1 ? 'song' : 'songs' %>, <%= Math.floor(album.songs.reduce((acc, s)=> acc + s.duration, 0) / 60) %> min, <%= (album.songs.reduce((acc, s)=> acc +
+            s.duration, 0) % 60).toString().padStart(2, '0') %> sec
+    <hr>
 
-    <p><strong>Artist:</strong>
-            <%= album.artist %>
-        </p>
-        <p><strong>Description:</strong>
-            <%= album.description %>
-        </p>
-        <p><strong>Release Year:</strong>
-            <%= album.yearReleased %>
-        </p>
+    <% if (album.description === ""){ %>
+        <p></p>
+    <% } else { %>
+        <p><strong>Description:</strong> <%= album.description %></p>
+        <hr>
+    <% } %>
 
-        <h3>Songs: <%= album.songs.length %></h3>
-        <% if (album.songs && album.songs.length> 0) { %>
-            <ul>
-                <% album.songs.forEach(song=> { %>
-                    <li>
-                        <%= song.title %> by <%= song.artist %>
-                    </li> <!-- Displaying song title and artist -->
-                <% }) %>
-            </ul>
-        <% } else { %>
-            <p>No songs available.</p>
-        <% } %>
+    <% if (album.songs && album.songs.length > 0) { %>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Artist</th>
+                <th>Duration</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% album.songs.forEach((song, index) => { %>
+                <tr>
+                    <td><%= index + 1 %></td>
+                    <td><%= song.title %></td>
+                    <td><%= song.artist %></td>
+                    <td><%= Math.floor(song.duration / 60) %>:<%= (song.duration % 60).toString().padStart(2, '0') %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+    <% } else { %>
+        <p>No songs available.</p>
+    <% } %>
 
 </body>
 

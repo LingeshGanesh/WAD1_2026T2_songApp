@@ -14,23 +14,21 @@
         <% if (allAlbums && allAlbums.length ) { %>
             <table border="1">
                 <tr>
-                    <th>Action</th>
-                    <th>Album Name</th>
+                    <th>Album Title</th>
                     <th>Year Created</th>
                     <th>Artist</th>
                 </tr>
                 <% allAlbums.forEach(album=> { %>
                     <tr>
-                        <td><a href="/album/<%= album._id %>">View</a></td>
-                        <td><%= album.title %></td>
+                        <td><a href="/album/<%= album._id %>"><%= album.title %></a></td>
                         <td><%= album.yearReleased %></td>
-                        <td><%= album.artist %></td>
+                        <td><%= album.createdBy ? album.createdBy.username : 'Unknown' %></td>
                     </tr>
                 <% }) %>
             </table>
             <% } else { %>
                 <p>No albums yet.</p>
-                <% } %>
-                    <%- include("../footer") %>
+            <% } %>
+    <%- include("../footer") %>
 </body>
 </html>

@@ -5,7 +5,7 @@ const Song = require('../models/songs-model');
 
 exports.showAlbumList = async (req,res) => {
     try {
-        const allAlbums = await Album.retrieveAll() || [];
+        const allAlbums = await Album.retrieveAll().populate('createdBy') || [];
         res.render("albums/show-album-list", {allAlbums});
     } catch(error) {
         console.error(error)
@@ -15,7 +15,7 @@ exports.showAlbumList = async (req,res) => {
 exports.albumInfo = async (req,res) => {
     const albumID = req.params.id
     try {
-        const album = await Album.findByID(albumID).populate('songs');
+        const album = await Album.findByID(albumID).populate('songs').populate('createdBy');
         res.render("albums/show-album-created", {album})
     } catch(error) {
         console.error(error)
@@ -32,18 +32,19 @@ exports.showAddForm = async (req,res) => {
 
 exports.createAlbum = async (req,res) => {
     const title = req.body.title;
-    const description = req.body.description
-    const artist = req.body.artist;
+    const description = req.body.description.trim();
     const year = req.body.year;
     const songs = req.body.songs 
 
+    console.log(req.session.user.id);
+
 
     if (year.toString().length !== 4) {
-        return res.render("albums/add-album", { result: "", msg: "Year must be a 4-digit number." });
+        return res.render("albums/add-album", {msg: "Year must be a 4-digit number." });
     }
 
     if (!songs) {
-        return res.render("albums/add-album", { result: "", msg: "Please add at least one song." });
+        return res.render("albums/add-album", {msg: "Please add at least one song." });
     }
 
     const songIds = songs.split(',').map(id => new mongoose.Types.ObjectId(id.trim()));
@@ -52,16 +53,18 @@ exports.createAlbum = async (req,res) => {
         title: title,
         yearReleased: year,
         songs: songIds,
-        artist: artist,
+        createdBy: req.session.user.id,
         description: description
     }
 
     try {
         let msg = "";
-        let result = (await Album.addAlbum(newAlbum)); // create new album
-        result = await result.populate('songs');
+        let result = await Album.addAlbum(newAlbum);
+        const newId = result._id;
+        await result.populate('songs');
+        await result.populate('createdBy');
+        res.redirect(`/album/${newId}`);
 
-        res.render("albums/add-album", { result: result || null, msg });
 
 
     } catch (error) {
@@ -85,9 +88,13 @@ exports.showEditForm = async (req, res) => {
 
 exports.updateAlbum = async (req, res) => {
     const albumID = req.params.id;
-    const { title, artist, description, year, songs } = req.body;
 
-    if (!title || !artist || !year) {
+    const title = req.body.title;
+    const description = req.body.description.trim();
+    const year = req.body.year;
+    const songs = req.body.songs;
+
+    if (!title || !year) {
         const album = await Album.findByIDAndPopulate(albumID);
         return res.render("albums/edit-album", { album, msg: "All fields are required." });
     }
@@ -105,7 +112,7 @@ exports.updateAlbum = async (req, res) => {
     const songIds = songs.split(',').map(id => new mongoose.Types.ObjectId(id.trim()));
 
     try {
-        await Album.editAlbum(albumID, title, description, artist, songIds, year);
+        await Album.editAlbum(albumID, title, description,songIds, year);
         res.send(`<h1>Your album has been edited!</h1>
             <a href="/album/${albumID}">View Your Changes</a>`);
     } catch (error) {
@@ -119,7 +126,7 @@ exports.getMarkedAlbum = async (req,res) => {
     const albumID = req.params.id;
 
     try {
-        const album = await Album.findByID(albumID).populate('songs');
+        const album = await Album.findByID(albumID).populate('songs').populate('createdBy');
         res.render("albums/show-album-delete", {album})
     } catch(error) {
         console.error(error)

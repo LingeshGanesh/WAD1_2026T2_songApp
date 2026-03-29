@@ -10,28 +10,56 @@
     <button type="button"><strong><a href="/album/<%= album._id %>">Back To Album</strong></a></button><br>
     <% if(album){ %>
         <p><strong>Title:</strong> <%= album.title %></p>
-        <p><strong>Artist:</strong> <%= album.artist %></p>
-        <p><strong>Description:</strong> <%= album.description %></p>
+        <p><strong>Artist:</strong> <%= album.createdBy.username %></p>
+        <% if (album.description){ %>
+            <p><strong>Description:</strong> <%= album.description %></p>
+        <% } %>
         <p><strong>Release Year:</strong> <%= album.yearReleased %></p>
         <p><strong>Songs: <%= album.songs.length %></strong></p>
             <% if (album.songs.length > 0) { %>
-                <% album.songs.forEach(song => { %>
-                    <ul>
-                        <li><%= song.title %> by <%= song.artist %></li>
-                    </ul>
-                <% }) %>
-            <% } else { %>
-                <p>No songs available.</p>
-            <% } %>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Artist</th>
+                <th>Duration</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% album.songs.forEach((song, index) => { %>
+                <tr>
+                    <td><%= index + 1 %></td>
+                    <td><%= song.title %></td>
+                    <td><%= song.artist %></td>
+                    <td><%= Math.floor(song.duration / 60) %>:<%= (song.duration % 60).toString().padStart(2, '0') %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+    <% } else { %>
+        <p>No songs available.</p>
+    <% } %>
     
     <br>
     <form action="/album/delete/<%= album._id %>" method="post">
-        <input type="hidden" name="id" value="<%= album._id%>">
-        <button type="submit">Delete Album</button>
+        <input type="hidden" name="id" value="<%= album._id %>">
+        <label>
+            <input type="checkbox" id="confirmDelete">
+            I confirm that I want to delete this album
+        </label><br><br>
+        <button type="submit" id="deleteBtn" disabled>Delete Album</button>
     </form>
+    
 <% } else if (album === null) { %>
     <p>Album not found</p>
 <% } %>
+
+<script>
+    document.getElementById('confirmDelete').addEventListener('change', function () {
+        document.getElementById('deleteBtn').disabled = !this.checked;
+    });
+</script>
 
 </body>
 </html>
