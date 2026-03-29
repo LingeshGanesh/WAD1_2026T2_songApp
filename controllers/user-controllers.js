@@ -103,7 +103,7 @@ exports.loginGet = (req, res) => {
 exports.loginPost = async (req, res) => {
     try {
         const { email = '', password = '' } = req.body;
-        const trimmedEmail = email.trim() || '';
+        const trimmedEmail = email.trim().toLowerCase();
 
 
         let errors = [];
@@ -139,16 +139,40 @@ exports.loginPost = async (req, res) => {
                 msg: null
             });
         }
-        //regenerate?
-        req.session.user = {
-            id: user._id,
-            email: user.email,
-            username: user.username
-        }
 
-        console.log("Login successful");
-        //need to link to index.html
-        return res.redirect('/homepage');
+        //regenerate new session (everytime login)
+        //https://www.tutorialpedia.org/blog/nodejs-express-regenerate-session/
+        req.session.regenerate((err) => {
+            if (err) {
+                console.log(err);
+                return res.render('users/login', {
+                    errors: ['Session error, please try again'],
+                    formData: { email: trimmedEmail },
+                    msg: null
+                });
+            }
+
+            req.session.user = {
+                id: user._id,
+                email: user.email,
+                username: user.username
+            };
+
+            //save session before redirect
+            req.session.save((err) => {
+                if (err) {
+                    console.log(err);
+                    return res.render('users/login', {
+                        errors: ['Session save failed'],
+                        formData: { email: trimmedEmail },
+                        msg: null
+                    });
+                }
+
+                console.log("Login successful");
+                return res.redirect('/homepage');
+            });
+        });
     } catch (error) {
         console.error('Error occured while trying to login', error);
         return res.render('users/login', {
@@ -334,7 +358,7 @@ exports.displayUser = async (req, res) => {
 };
 
 //delete hasn't done yet
-exports.deleteUser = async (req, res) => {
+exports.deleteUserAndData = async (req, res) => {
 
     const id = req.session.user.id;
     const user = await User.findUserByID(id);
@@ -406,7 +430,7 @@ exports.searchUser = async (req, res) => {
 
 exports.displayProfile = async (req, res) => {
     const id = req.query.id;
-    
+
     try {
         const targetUser = await User.findUserByID(id);
         const currentUser = await User.findUserByID(req.session.user.id);
@@ -450,14 +474,14 @@ exports.unfollowUser = async (req, res) => {
 
         res.redirect(`/user/displayProfile?id=${targetUserId}`);
     } catch (error) {
-        console.log('Error occurs while unfollowing user',error);
+        console.log('Error occurs while unfollowing user', error);
         res.redirect('/user/search-friend');
     }
 }
 
 exports.followUser = async (req, res) => {
     console.log("Following user")
-     try {
+    try {
         const currentUserId = req.session.user.id;
         const targetUserId = req.body.targetUserId;
 
@@ -465,24 +489,24 @@ exports.followUser = async (req, res) => {
 
         res.redirect(`/user/displayProfile?id=${targetUserId}`);
     } catch (error) {
-        console.log('Error occurs while following user',error);
+        console.log('Error occurs while following user', error);
         res.redirect('/user/search-friend');
     }
 }
 
 exports.showConnection = async (req, res) => {
     try {
-        const type = req.query.type; 
-        const user = req.user;
+        const type = req.query.type;
+        const id = req.query.id;
 
+        const user = await User.findUserByID(id);
+        
         let userIds = [];
 
         if (type === 'followers') {
             userIds = user.followers;
-            
         } else if (type === 'following') {
             userIds = user.followings;
-            
         }
 
         const list = await User.findUsers(userIds);
@@ -490,16 +514,20 @@ exports.showConnection = async (req, res) => {
         return res.render('users/display-connection', {
             list,
             type,
-            errors: []
+            errors: [],
+            user,
+            currentUserId: req.session.user.id 
         });
 
     } catch (error) {
-        console.log("Error while trying to load connections",error);
+        console.log("Error while trying to load connections", error);
 
         return res.render('users/display-connection', {
             list: [],
             type: '',
-            errors: ['Server error occurred']
+            errors: ['Server error occurred'],
+            user: null,
+            currentUserId: req.session.user.id 
         });
     }
 };
