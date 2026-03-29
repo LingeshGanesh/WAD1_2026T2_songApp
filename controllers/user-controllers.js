@@ -497,16 +497,16 @@ exports.followUser = async (req, res) => {
 exports.showConnection = async (req, res) => {
     try {
         const type = req.query.type;
-        const user = req.user;
+        const id = req.query.id;
 
+        const user = await User.findUserByID(id);
+        
         let userIds = [];
 
         if (type === 'followers') {
             userIds = user.followers;
-
         } else if (type === 'following') {
             userIds = user.followings;
-
         }
 
         const list = await User.findUsers(userIds);
@@ -514,7 +514,9 @@ exports.showConnection = async (req, res) => {
         return res.render('users/display-connection', {
             list,
             type,
-            errors: []
+            errors: [],
+            user,
+            currentUserId: req.session.user.id 
         });
 
     } catch (error) {
@@ -523,7 +525,9 @@ exports.showConnection = async (req, res) => {
         return res.render('users/display-connection', {
             list: [],
             type: '',
-            errors: ['Server error occurred']
+            errors: ['Server error occurred'],
+            user: null,
+            currentUserId: req.session.user.id 
         });
     }
 };

@@ -9,9 +9,10 @@
 </head>
 
 <body>
-    <a href="/user/profile" class="back-link">Back</a>
+    <a href="javascript:history.back()" class="back-link">Back</a>
     <h2>
         <%= type==='followers' ? 'Followers' : 'Following' %>
+            of User: <%= user ? user.username : '' %>
     </h2>
 
     <% if (list.length===0) { %>
@@ -19,7 +20,9 @@
         <% } else { %>
             <div class="connections-grid">
                 <% list.forEach(user=> { %>
-                    <a href="/user/displayProfile?id=<%= user._id %>" class="profile-card">
+                    <a href="<%= user._id.equals(currentUserId) 
+                                ? '/user/profile' 
+                                : `/user/displayProfile?id=${user._id}` %>" class="profile-card">
                         <div class="avatar-wrapper">
                             <img src="<%= user.profilePicture %>" alt="<%= user.username %>">
                         </div>
