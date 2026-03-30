@@ -116,7 +116,7 @@ exports.browse = async (req, res) => {
     try {
         // For simplicity, we are not implementing sorting and filtering in this function, but it can be added later by parsing query parameters from req.query
         const songs = await Song.retrieveAll().sort({ artist: 1, title: 1 });
-        res.render("songs/browse", { songs, formatDuration });
+        res.render("songs/browse-songs", { songs, formatDuration });
     } catch (error) {
         // Log the error and show a generic error message to the user
         console.error(error);

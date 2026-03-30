@@ -13,8 +13,7 @@
         <% allPlaylists.forEach((playlist, i) => { %>
         <tr>
             <td><a href="/playlist/<%= playlist._id %>">
-                <% const owner = typeof(owners)==='string'? owners: owners[i] %>
-                <%- include("playlist-header", {playlist, owner}) %>
+                <%- include("playlist-header", {playlist}) %>
             </a></td>
             <td><%= playlist.creationDate %></td>
         </tr>

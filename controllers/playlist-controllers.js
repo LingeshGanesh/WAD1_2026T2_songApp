@@ -1,12 +1,10 @@
 // Import model
 const mongoose = require('mongoose');
 const Playlist = require("../models/playlists-model");
-const User = require("../models/users-model");
-const Song = require("./../models/songs-model.js");
 
 // Private Method
 function checkOwnership(user, playlist) {
-    return (playlist.owner && user.id === playlist.owner.toString());
+    return (playlist.owner && user.id === playlist.owner._id.toString());
 }
 
 function comparePlaylist(a, b, sortby, isAscending) {
@@ -17,6 +15,13 @@ function comparePlaylist(a, b, sortby, isAscending) {
         comp = a.creationDate - b.creationDate;
     }
     return comp * (isAscending? 1: -1);
+}
+
+function convertTime(timeSec) {
+    const minute = Math.floor(timeSec / 60);
+    const second = timeSec % 60;
+
+    return `${minute}:${second.toString().padStart(2, "0")}`;
 }
 
 // Controllers
@@ -39,26 +44,9 @@ exports.browse = async (req, res) => {
     // Sort the playlists by the sorting fields
     allPlaylists.sort((a, b) => comparePlaylist(a, b, sortby, isAscending));
 
-    // Get all playlist owners' documents
-    let owners = []
-    try {
-        for (let play of allPlaylists) {
-            if (play.owner) {
-                const ownerObj = await User.findUserByID(play.owner);
-                owners.push(ownerObj.username);
-            } else {
-                owners.push(null);
-            }
-        }
-    } catch (error) {
-        console.error(error);
-        return res.status(500).send("Error fetching owners from database.")
-    }
-
     // Render page
     const option = {
-        allPlaylists, 
-        owners, 
+        allPlaylists,
         sortby, 
         isAscending, 
         subroute: "browse"}
@@ -76,8 +64,8 @@ exports.playlistInfo = async (req, res) => {
     }
     
     try {
-        let {playlist, songsList, songsDuration, playlistDuration} = await Playlist.getByID(playlistID, true);
-
+        let playlist = await Playlist.getByID(playlistID, true);
+        console.log(playlist);
         // If the playlist does not exist, show playlist not found page
         if (!playlist) {
             return res.status(404).render('playlists/not-found');
@@ -89,19 +77,19 @@ exports.playlistInfo = async (req, res) => {
             return res.status(404).render('playlists/not-found');
         }
 
-        // Get the playlist owner
-        let owner = null;
-        if (playlist.owner) {
-            owner = await User.findUserByID(playlist.owner);
-            owner = owner.username;
+        // Get songs and playlist duration
+        songsDuration = [];
+        playlistDuration = 0;
+        for (let i = 0; i < playlist.songs.length; i++) {
+            const eachSong = playlist.songs[i]
+            songsDuration.push(convertTime(eachSong.duration));
+            playlistDuration += eachSong.duration;
         }
 
         // Render page
         const option = {
             isOwner, // true if the current user is the owner of this playlist.
             playlist, // playlist document
-            owner, // playlist owner (user) document
-            songsList, // array of song documents
             songsDuration, // array of song durations
             playlistDuration // total playlist durations
         }
@@ -210,7 +198,7 @@ exports.showEditForm = async (req, res) => {
 
     try {
         // Fetch the playlist info
-        let {playlist, songsList} = await Playlist.getByID(playlistID, true);
+        let playlist = await Playlist.getByID(playlistID, true);
         
         // Only allow the owner to edit (Authorization)
         if (!checkOwnership(user, playlist)) {
@@ -220,8 +208,7 @@ exports.showEditForm = async (req, res) => {
         // Render page
         const option = {
             error: false, 
-            playlist, 
-            songsList
+            playlist
         }
 
         res.render('playlists/edit-form', option);
@@ -297,7 +284,7 @@ exports.showDeleteForm = async (req, res) => {
     const {playlistID} = req.params;
 
     try {
-        let {playlist, songsList} = await Playlist.getByID(playlistID, true);
+        let playlist = await Playlist.getByID(playlistID, true);
         
         // Only allow the owner to delete (Authorization)
         if (!checkOwnership(user, playlist)) {
@@ -305,7 +292,7 @@ exports.showDeleteForm = async (req, res) => {
         }
         
         // Render form
-        res.render('playlists/delete-form', {user, errorMsgs: false, playlist, songsList});
+        res.render('playlists/delete-form', {user, errorMsgs: false, playlist});
     } catch (error) {
         console.error(error);
         return res.status(500).send("Error calling database.")
@@ -321,7 +308,7 @@ exports.deletePlaylist = async (req, res) => {
     declaration = Array.isArray(declaration)? declaration: [declaration];
 
     // Fetch playlist info
-    const {playlist, songsList} = await Playlist.getByID(playlistID, true);
+    let playlist = await Playlist.getByID(playlistID, true);
 
     // Three layers of confirmation:
     let errorMsgs = [];
@@ -342,7 +329,7 @@ exports.deletePlaylist = async (req, res) => {
 
     // If there are errors, return to the form.
     if (errorMsgs.length > 0) {
-        return res.render('playlists/delete-form', {user, errorMsgs, playlist, songsList});
+        return res.render('playlists/delete-form', {user, errorMsgs, playlist});
     }
 
     // Delete playlist
@@ -354,11 +341,4 @@ exports.deletePlaylist = async (req, res) => {
         console.error(error);
         return res.status(500).send("Error deleting playlist from the database.")
     }
-}
-
-// API: Search Songs
-exports.searchSongs = async (req, res) => {
-    const { query } = req.query;
-    const searchedSong = await Song.findById(query);
-    res.send(searchedSong);
 }
