@@ -68,42 +68,6 @@ exports.getByID = async function(id, loadSong) {
     }
 }
 
-exports.getByIDold = async function(id, loadSong = false) {
-    const playlist =  await Playlist.findById(id);
-    // The playlist returned is either null or not.
-    
-    if (loadSong) {
-        // Return early if no playlist is found.
-        if (!playlist) {return {playlist};}
-
-        // Query songs from the database
-        let songLUT = new Map();
-        for (const songID of playlist.songs) {
-            if (!songLUT.has(songID.toString())) {
-                // TODO: replace with song's create method
-                let eachSong = await Song.findById(songID);
-                songLUT.set(songID.toString(), eachSong);
-                console.log(`Queried: ${eachSong.title}`);
-            }
-        }
-
-        // Fill songsList
-        let songsList = [];
-        let songsDuration = [];
-        let playlistDuration = 0;
-        for (let i = 0; i < playlist.songs.length; i++) {
-            const songID = playlist.songs[i];
-            const eachSong = songLUT.get(songID.toString());
-            songsList.push(eachSong);
-            songsDuration.push(convertTime(eachSong.duration));
-            playlistDuration += eachSong.duration;
-        }
-        return {playlist, songsList, songsDuration, playlistDuration};
-    } else {
-        return playlist;
-    }
-}
-
 exports.insert = async function(newPlaylist) {
     const doc = await Playlist.create(newPlaylist);
     return doc;
