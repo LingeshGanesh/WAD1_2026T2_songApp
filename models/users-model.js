@@ -1,5 +1,13 @@
 const mongoose = require('mongoose');
 
+//import model
+const Song = require('./songs-model');
+const Review = require('./reviews-model');
+const Playlist = require('./playlists-model');
+const Event = require('./events-model');
+const Album = require('./albums-model');
+
+
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -61,7 +69,7 @@ exports.findUserByID = function (id) {
 //find multiple users by ids
 //https://www.mongodb.com/docs/manual/reference/operator/query/in/
 exports.findUsers = function (id) {
-    return User.find({ _id: {$in: id} })
+    return User.find({ _id: { $in: id } })
 }
 
 //find user by email
@@ -85,9 +93,9 @@ exports.updatePasswordByID = function (id, password) {
 }
 
 //delete user
-exports.deleteUser = function (id) {
-    return User.deleteOne({ _id: id })
-}
+// exports.deleteUser = function (id) {
+//     return User.deleteOne({ _id: id })
+// }
 
 //search users 
 exports.searchUsers = function (query, currentUserId) {
@@ -132,6 +140,45 @@ exports.unfollowUser = function (currentUserId, targetUserId) {
             { $pull: { followers: currentUserId } }
         )
     ]);
+};
+
+//delete evrything user created and delete user
+exports.deleteUserAndData = async (userId) => {
+
+    //reviews
+    await Review.deleteMany({ userId });
+
+    //playlists
+    await Playlist.deleteMany({ userId });
+
+    //events
+    await Event.deleteMany({ author: userId });
+
+    //also remove user from participants
+    await Event.updateMany(
+        {},
+        { $pull: { participants: userId } }
+    );
+
+    //albums
+    await Album.deleteMany({ userId });
+
+    //songs
+    await Song.deleteMany({ userId });
+
+    //remove from other users
+    await User.updateMany(
+        {},
+        {
+            $pull: {
+                followers: userId,
+                followings: userId
+            }
+        }
+    );
+
+    //delete user
+    await User.deleteOne({ _id: userId });
 };
 
 //update event in user
