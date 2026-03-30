@@ -1,0 +1,16 @@
+.browse-songs table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.browse-songs th, td {
+  text-align: left;
+  padding: 8px;
+}
+
+.browse-songs tr:nth-child(even){background-color: #f2f2f2}
+
+.browse-songs th {
+  background-color: #04AA6D;
+  color: white;
+}
