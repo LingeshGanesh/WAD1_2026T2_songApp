@@ -8,27 +8,49 @@
 </head>
 
 <body>
-    <h2>Welcome, <%= user.username %>!</h2>
-    <a href="/user/search">Search Friends</a><br>
-    <a href="/user/logout">Logout</a><br>
-    <a href="/user/edit/">Edit personal info</a><br>
-    <a href="/user/change-password/">Change Password</a><br>
-    <a href="/user/delete/">Delete</a><br>
-    <img src="<%=user.profilePicture%>" width="150"><br>
-     <p>
-        <%= user.followers.length %>
-            <%- user.followers.length <=1 ? `<a href="/user/showConnection?type=followers&id=${user._id}">follower</a>`
-                : `<a href="/user/showConnection?type=followers&id=${user._id}">followers</a>`
-                %>
-    </p>
+    <%- include("../navbar-user") %>
+        <h2>Welcome, <%= user.username %>!</h2>
+        <a href="/user/search">Search Friends</a><br>
+        <a href="/user/logout">Logout</a><br>
+        <a href="/user/edit/">Edit personal info</a><br>
+        <a href="/user/change-password/">Change Password</a><br>
+        <a href="/user/delete/">Delete</a><br>
+        <img src="<%=user.profilePicture%>" width="150"><br>
+        <p>
+            <%= user.followers.length %>
+                <%- user.followers.length <=1 ? `<a
+                    href="/user/showConnection?type=followers&id=${user._id}">follower</a>`
+                    : `<a href="/user/showConnection?type=followers&id=${user._id}">followers</a>`
+                    %>
+        </p>
 
-    <p>
-        <%= user.followings.length %>
-            <a href="/user/showConnection?type=following&id=<%= user._id %>">following</a>
-    </p>
-    Email: <%= user.email %> <br>
+        <p>
+            <%= user.followings.length %>
+                <a href="/user/showConnection?type=following&id=<%= user._id %>">following</a>
+        </p>
+        Email: <%= user.email %> <br>
 
-        <a href="/playlist/yours">Browse your playlist!</a>
+            <h3>Your Playlists</h3>
+
+            <% if (playlists.length> 0) { %>
+                <% playlists.forEach(playlist=> { %>
+                    <p>
+                        <a href="/playlist/<%= playlist._id %>">
+                            <%= playlist.name %><br>
+                                <% const thumbURL=playlist.thumbnailExt ?
+                                    `/image/playlist-thumb/${playlist._id}${playlist.thumbnailExt}`
+                                    : '/image/default-thumb.png' %>
+
+                                    <img src="<%= thumbURL %>" width="120">
+
+                        </a>
+
+                    </p>
+                    <% }) %>
+                        <% } else { %>
+                            <p>You have no playlists yet.</p>
+                            <% } %>
+                                <%- include("../footer") %>
 </body>
 
 </html>

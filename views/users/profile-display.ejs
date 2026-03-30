@@ -32,6 +32,27 @@
         </button>
     </form>
 
+    <h3>Public Playlists</h3>
+
+        <% if (playlists.length> 0) { %>
+            <% playlists.forEach(playlist=> { %>
+                <p>
+                    <a href="/playlist/<%= playlist._id %>">
+                        <%= playlist.name %><br>
+                            <% const thumbURL=playlist.thumbnailExt ?
+                                `/image/playlist-thumb/${playlist._id}${playlist.thumbnailExt}`
+                                : '/image/default-thumb.png' %>
+
+                                <img src="<%= thumbURL %>" width="120">
+
+                    </a>
+
+                </p>
+                <% }) %>
+                    <% } else { %>
+                        <p>You have no playlists yet.</p>
+                        <% } %>
+
 
 </body>
 

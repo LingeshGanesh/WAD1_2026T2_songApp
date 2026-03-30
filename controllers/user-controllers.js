@@ -1,4 +1,5 @@
 const User = require('../models/users-model');
+const Playlist = require('../models/playlists-model');
 const bcrypt = require('bcrypt');
 
 exports.stats = (req, res) => {
@@ -183,18 +184,19 @@ exports.loginPost = async (req, res) => {
     }
 }
 
-exports.profile = (req, res) => {
+exports.profile = async (req, res) => {
     try {
-        res.render('users/profile', { user: req.user });
+        const playlists = await Playlist.retrieveByOwnerID(req.user._id);
+        console.log(playlists)
+        res.render('users/profile', { user: req.user,  playlists });
     } catch (error) {
         console.error("Error loading profile:", error);
         res.redirect('/homepage');
     }
 }
 
-exports.editUser = (req, res) => {
+exports.editUser = async (req, res) => {
     try {
-
         res.render('users/edit-user', {
             user: req.user,
             errors: '',
@@ -206,7 +208,7 @@ exports.editUser = (req, res) => {
         })
     } catch (error) {
         console.error("Error loading data of user to edit:", error);
-        res.render('users/profile', { user: req.user });
+        res.redirect('/user/profile');
     }
 
 }
@@ -216,13 +218,13 @@ exports.updateUser = async (req, res) => {
     try {
         const id = user._id;
         const { newUsername = '', newEmail = '', newAvatar = '' } = req.body;
+        const avatarToSave = newAvatar || user.profilePicture;
 
         let errors = [];
 
         //check empty
         if (!newUsername) errors.push("Username is required");
         if (!newEmail) errors.push("Email is required");
-        if (!newAvatar) errors.push("Please select a profile picture");
 
         const trimmedUsername = newUsername.trim();
         const trimmedEmail = newEmail.trim();
@@ -246,8 +248,7 @@ exports.updateUser = async (req, res) => {
             });
         }
 
-        await User.updateUserByID(id, trimmedUsername, trimmedEmail, newAvatar);
-
+        await User.updateUserByID(id, trimmedUsername, trimmedEmail, avatarToSave);
         const updatedUser = await User.findUserByID(id);
 
         //update session
@@ -260,8 +261,8 @@ exports.updateUser = async (req, res) => {
         console.log(`Updated successful: 
                     Email: ${updatedUser.email}
                     Username: ${updatedUser.username}`)
-
-        res.render('users/profile', { user: updatedUser });
+        const playlists = await Playlist.retrieveByOwnerID(req.user._id);
+        res.render('users/profile', { user: updatedUser, playlists });
     } catch (error) {
         console.log('Error while updating User', error);
 
@@ -334,7 +335,7 @@ exports.updatePassword = async (req, res) => {
         req.session.destroy(err => {
             if (err) {
                 console.log(err);
-                return res.render('users/profile', { user: req.user });
+                return res.redirect('/user/profile');
             }
 
             res.redirect('/user/login?msg=Password updated, please login again');
@@ -370,13 +371,13 @@ exports.deleteUserAndData = async (req, res) => {
             if (err) {
                 console.log("Error while destorying session:", err);
                 //need change
-                return res.render('users/profile', { user: req.user })
+                return res.redirect('/user/profile')
             }
             res.redirect('/user/login')
         })
     } catch (error) {
         console.log('Error while deleting User', error);
-        res.render('users/profile', { user: user })
+        res.redirect('/user/profile')
     }
 }
 
@@ -440,6 +441,9 @@ exports.displayProfile = async (req, res) => {
 
         }
 
+        const playlists = await Playlist.retrievePublicByOwnerID(targetUser._id);
+
+        //to decide whether to show following or follow
         const isFollowing = currentUser.followings?.some(f =>
             f.equals(targetUser._id)
         ) || false;
@@ -450,7 +454,8 @@ exports.displayProfile = async (req, res) => {
             return res.render('users/profile-display', {
                 user: targetUser,
                 errors: [],
-                isFollowing
+                isFollowing,
+                playlists
             })
         } else {
             return res.render('users/search-friend', {
