@@ -16,7 +16,7 @@
         <%- include("subpages/form-fields.ejs", {fields: playlist, editThumb: true, error: true}) %>
 
         <!-- Song Selection -->
-        <%- include("subpages/songs-insert-table", {songs: songsList}) %>
+        <%- include("subpages/songs-insert-table", {songs: playlist.songs}) %>
         <br>
         <input type="submit" value="Save Changes">
 

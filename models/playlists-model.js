@@ -45,29 +45,30 @@ const playlistSchema = new mongoose.Schema({
 const Playlist = mongoose.model('Playlist', playlistSchema, 'playlists');
 
 
-// Private Functions
-function convertTime(timeSec) {
-    const minute = Math.floor(timeSec / 60);
-    const second = timeSec % 60;
-
-    return `${minute}:${second.toString().padStart(2, "0")}`;
-}
-
-
 // CRUD Functions
 exports.retrieveAll = async function() {
-    return await Playlist.find();
+    return await Playlist.find().populate('owner');
 }
 
 exports.retrievePublic = async function() {
-    return await Playlist.find({visibility: "Public"});
+    return await Playlist.find({visibility: "Public"}).populate('owner');
 }
 
 exports.retrieveByOwnerID = async function(ownerID) {
     return await Playlist.find({owner: ownerID});
 }
 
-exports.getByID = async function(id, loadSong = false) {
+exports.getByID = async function(id, loadSong) {
+    const playlist = Playlist.findById(id);
+    
+    if (loadSong) {
+        return await playlist.populate(["owner", "songs"]);
+    } else {
+        return await playlist.populate(["owner"]);
+    }
+}
+
+exports.getByIDold = async function(id, loadSong = false) {
     const playlist =  await Playlist.findById(id);
     // The playlist returned is either null or not.
     
