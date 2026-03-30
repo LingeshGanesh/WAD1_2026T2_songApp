@@ -133,3 +133,11 @@ exports.updateByID = async function(id, newValue) {
 exports.deleteByID = async function(id) {
     await Playlist.deleteOne({_id: id});
 }
+
+//Carolyn 
+exports.retrievePublicByOwnerID = async function(ownerID) {
+    return await Playlist.find({
+        owner: ownerID,
+        visibility: 'Public'
+    });
+}
