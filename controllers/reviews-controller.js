@@ -3,9 +3,11 @@ const Review = require('../models/reviews-model');
 // CREATE
 exports.createReview = async (req, res) => {
   try {
-    const { userId, songId, rating, comment } = req.body;
+    const userId = req.session.user.id;
+    console.log("Creating review for user ID:", userId);
+    const { rating, comment } = req.body;
 
-    if (!userId || !songId || !rating || !comment) {
+    if (!rating || !comment) {
       return res.send('All fields are required');
     }
 
@@ -13,10 +15,10 @@ exports.createReview = async (req, res) => {
       return res.send('Rating must be between 1 and 5');
     }
 
-    await Review.createReview(userId, songId, rating, comment);
+    await Review.createReview(userId, rating, comment);
 
     res.redirect('/reviews');
-  } catch (err) {
+  } catch (err) { 
     res.send('Error creating review: ' + err.message);
   }
 };
@@ -32,13 +34,28 @@ exports.getAllReviews = async (req, res) => {
   }
 };
 
+exports.getReviewInfo = async (req, res) => {
+  try {
+    const songId = req.params.songID;
+    const reviews = await Review.findByID({ songId });
+    let output = '';
+    console.log(reviews);
+    if (!reviews || reviews.length === 0) {
+      output = 'No reviews found for this song';
+    }
+    res.render('reviews', { reviews, output });
+  } catch (err) {
+    console.log(err.message)
+    res.send('Error fetching reviews');
+  }
+}
 
 // UPDATE 
 exports.updateReview = async (req, res) => {
   let output = '';
 
   try {
-    const { reviewId, rating, comment } = req.body;
+    const { rating, comment } = req.body;
 
     if (rating && comment) {
       await Review.updateReview(reviewId, rating, comment);

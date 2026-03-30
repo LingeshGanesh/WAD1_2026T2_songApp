@@ -29,10 +29,13 @@ exports.retrieveAll = function() {
     return Review.find();
 };
 
-exports.createReview = async (userId, songId, rating, comment) => {
+exports.findByID = function (songID) {
+    return Review.findOne({ songID });
+};
+
+exports.createReview = async (userId, rating, comment) => {
   const review = new Review({
     userId,
-    songId,
     rating,
     comment
   });
