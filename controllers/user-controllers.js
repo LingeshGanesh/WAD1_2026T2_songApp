@@ -206,7 +206,7 @@ exports.editUser = (req, res) => {
         })
     } catch (error) {
         console.error("Error loading data of user to edit:", error);
-        res.redirect('/user/profile');
+        res.render('users/profile', { user: req.user });
     }
 
 }
@@ -334,7 +334,7 @@ exports.updatePassword = async (req, res) => {
         req.session.destroy(err => {
             if (err) {
                 console.log(err);
-                return res.redirect('/user/profile');
+                return res.render('users/profile', { user: req.user });
             }
 
             res.redirect('/user/login?msg=Password updated, please login again');
@@ -370,7 +370,7 @@ exports.deleteUserAndData = async (req, res) => {
             if (err) {
                 console.log("Error while destorying session:", err);
                 //need change
-                return res.redirect('/user/profile')
+                return res.render('users/profile', { user: req.user })
             }
             res.redirect('/user/login')
         })
@@ -435,6 +435,11 @@ exports.displayProfile = async (req, res) => {
         const targetUser = await User.findUserByID(id);
         const currentUser = await User.findUserByID(req.session.user.id);
 
+        if (currentUser._id.equals(targetUser._id)) {
+            return res.redirect('/user/profile');
+
+        }
+
         const isFollowing = currentUser.followings?.some(f =>
             f.equals(targetUser._id)
         ) || false;
@@ -470,6 +475,10 @@ exports.unfollowUser = async (req, res) => {
         const currentUserId = req.session.user.id;
         const targetUserId = req.body.targetUserId;
 
+        if (currentUserId.toString() === targetUserId.toString()) {
+            return res.redirect('/user/profile');
+        }
+
         await User.unfollowUser(currentUserId, targetUserId);
 
         res.redirect(`/user/displayProfile?id=${targetUserId}`);
@@ -484,6 +493,10 @@ exports.followUser = async (req, res) => {
     try {
         const currentUserId = req.session.user.id;
         const targetUserId = req.body.targetUserId;
+
+        if (currentUserId.toString() === targetUserId.toString()) {
+            return res.redirect('/user/profile');
+        }
 
         await User.followUser(currentUserId, targetUserId);
 
@@ -500,7 +513,7 @@ exports.showConnection = async (req, res) => {
         const id = req.query.id;
 
         const user = await User.findUserByID(id);
-        
+
         let userIds = [];
 
         if (type === 'followers') {
@@ -516,7 +529,7 @@ exports.showConnection = async (req, res) => {
             type,
             errors: [],
             user,
-            currentUserId: req.session.user.id 
+            currentUserId: req.session.user.id
         });
 
     } catch (error) {
@@ -527,7 +540,7 @@ exports.showConnection = async (req, res) => {
             type: '',
             errors: ['Server error occurred'],
             user: null,
-            currentUserId: req.session.user.id 
+            currentUserId: req.session.user.id
         });
     }
 };
