@@ -42,17 +42,17 @@
             <th>:</th>
             <td>
                 <ol>
-                    <% for (let i = 0; i < Math.min(songsList.length, 6); i++) { %>
-                        <% const song = songsList[i] %>
+                    <% for (let i = 0; i < Math.min(playlist.songs.length, 6); i++) { %>
+                        <% const song = playlist.songs[i] %>
                         <li><a href="/song/<% song._id %>">
                             <%= song.artist %> - <%= song.title %>
                         </a></li>
                     <% } %>
                 </ol>
-                <% if (songsList.length > 6) { %>
+                <% if (playlist.songs.length > 6) { %>
                     <div id="overload-songs">
                         <div>&vellip;</div>
-                        <div>(and <%= songsList.length - 6 %> more)</div>
+                        <div>(and <%= playlist.songs.length - 6 %> more)</div>
                     </div>
                 <% } %>
             </td>
