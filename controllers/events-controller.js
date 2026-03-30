@@ -24,7 +24,7 @@ exports.showEvents = async (req, res) => {
 
     const user = await User.findUserByEmail(req.session.user.email); // ADD THIS
 
-    res.render("events/display-events", { eventList, userId, userEvents: user.events }); // ADD userEvents
+    res.render("events/display-events", { eventList, userId, userEvents: user.events, followings: user.followings }); // ADD userEvents
   } catch (error) {
     console.error(error);
     res.send("Error reading database");
