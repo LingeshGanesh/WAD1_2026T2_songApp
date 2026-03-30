@@ -3,10 +3,11 @@
  - /views/playlists/create-form.ejs
  - /views/playlists/edit-form.ejs
 -->
-
 <div>
-    <input type="search" id="searchSongID" placeholder="Search Song ID">
-    <button id="insertBtn">Insert song</button>
+    <!-- Style sheet for song results box -->
+    <link rel="stylesheet" href="/css/song-search.css">
+    <input type="search" id="songSearch" placeholder="Search by Song Title..." autocomplete="off" cols="25"><br>
+    <ul id="songResults" style=display:none;"></ul>
     <table border="1">
         <input type="hidden" name="songs" id="songs">
         <thead>

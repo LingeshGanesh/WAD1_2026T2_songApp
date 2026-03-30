@@ -7,7 +7,9 @@
 const insertBtn = document.getElementById("insertBtn");
 const tbody = document.querySelector("tbody");
 const emptySlot = document.getElementById("empty-slot");
-const searchSongID = document.getElementById("searchSongID");
+
+const songSearch = document.getElementById('songSearch');
+const songResults = document.getElementById('songResults');
 let songSelection = document.querySelector("input#songs");
 
 // Add event listener if song rows exist (for playlist editing)
@@ -22,21 +24,42 @@ getSlotRows().forEach(slotRow => {
 })
 updateSongSelection()
 
-// TODO: Add a pop-up dialog to insert a song.
-insertBtn.addEventListener("click", async event => {
-    event.preventDefault(); // Prevents button from submitting the form
-    insertBtn.disabled = true;
-    const newSlot = await createSlot()
-    if (newSlot) {
-        tbody.appendChild(newSlot);
+// Search Song
+songSearch.addEventListener('input', async function () {
+    const q = this.value.trim(); // Search value
+    if (!q) {
+        songResults.style.display = 'none';
+        return;
     }
-    
+
+    // Call API
+    const res = await fetch(`/album/song-search?q=${encodeURIComponent(q)}`);
+    const songs = await res.json();
+
+    // Show the result box
+    songResults.innerHTML = '';
+    songResults.style.display = songs.length ? 'block' : 'none';
+
+    // Load searched songs
+    songs.forEach(song => {
+        const li = document.createElement('li');
+        li.textContent = `${song.artist} - ${song.title}`;
+        li.addEventListener('click', () => addSong(song));
+        songResults.appendChild(li);
+    });
+});
+
+function addSong(song) {
+    // Add a new slot based on the selected song
+    const newSlot = createSlot(song);
+    if (newSlot) {tbody.appendChild(newSlot);}
     showEmptySlot();
     updateSongSelection();
-    setTimeout(() => {
-        insertBtn.disabled = false;
-    }, 1000);
-});
+
+    // Reset search entry and hide search result
+    songSearch.value = '';
+    songResults.style.display = 'none';
+}
 
 // Action buttons method
 function moveRowUp(event) {
@@ -98,16 +121,7 @@ function showEmptySlot() {
     emptySlot.style.display = tbody.childElementCount > 1? "none": "table-row";
 }
 
-async function createSlot() {
-    let song;
-    try {
-        const songProm = await fetch(`/playlist/search-songs?query=${searchSongID.value}`);
-        song = await songProm.json();
-    } catch (error) {
-        console.error(error);
-        return;
-    }
-
+function createSlot(song) {
     let row = document.createElement("tr");
     let c_no = document.createElement("th");
     let c_song = document.createElement("td");
