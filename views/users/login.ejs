@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -33,6 +33,52 @@
                 </p>
                 <% } %>
                     Don't have an account? <br><a href="/user/register"> Register</a>
+</body>
+
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/events-styles.css">
+</head>
+
+<body class="auth-page">
+    <div class="auth-shell">
+        <div class="auth-logo">S</div>
+        <h1 class="auth-title">Welcome back</h1>
+
+        <form action="/user/login" method="post" class="auth-form">
+            <label for="email">Email</label>
+            <input id="email" type="email" name="email" placeholder="Email" value="<%= formData.email %>" required>
+
+            <label for="password">Password</label>
+            <input id="password" type="password" name="password" placeholder="Password" required>
+
+            <button type="submit" class="auth-submit">Continue</button>
+        </form>
+
+        <% if (errors && errors.length > 0) { %>
+            <ul class="auth-errors">
+                <% errors.forEach(err => { %>
+                    <li><%= err %></li>
+                <% }) %>
+            </ul>
+        <% } %>
+
+        <% if (msg) { %>
+            <p class="auth-msg"><%= msg %></p>
+        <% } %>
+
+        <p class="auth-footer">
+            Don't have an account?<br>
+            <a href="/user/register">Sign up</a>
+        </p>
+    </div>
 </body>
 
 </html>
