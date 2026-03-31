@@ -1,5 +1,7 @@
 <!-- Form fields for song data -->
-<% if (showUploader !== false) { %>
+<!-- Hidden field for uploader -->
+
+<% if (showUploader !==false) { %>
 <label for="uploader">Uploader</label><br>
 <input type="text" name="uploader" id="uploader" value="<%= fields.uploader || '' %>" required><br><br>
 <% } %>
@@ -10,8 +12,11 @@
 <label for="artist">Artist</label><br>
 <input type="text" name="artist" id="artist" value="<%= fields.artist || '' %>" required><br><br>
 
+<!-- Hidden field for album-->
+<% if (showAlbum !==false) { %>
 <label for="album">Album</label><br>
 <input type="text" name="album" id="album" value="<%= fields.album || '' %>"><br><br>
+<% } %>
 
 <label for="genre">Genre</label><br>
 <input type="text" name="genre" id="genre" value="<%= fields.genre || '' %>"><br><br>

@@ -42,4 +42,7 @@ router.post('/unfollowUser', authMiddleware.isLoggedIn, usersController.unfollow
 
 router.get('/showConnection', authMiddleware.isLoggedIn, usersController.showConnection);
 
+// clear alerts
+router.post('/clear-alerts', authMiddleware.isLoggedIn, usersController.clearAlerts);
+
 module.exports = router;

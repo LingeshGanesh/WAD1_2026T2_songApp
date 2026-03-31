@@ -17,6 +17,7 @@
         Date: <%= event.date %><br>
         Entry Fee: <%= event.entryFee %><br>
         Location: <%= event.location %><br>
+        Participants: <%= event.participants.length %>/<%= event.capacity %><br><br>
         <% if (new Date() > new Date(event.date)) { %>
           <button disabled>Can't make changes after event has passed</button>
         <% } else { %>

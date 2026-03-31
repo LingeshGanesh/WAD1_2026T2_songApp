@@ -14,21 +14,29 @@ exports.getIndex = async (req, res) => {
 
 // Controller function to get all the documents in the db and display it
 exports.showEvents = async (req, res) => {
-  try {
-    let eventList = await Event.retrieveAll();
-    const userId = req.session.user?.id;
+    try {
+        const userId = req.session.user?.id;
+        if (!userId) return res.redirect("/login");
 
-    if (!userId) {
-      return res.redirect("/login");
+        const user = await User.findUserByEmail(req.session.user.email);
+        const filter = req.query.filter;
+        const now = new Date();
+
+        let eventList = await Event.retrieveAll();
+
+        if (filter === 'past') {
+            eventList = eventList.filter(e => new Date(e.date) < now);
+        } else if (filter === 'attending') {
+            eventList = eventList.filter(e => user.events.some(id => id.equals(e._id)));
+        } else {
+            eventList = eventList.filter(e => new Date(e.date) >= now);
+        }
+
+        res.render("events/display-events", { eventList, userId, userEvents: user.events, followings: user.followings, filter });
+    } catch (error) {
+        console.error(error);
+        res.send("Error reading database");
     }
-
-    const user = await User.findUserByEmail(req.session.user.email); // ADD THIS
-
-    res.render("events/display-events", { eventList, userId, userEvents: user.events }); // ADD userEvents
-  } catch (error) {
-    console.error(error);
-    res.send("Error reading database");
-  }
 };
 
 exports.showAddForm = (req, res) => {
@@ -129,8 +137,27 @@ exports.updateEvent = async (req, res) => {
     const capacity = req.body.capacity;
 
     try {
-        let msg = `Event ${name} has been editted successfully`;
+
+        const old = await Event.findByIdAndAuthor(id, userId);
+        console.log(old.participants);
+
         let success = await Event.editEvent(id, userId, name, desc, date, entryFee, location, capacity);
+
+        if (old.participants.length > 0) {
+            const changes = [];
+            if (old.desc !== desc) changes.push(`Description changed to ${desc}`);
+            if (old.date.toISOString().split('T')[0] !== date) changes.push(`Date changed to ${date}`);
+            if (String(old.entryFee) !== String(entryFee)) changes.push(`Price changed to $${entryFee}`);
+            if (old.location !== location) changes.push(`Location changed to ${location}`);
+            if (String(old.capacity) !== String(capacity)) changes.push(`Capacity changed to ${capacity}`);
+            if (changes.length > 0) {
+                const alertResult = await User.addAlertToMany(old.participants, `${name} has been updated: ${changes.join(', ')}`);
+                console.log(alertResult);
+            }
+        }
+        console.log('sending alert to', old.participants.length, 'participants');
+
+        let msg = `Event ${name} has been editted successfully`;
         console.log(success);
         res.render("events/success", { msg: msg, redirectUrl: "/events/edit-events"});
     } catch (error) {
@@ -155,6 +182,9 @@ exports.deleteAnEvent = async (req, res) => {
     console.log("name"+name);
 
     try {
+        const old = await Event.findByIdAndAuthor(id, userId);
+        if (old.participants.length > 0) await User.addAlertToMany(old.participants, `${name} has been deleted`);
+
         let success = await Event.deleteEvent(id, userId);
         console.log(success);
 

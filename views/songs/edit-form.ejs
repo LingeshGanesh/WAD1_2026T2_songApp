@@ -9,23 +9,24 @@
 
 <body>
     <%- include("../navbar-user") %>
-        <h1>Edit Song</h1>
+    <fieldset>
+        <legend>Edit Song</legend>
         <!-- Display error message if there is an error -->
         <% if (error) { %>
-            <p style="color: red;"><strong>Error:</strong>
-                <%= error %>
+        <p style="color: red;"><strong>Error:</strong>
+            <%= error %>
+        </p>
+        <% } %>
+        <!-- Edit song form pre-filled with existing song data -->
+        <form action="/songs/edit/<%= song._id %>" method="post">
+            <p><strong>Uploader:</strong>
+                <%= song.uploader %>
             </p>
-            <% } %>
-                <!-- Edit song form pre-filled with existing song data -->
-                <form action="/songs/edit/<%= song._id %>" method="post">
-                    <p><strong>Uploader:</strong>
-                        <%= song.uploader %>
-                    </p>
-                    <%- include("form-fields", { fields: song, showUploader: false }) %>
-                        <input type="submit" value="Save Changes">
-                </form>
-
-                <%- include("../footer") %>
+            <%- include("form-fields", { fields: song, showUploader: false }) %>
+            <input type="submit" value="Save Changes">
+        </form>
+    </fieldset>
+    <%- include("../footer") %>
 </body>
 
 </html>

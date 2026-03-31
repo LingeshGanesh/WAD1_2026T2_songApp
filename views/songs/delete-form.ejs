@@ -9,7 +9,8 @@
 
 <body>
     <%- include("../navbar-user") %>
-        <h1>Delete Song</h1>
+    <fieldset>
+        <legend>Delete Song</legend>
         <p>You are deleting "<strong>
                 <%= song.title %>
             </strong>" by <strong>
@@ -24,19 +25,20 @@
         </p>
         <!-- Display error message if there is an error -->
         <% if (error) { %>
-            <p style="color: red;"><strong>Error:</strong>
-                <%= error %>
-            </p>
-            <% } %>
+        <p style="color: red;"><strong>Error:</strong>
+            <%= error %>
+        </p>
+        <% } %>
 
-                <!-- Delete confirmation form -->
-                <form action="/songs/delete/<%= song._id %>" method="post">
-                    <label for="confirmation">Type DELETE to confirm</label><br>
-                    <input type="text" name="confirmation" id="confirmation" required><br><br>
-                    <input type="submit" value="Delete Song">
-                </form>
+        <!-- Delete confirmation form -->
+        <form action="/songs/delete/<%= song._id %>" method="post">
+            <label for="confirmation">Type DELETE to confirm</label><br>
+            <input type="text" name="confirmation" id="confirmation" required><br><br>
+            <input type="submit" value="Delete Song">
+        </form>
+    </fieldset>
 
-                <%- include("../footer") %>
+    <%- include("../footer") %>
 </body>
 
 </html>

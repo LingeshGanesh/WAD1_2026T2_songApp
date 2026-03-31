@@ -88,5 +88,140 @@
         "genre": "Pop",
         "duration": 329,
         "youtubeUrl": "https://youtu.be/tollGa3S0o8"
+    },
+    {
+        "uploader": "admin",
+        "title": "California Gurls",
+        "artist": "Katy Perry",
+        "album": "Teenage Dream",
+        "genre": "Pop",
+        "duration": 219,
+        "youtubeUrl": "https://youtu.be/kDj1Kx-p8t8"
+    },
+    {
+        "uploader": "admin",
+        "title": "Teenage Dream",
+        "artist": "Katy Perry",
+        "album": "Teenage Dream",
+        "genre": "Pop",
+        "duration": 213,
+        "youtubeUrl": "https://youtu.be/98ES3UQegVE"
+    },
+    {
+        "uploader": "jon",
+        "title": "Firework",
+        "artist": "Katy Perry",
+        "album": "Teenage Dream",
+        "genre": "Pop",
+        "duration": 224,
+        "youtubeUrl": "https://youtu.be/QGJuMBdaqIw"
+    },
+    {
+        "uploader": "admin",
+        "title": "Just the Way You Are",
+        "artist": "Bruno Mars",
+        "album": "Doo-Wops & Hooligans",
+        "genre": "Pop",
+        "duration": 217,
+        "youtubeUrl": "https://youtu.be/LjhCEWrg6Cw"
+    },
+    {
+        "uploader": "admin",
+        "title": "Telephone",
+        "artist": "Lady Gaga",
+        "album": "The Fame Monster",
+        "genre": "Electronic Pop",
+        "duration": 226,
+        "youtubeUrl": "https://youtu.be/EVJsStKc01U"
+    },
+    {
+        "uploader": "jon",
+        "title": "Alejandro",
+        "artist": "Lady Gaga",
+        "album": "The Fame Monster",
+        "genre": "Electronic Pop",
+        "duration": 240,
+        "youtubeUrl": "https://youtu.be/niqrrmev4mA"
+    },
+    {
+        "uploader": "admin",
+        "title": "Only Girl (In the World)",
+        "artist": "Rihanna",
+        "album": "Loud",
+        "genre": "Pop",
+        "duration": 210,
+        "youtubeUrl": "https://youtu.be/gV8cJZHiZcQ"
+    },
+    {
+        "uploader": "jon",
+        "title": "What's My Name?",
+        "artist": "Rihanna",
+        "album": "Loud",
+        "genre": "Pop",
+        "duration": 209,
+        "youtubeUrl": "https://youtu.be/6BPXyWj2KvQ"
+    },
+    {
+        "uploader": "admin",
+        "title": "Break My Heart",
+        "artist": "Beyoncé",
+        "album": "",
+        "genre": "Pop",
+        "duration": 229,
+        "youtubeUrl": "https://youtu.be/JwuM-KU3iLA"
+    },
+    {
+        "uploader": "jon",
+        "title": "Bleeding Love",
+        "artist": "Leona Lewis",
+        "album": "",
+        "genre": "Pop",
+        "duration": 237,
+        "youtubeUrl": "https://youtu.be/OoG-4PJ7mZw"
+    },
+    {
+        "uploader": "admin",
+        "title": "Rude Boy",
+        "artist": "Rihanna",
+        "album": "Rated R",
+        "genre": "Pop",
+        "duration": 225,
+        "youtubeUrl": "https://youtu.be/JT8jTvqTdzs"
+    },
+    {
+        "uploader": "jon",
+        "title": "If U Seek Amy",
+        "artist": "Britney Spears",
+        "album": "Circus",
+        "genre": "Pop",
+        "duration": 207,
+        "youtubeUrl": "https://youtu.be/qfNLhtPJYfs"
+    },
+    {
+        "uploader": "admin",
+        "title": "Bottoms Up",
+        "artist": "Trey Songz",
+        "album": "",
+        "genre": "Pop",
+        "duration": 208,
+        "youtubeUrl": "https://youtu.be/g1M1xKvvU2A"
+    },
+    {
+        "uploader": "jon",
+        "title": "Pocketful of Sunshine",
+        "artist": "Natasha Bedingfield",
+        "album": "",
+        "genre": "Pop",
+        "duration": 194,
+        "youtubeUrl": "https://youtu.be/xfx_eccoNIc"
+    },
+    {
+        "uploader": "admin",
+        "title": "Love the Way You Lie",
+        "artist": "Eminem",
+        "album": "Recovery",
+        "genre": "Hip Hop Pop",
+        "duration": 245,
+        "youtubeUrl": "https://youtu.be/uelHwf8o7_U"
     }
 ]

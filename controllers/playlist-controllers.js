@@ -134,6 +134,19 @@ exports.yourPlaylists = async (req, res) => {
     res.render('playlists/browse', option);
 };
 
+exports.randomPlaylist = async (req, res) => {
+    try {
+        const allPlaylists = await Playlist.retrievePublic();
+        // Get a random index value
+        const i = (Math.floor(Math.random() * allPlaylists.length) % allPlaylists.length);
+    
+        // Redirect to a random page
+        return res.status(200).redirect(`/playlist/${allPlaylists[i]._id}`);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send("Error calling database");
+    }
+}
 
 // Create
 exports.showCreationForm = async (req, res) => {
