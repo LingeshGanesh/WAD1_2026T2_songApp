@@ -234,7 +234,6 @@ exports.getSuggestedUsers = async function (currentUserId) {
         }
 
     }
-    console.log(suggestions)
     // sort by highest score
     suggestions.sort((a, b) => b.score - a.score);
 

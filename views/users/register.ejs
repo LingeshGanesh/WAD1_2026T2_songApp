@@ -5,19 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
+    <link rel="stylesheet" href="/css/events-styles.css">
 </head>
 
-<body>
+<!-- <body>
     <h2>Sign up to start listening</h2>
     <form action="/user/register" method="post">
-        <!-- <label for="avatar">Please choose a profile picture:</label><br>
-        <% for (let i=1; i<=5; i++){ %>
-            <label>
-                <input type="radio" name="avatar" value="/image/profilepic<%=i%>.jpg" <%=formData.avatar==='/image/profilepic' +
-                    i + '.jpg' ? 'checked' : '' %> required>
-                <img src="/image/profilepic<%=i%>.jpg" alt="profilepic<%=i%>" width="150"><br>
-            </label>
-            <% }%> -->
+        <label for="avatar">Please choose a profile picture:</label><br>
         <table>
             <tr>
                 <% for(let i=1; i <=5; i++) { %>
@@ -43,7 +37,7 @@
         <br><br>
         <label for="password">Password:</label><br>
         <input type="password" name="password" placeholder="Password" value="<%=formData.password%>" required><br>
-        
+
         <ul style="color: red;">
             <li>Password must be min 8 characters long</li>
             <li>Include at least one uppercase letter (A-Z)</li>
@@ -54,7 +48,8 @@
         </ul>
 
         <label for="cfmpassword">Confirm Password:</label><br>
-        <input type="password" name="cfmpassword" placeholder="Confirm Password" value="<%=formData.cfmpassword%>" required><br><br>
+        <input type="password" name="cfmpassword" placeholder="Confirm Password" value="<%=formData.cfmpassword%>"
+            required><br><br>
 
         <button type="submit">Sign up</button><br>
         <% if (errors && errors.length> 0) { %>
@@ -68,6 +63,68 @@
             <% } %>
     </form>
     Already have an account? <br><a href="/user/login">Login</a>
+</body> -->
+
+<body class="auth-page">
+    <div class="auth-shell">
+        <div class="auth-logo">S</div>
+        <h1 class="auth-title">Sign up to start listening</h1>
+
+        <form action="/user/register" method="post" class="auth-form">
+            <div class="avatar-picker-card">
+                <p class="avatar-picker-title">Choose a profile picture</p>
+
+                <div class="avatar-grid">
+                    <% for (let i = 1; i <= 5; i++) { %>
+                        <div class="avatar-option">
+                            <label>
+                                <input type="radio" name="avatar" value="/image/profilepic<%= i %>.jpg"
+                                    <%= formData?.avatar === '/image/profilepic' + i + '.jpg' ? 'checked' : '' %>>
+                                <img src="/image/profilepic<%= i %>.jpg" alt="Avatar <%= i %>">
+                                <span>Avatar <%= i %></span>
+                            </label>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+
+            <label for="username">Username</label>
+            <input type="text" name="username" placeholder="Username" value="<%= formData.username %>" required>
+
+            <label for="email">Email</label>
+            <input type="email" name="email" placeholder="Email" value="<%= formData.email %>" required>
+
+            <label for="password">Password</label>
+            <input type="password" name="password" placeholder="Password" value="<%= formData.password %>" required>
+
+            <ul class="auth-hint-list">
+                <li>Password must be min 8 characters long</li>
+                <li>Include at least one uppercase letter (A-Z)</li>
+                <li>Include at least one lowercase letter (a-z)</li>
+                <li>Include at least one number (0-9)</li>
+                <li>Include at least one special character (@ # $ % ^ & ! ?)</li>
+                <li>No spaces allowed</li>
+            </ul>
+
+            <label for="cfmpassword">Confirm Password</label>
+            <input type="password" name="cfmpassword" placeholder="Confirm Password" value="<%= formData.cfmpassword %>" required>
+
+            <button type="submit" class="auth-submit">Sign up</button>
+
+            <% if (errors && errors.length > 0) { %>
+                <ul class="auth-errors">
+                    <% errors.forEach(err => { %>
+                        <li><%= err %></li>
+                    <% }) %>
+                </ul>
+            <% } %>
+        </form>
+
+        <p class="auth-footer">
+            Already have an account?<br>
+            <a href="/user/login">Login</a>
+        </p>
+    </div>
 </body>
 
 </html>

@@ -52,7 +52,7 @@ async function seedUsers() {
         profilePicture: '/image/profilepic1.jpg'
     });
 
-    await User.followUser(alice._id, david._id);
+    await User.followUser(alice._id, eva._id);
     await User.followUser(alice._id, carol._id);
 
     await User.followUser(bob._id, david._id);
