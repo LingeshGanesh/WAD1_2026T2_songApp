@@ -187,8 +187,7 @@ exports.loginPost = async (req, res) => {
 exports.profile = async (req, res) => {
     try {
         const playlists = await Playlist.retrieveByOwnerID(req.user._id);
-        console.log(playlists)
-        res.render('users/profile', { user: req.user,  playlists });
+        res.render('users/profile', { user: req.user, playlists });
     } catch (error) {
         console.error("Error loading profile:", error);
         res.redirect('/homepage');
@@ -381,41 +380,57 @@ exports.deleteUserAndData = async (req, res) => {
     }
 }
 
-exports.search = (req, res) => {
-    res.render('users/search-friend', {
-        result: [],
-        query: '',
-        errors: null
-    });
-}
+exports.search = async (req, res) => {
+    try {
+        const currentUserId = req.session.user.id;
+        const suggestions = await User.getSuggestedUsers(currentUserId);
+
+        res.render('users/search-friend', {
+            result: [],
+            query: '',
+            errors: null,
+            suggestions
+        });
+    } catch (error) {
+        console.error('Error loading search page:', error);
+
+        res.render('users/search-friend', {
+            result: [],
+            query: '',
+            errors: null,
+            suggestions: []
+        });
+    }
+};
+
 
 exports.searchUser = async (req, res) => {
+    let suggestions = [];
     try {
         const query = req.query.query || '';
         const trimmedQuery = query.trim()
         const currentUserId = req.session.user.id;
+        const suggestions = await User.getSuggestedUsers(currentUserId);
 
         if (!trimmedQuery) {
-            return res.render('users/search-friend', {
-                result: [],
-                query: '',
-                errors: ["Please enter a username to search"]
-            });
+            return res.redirect('/user/search-friend');
         }
 
         const users = await User.searchUsers(trimmedQuery, currentUserId);
-        console.log(users);
+
         if (users.length === 0) {
             return res.render('users/search-friend', {
                 result: [],
                 query: query,
+                suggestions,
                 errors: ["No username found"]
             });
         }
         res.render('users/search-friend', {
             result: users,
             query: query,
-            errors: null
+            errors: null,
+            suggestions
         });
     } catch (error) {
         console.error("Error searching users:", error);
@@ -423,7 +438,8 @@ exports.searchUser = async (req, res) => {
         res.render('users/search-friend', {
             result: [],
             query: req.query.query || '',
-            errors: ["Something went wrong while searching. Please try again."]
+            errors: ["Something went wrong while searching. Please try again."],
+            suggestions
         });
     }
 

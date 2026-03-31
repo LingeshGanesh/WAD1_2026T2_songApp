@@ -4,11 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/events-styles.css">
     <title>Search friend</title>
 </head>
 
 <body>
-    <a href="/user/profile">Back</a><br>
+    <a href="/user/profile" class="back-link">Back</a><br>
     <h2>Search friends</h2>
     <form action="/user/search-friend" method="get">
         <input type="text" name="query" placeholder="Search friends" value="<%=query%>">
@@ -33,11 +34,84 @@
         </table>
         <%}else if(errors && errors.length>0){%>
             <% errors.forEach(error=>{%>
-                    <ul style="color: red;">
-                        <li><%=error%></li>
-                    </ul>
+                <ul style="color: red;">
+                    <li>
+                        <%=error%>
+                    </li>
+                </ul>
                 <%})%>
                     <%}%>
+                        <hr>
+                        <h3>Suggested Users</h3><br>
+
+                        <% if (suggestions && suggestions.length> 0) { %>
+                            <!-- <ul>
+                                <% suggestions.forEach(suggestion=> { %>
+                                    <li>
+                                        <%= suggestion.user.username %>
+                                            (Score: <%= suggestion.score %>)
+
+                                                <a href="/user/displayProfile?id=<%= suggestion.user._id %>">
+                                                    View Profile
+                                                </a>
+                                    </li>
+                                    <% }) %>
+                            </ul> -->
+                            <div class="connections-grid">
+                                <% suggestions.forEach(item=> { %>
+                                    <a href="/user/displayProfile?id=<%= item.user._id %>" class="profile-card">
+                                        <p><strong>
+                                                <%= item.user.username %>
+                                            </strong></p>
+                                        <div class="avatar-wrapper">
+                                            <img class="suggested-user-pic" src="<%= item.user.profilePicture %>"
+                                                alt="<%= item.user.username %>">
+                                        </div>
+
+                                        <div>
+
+                                            <!-- <% if (item.sharedFollowings && item.sharedFollowings.length> 0) { %>
+                                                <div class="avatar-wrapper">
+                                                    <% item.sharedFollowings.forEach(sharedUser=> { %>
+                                                        <img class="shared-user-pic"
+                                                            src="<%= sharedUser.profilePicture %>"
+                                                            alt="<%= sharedUser.username %>"
+                                                            title="<%= sharedUser.username %>">
+                                                        <% }) %>
+                                                </div>
+
+                                                <p>
+                                                    You both follow
+                                                    <%= item.sharedFollowings.map(u=> u.username).join(', ') %>
+                                                </p>
+                                                <% } %> -->
+                                            <% if (item.sharedFollowings && item.sharedFollowings.length> 0) { %>
+                                                <div class="shared-following-row">
+                                                    <span>You both follow</span>
+
+                                                    <% item.sharedFollowings.slice(0, 2).forEach(sharedUser=> { %>
+                                                        <div class="shared-following-item">
+                                                            <img class="shared-user-pic"
+                                                                src="<%= sharedUser.profilePicture %>"
+                                                                alt="<%= sharedUser.username %>"
+                                                                title="<%= sharedUser.username %>">
+                                                            <span>
+                                                                <%= sharedUser.username %>
+                                                            </span>
+                                                        </div>
+                                                        <% }) %>
+                                                </div>
+                                                <% } %>
+
+                                        </div>
+                                    </a>
+                                    <% }) %>
+                            </div>
+
+                            <% } else { %>
+                                <p>No suggestions available</p>
+                                <% } %>
+
 </body>
 
 </html>
