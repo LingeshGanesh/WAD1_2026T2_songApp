@@ -550,9 +550,16 @@ exports.showConnection = async (req, res) => {
     }
 };
 
+// function to clear all alerts
+exports.clearAlerts = async (req, res) => {
+    await User.clearAlerts(req.session.user.id);
+    res.redirect('/user/profile');
+};
+
 exports.logout = (req, res) => {
     req.session.destroy(() => {
         res.redirect('/user/login');
     });
     console.log("Logout successful")
 }
+
