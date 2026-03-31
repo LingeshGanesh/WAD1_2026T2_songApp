@@ -66,7 +66,7 @@ exports.findByName = function(name) {
 
 exports.retrieveAll = function() {
     // return Event.find().populate('participants', 'username');
-    return Event.find().populate('participants', 'username profilePicture');
+    return Event.find().populate('participants', 'username profilePicture').sort({ date: 1 });
 };
 
 exports.addEvent = function(newEvent) {

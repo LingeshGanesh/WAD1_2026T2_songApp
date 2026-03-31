@@ -14,21 +14,29 @@ exports.getIndex = async (req, res) => {
 
 // Controller function to get all the documents in the db and display it
 exports.showEvents = async (req, res) => {
-  try {
-    let eventList = await Event.retrieveAll();
-    const userId = req.session.user?.id;
+    try {
+        const userId = req.session.user?.id;
+        if (!userId) return res.redirect("/login");
 
-    if (!userId) {
-      return res.redirect("/login");
+        const user = await User.findUserByEmail(req.session.user.email);
+        const filter = req.query.filter;
+        const now = new Date();
+
+        let eventList = await Event.retrieveAll();
+
+        if (filter === 'past') {
+            eventList = eventList.filter(e => new Date(e.date) < now);
+        } else if (filter === 'attending') {
+            eventList = eventList.filter(e => user.events.some(id => id.equals(e._id)));
+        } else {
+            eventList = eventList.filter(e => new Date(e.date) >= now);
+        }
+
+        res.render("events/display-events", { eventList, userId, userEvents: user.events, followings: user.followings, filter });
+    } catch (error) {
+        console.error(error);
+        res.send("Error reading database");
     }
-
-    const user = await User.findUserByEmail(req.session.user.email); // ADD THIS
-
-    res.render("events/display-events", { eventList, userId, userEvents: user.events, followings: user.followings }); // ADD userEvents
-  } catch (error) {
-    console.error(error);
-    res.send("Error reading database");
-  }
 };
 
 exports.showAddForm = (req, res) => {
