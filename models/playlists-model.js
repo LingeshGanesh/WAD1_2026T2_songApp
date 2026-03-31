@@ -98,10 +98,15 @@ exports.deleteByID = async function(id) {
     await Playlist.deleteOne({_id: id});
 }
 
-//Carolyn 
+//Carolyn
 exports.retrievePublicByOwnerID = async function(ownerID) {
     return await Playlist.find({
         owner: ownerID,
         visibility: 'Public'
     });
 }
+
+exports.deleteManyByOwnerId = async function (ownerId) {
+    return await Playlist.deleteMany({ owner: ownerId });
+};
+//Carolyn

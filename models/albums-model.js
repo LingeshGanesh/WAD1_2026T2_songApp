@@ -59,3 +59,9 @@ exports.deleteAlbum = function(albumID) {
 exports.findByIDAndPopulate = function (albumID) {
     return Album.findOne({ _id: albumID }).populate('songs').populate('createdBy');
 };
+
+//delete many - Carolyn
+exports.deleteManyByCreatorId = function (userId) {
+    return Album.deleteMany({ createdBy: userId });
+};
+// end of delete many

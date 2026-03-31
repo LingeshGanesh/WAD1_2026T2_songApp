@@ -60,4 +60,10 @@ Song.deleteSongByID = function (songID) {
     return Song.findByIdAndDelete(songID);
 };
 
+//delete many - Carolyn
+Song.deleteManyByUploader = function (username) {
+    return Song.deleteMany({ uploader: username });
+};
+// end of delete many
+
 module.exports = Song;

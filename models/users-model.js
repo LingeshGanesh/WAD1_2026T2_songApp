@@ -148,28 +148,23 @@ exports.unfollowUser = function (currentUserId, targetUserId) {
 };
 
 //delete evrything user created and delete user
-exports.deleteUserAndData = async (userId) => {
+exports.deleteUserAndData = async (userId, username) => {
 
     //reviews
-    await Review.deleteMany({ userId });
+    await Review.deleteManyByUserId(userId);
 
     //playlists
-    await Playlist.deleteMany({ userId });
+    await Playlist.deleteManyByOwnerId(userId);
 
     //events
-    await Event.deleteMany({ author: userId });
-
-    //also remove user from participants
-    await Event.updateMany(
-        {},
-        { $pull: { participants: userId } }
-    );
+    await Event.deleteManyByAuthorId(userId);
+    await Event.removeParticipantFromAllEvents(userId);
 
     //albums
-    await Album.deleteMany({ userId });
+    await Album.deleteManyByCreatorId(userId);
 
     //songs
-    await Song.deleteMany({ userId });
+    await Song.deleteManyByUploader(username);
 
     //remove from other users
     await User.updateMany(
@@ -182,8 +177,8 @@ exports.deleteUserAndData = async (userId) => {
         }
     );
 
-    //delete user
     await User.deleteOne({ _id: userId });
+
 };
 
 //get suggested users 

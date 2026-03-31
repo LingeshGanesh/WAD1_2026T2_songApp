@@ -109,3 +109,13 @@ exports.getUpcomingEvents = function() {
 exports.updateOne = function(filter, update) {
     return Event.updateOne(filter, update);
 }
+
+//delete many - Carolyn
+exports.deleteManyByAuthorId = function (authorId) {
+    return Event.deleteMany({ author: authorId });
+};
+
+exports.removeParticipantFromAllEvents = function (userId) {
+    return Event.updateMany({}, { $pull: { participants: userId } });
+};
+// end of delete many
