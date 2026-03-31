@@ -2,11 +2,13 @@ const mongoose = require('mongoose');
 
 const reviewSchema = new mongoose.Schema({
   userId: { 
-    type: String, 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'User',
     required: [true, "userId is required"] 
     },
   songId: { 
     type: String, 
+    ref:'Song',
     required: [true, "songId is required"] 
     },
   rating: { 
@@ -29,13 +31,20 @@ exports.retrieveAll = function() {
     return Review.find();
 };
 
-exports.findByID = function (songID) {
-    return Review.findOne({ songID });
+exports.findByID = function (songId) {
+    console.log("Finding reviews for song ID:", songId);
+    return Review.find( songId );
 };
 
-exports.createReview = async (userId, rating, comment) => {
+exports.findByReviewId = function (reviewId) {
+    console.log("Finding review for review ID:", reviewId);
+    return Review.findById(reviewId);
+};
+
+exports.createReview = async (userId, songId, rating, comment) => {
   const review = new Review({
     userId,
+    songId,
     rating,
     comment
   });

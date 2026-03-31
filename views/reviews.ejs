@@ -8,26 +8,33 @@
   <a href="/songs/browse"><strong>Back to Browse Songs</strong></a><br><br>
 
   <h1>Add Your Reviews Here</h1>
-  <form action="/reviews/create" method="POST">
+  <form action="/reviews/create/<%= songId %>" method="POST">
     Rating (1-5): <input type="number" name="rating" min="1" max="5" /><br>
     Comment: <input type="text" name="comment" /><br>
     <button type="submit">Submit</button>
   </form>
+  <% if(error) { %>
+    <p><%= error %></p>
+  <% } %>
 
   <h1><u>Review List:</u></h1>
     <% if (!reviews) { %>
       <%= output %>
+    <br>
     <% } else { %>
+
+    <h2><%= reviews.length %> review(s) found.</h2>
+
   <ol>
-      <%= reviews.length %> review(s) found.
+
       <% reviews.forEach(function(review) { %>
       <li>
-        <strong><%= review.songId %></strong><br>
+        <strong>User ID: <%= review.userId %></strong><br>
         Rating: <%= review.rating %><br>
         Comment: <%= review.comment %>
 
         <!-- UPDATE FORM -->
-        <form action="/reviews/update" method="POST">
+        <form action="/reviews/update/<%= songId %>" method="POST">
           <input type="hidden" name="reviewId" value="<%= review._id %>" />
           <input type="number" name="rating" min="1" max="5" placeholder="New Rating" style="width: 15ch;" />
           <input type="text" name="comment" placeholder="New Comment" style="width: 15ch;" /> 
@@ -36,7 +43,7 @@
         
         
         <!-- DELETE FORM -->
-        <form action="/reviews/delete" method="POST">
+        <form action="/reviews/delete/<%= songId %>" method="POST">
           <input type="hidden" name="reviewId" value="<%= review._id %>" />
           <br>
           <button type="submit">Delete</button>
