@@ -1,4 +1,5 @@
 const User = require('../models/users-model');
+const Playlist = require('../models/playlists-model');
 const bcrypt = require('bcrypt');
 
 exports.stats = (req, res) => {
@@ -103,7 +104,7 @@ exports.loginGet = (req, res) => {
 exports.loginPost = async (req, res) => {
     try {
         const { email = '', password = '' } = req.body;
-        const trimmedEmail = email.trim() || '';
+        const trimmedEmail = email.trim().toLowerCase();
 
 
         let errors = [];
@@ -139,16 +140,40 @@ exports.loginPost = async (req, res) => {
                 msg: null
             });
         }
-        //regenerate?
-        req.session.user = {
-            id: user._id,
-            email: user.email,
-            username: user.username
-        }
 
-        console.log("Login successful");
-        //need to link to index.html
-        return res.redirect('/homepage');
+        //regenerate new session (everytime login)
+        //https://www.tutorialpedia.org/blog/nodejs-express-regenerate-session/
+        req.session.regenerate((err) => {
+            if (err) {
+                console.log(err);
+                return res.render('users/login', {
+                    errors: ['Session error, please try again'],
+                    formData: { email: trimmedEmail },
+                    msg: null
+                });
+            }
+
+            req.session.user = {
+                id: user._id,
+                email: user.email,
+                username: user.username
+            };
+
+            //save session before redirect
+            req.session.save((err) => {
+                if (err) {
+                    console.log(err);
+                    return res.render('users/login', {
+                        errors: ['Session save failed'],
+                        formData: { email: trimmedEmail },
+                        msg: null
+                    });
+                }
+
+                console.log("Login successful");
+                return res.redirect('/homepage');
+            });
+        });
     } catch (error) {
         console.error('Error occured while trying to login', error);
         return res.render('users/login', {
@@ -159,18 +184,19 @@ exports.loginPost = async (req, res) => {
     }
 }
 
-exports.profile = (req, res) => {
+exports.profile = async (req, res) => {
     try {
-        res.render('users/profile', { user: req.user });
+        const playlists = await Playlist.retrieveByOwnerID(req.user._id);
+        console.log(playlists)
+        res.render('users/profile', { user: req.user,  playlists });
     } catch (error) {
         console.error("Error loading profile:", error);
         res.redirect('/homepage');
     }
 }
 
-exports.editUser = (req, res) => {
+exports.editUser = async (req, res) => {
     try {
-
         res.render('users/edit-user', {
             user: req.user,
             errors: '',
@@ -192,13 +218,13 @@ exports.updateUser = async (req, res) => {
     try {
         const id = user._id;
         const { newUsername = '', newEmail = '', newAvatar = '' } = req.body;
+        const avatarToSave = newAvatar || user.profilePicture;
 
         let errors = [];
 
         //check empty
         if (!newUsername) errors.push("Username is required");
         if (!newEmail) errors.push("Email is required");
-        if (!newAvatar) errors.push("Please select a profile picture");
 
         const trimmedUsername = newUsername.trim();
         const trimmedEmail = newEmail.trim();
@@ -222,8 +248,7 @@ exports.updateUser = async (req, res) => {
             });
         }
 
-        await User.updateUserByID(id, trimmedUsername, trimmedEmail, newAvatar);
-
+        await User.updateUserByID(id, trimmedUsername, trimmedEmail, avatarToSave);
         const updatedUser = await User.findUserByID(id);
 
         //update session
@@ -236,8 +261,8 @@ exports.updateUser = async (req, res) => {
         console.log(`Updated successful: 
                     Email: ${updatedUser.email}
                     Username: ${updatedUser.username}`)
-
-        res.render('users/profile', { user: updatedUser });
+        const playlists = await Playlist.retrieveByOwnerID(req.user._id);
+        res.render('users/profile', { user: updatedUser, playlists });
     } catch (error) {
         console.log('Error while updating User', error);
 
@@ -334,7 +359,7 @@ exports.displayUser = async (req, res) => {
 };
 
 //delete hasn't done yet
-exports.deleteUser = async (req, res) => {
+exports.deleteUserAndData = async (req, res) => {
 
     const id = req.session.user.id;
     const user = await User.findUserByID(id);
@@ -352,7 +377,7 @@ exports.deleteUser = async (req, res) => {
         })
     } catch (error) {
         console.log('Error while deleting User', error);
-        res.render('users/profile', { user: user })
+        res.redirect('/user/profile')
     }
 }
 
@@ -406,11 +431,19 @@ exports.searchUser = async (req, res) => {
 
 exports.displayProfile = async (req, res) => {
     const id = req.query.id;
-    
+
     try {
         const targetUser = await User.findUserByID(id);
         const currentUser = await User.findUserByID(req.session.user.id);
 
+        if (currentUser._id.equals(targetUser._id)) {
+            return res.redirect('/user/profile');
+
+        }
+
+        const playlists = await Playlist.retrievePublicByOwnerID(targetUser._id);
+
+        //to decide whether to show following or follow
         const isFollowing = currentUser.followings?.some(f =>
             f.equals(targetUser._id)
         ) || false;
@@ -421,7 +454,8 @@ exports.displayProfile = async (req, res) => {
             return res.render('users/profile-display', {
                 user: targetUser,
                 errors: [],
-                isFollowing
+                isFollowing,
+                playlists
             })
         } else {
             return res.render('users/search-friend', {
@@ -446,43 +480,51 @@ exports.unfollowUser = async (req, res) => {
         const currentUserId = req.session.user.id;
         const targetUserId = req.body.targetUserId;
 
+        if (currentUserId.toString() === targetUserId.toString()) {
+            return res.redirect('/user/profile');
+        }
+
         await User.unfollowUser(currentUserId, targetUserId);
 
         res.redirect(`/user/displayProfile?id=${targetUserId}`);
     } catch (error) {
-        console.log('Error occurs while unfollowing user',error);
+        console.log('Error occurs while unfollowing user', error);
         res.redirect('/user/search-friend');
     }
 }
 
 exports.followUser = async (req, res) => {
     console.log("Following user")
-     try {
+    try {
         const currentUserId = req.session.user.id;
         const targetUserId = req.body.targetUserId;
+
+        if (currentUserId.toString() === targetUserId.toString()) {
+            return res.redirect('/user/profile');
+        }
 
         await User.followUser(currentUserId, targetUserId);
 
         res.redirect(`/user/displayProfile?id=${targetUserId}`);
     } catch (error) {
-        console.log('Error occurs while following user',error);
+        console.log('Error occurs while following user', error);
         res.redirect('/user/search-friend');
     }
 }
 
 exports.showConnection = async (req, res) => {
     try {
-        const type = req.query.type; 
-        const user = req.user;
+        const type = req.query.type;
+        const id = req.query.id;
+
+        const user = await User.findUserByID(id);
 
         let userIds = [];
 
         if (type === 'followers') {
             userIds = user.followers;
-            
         } else if (type === 'following') {
             userIds = user.followings;
-            
         }
 
         const list = await User.findUsers(userIds);
@@ -490,16 +532,20 @@ exports.showConnection = async (req, res) => {
         return res.render('users/display-connection', {
             list,
             type,
-            errors: []
+            errors: [],
+            user,
+            currentUserId: req.session.user.id
         });
 
     } catch (error) {
-        console.log("Error while trying to load connections",error);
+        console.log("Error while trying to load connections", error);
 
         return res.render('users/display-connection', {
             list: [],
             type: '',
-            errors: ['Server error occurred']
+            errors: ['Server error occurred'],
+            user: null,
+            currentUserId: req.session.user.id
         });
     }
 };

@@ -80,6 +80,10 @@ exports.showEditForm = async (req, res) => {
     const albumID = req.params.id;
     try {
         const album = await Album.findByIDAndPopulate(albumID);
+        if (album.createdBy._id.toString() !== req.session.user.id) {
+            return res.status(403).send('<h1>Unauthorized</h1><a href="/album/browse">Go back</a>');
+        }
+
         res.render("albums/edit-album", { album, msg: "" }); // add msg: ""
     } catch (error) {
         console.error(error);
@@ -88,11 +92,17 @@ exports.showEditForm = async (req, res) => {
 
 exports.updateAlbum = async (req, res) => {
     const albumID = req.params.id;
+    const album = await Album.findByIDAndPopulate(albumID);
+
+    if (album.createdBy._id.toString() !== req.session.user.id) {
+        return res.status(403).send('<h1>Unauthorized</h1><a href="/album/browse">Go back</a>');
+    }
 
     const title = req.body.title;
     const description = req.body.description.trim();
     const year = req.body.year;
     const songs = req.body.songs;
+
 
     if (!title || !year) {
         const album = await Album.findByIDAndPopulate(albumID);
@@ -127,6 +137,9 @@ exports.getMarkedAlbum = async (req,res) => {
 
     try {
         const album = await Album.findByID(albumID).populate('songs').populate('createdBy');
+        if (album.createdBy._id.toString() !== req.session.user.id) {
+            return res.status(403).send('<h1>Unauthorized</h1><a href="/album/browse">Go back</a>');
+        }
         res.render("albums/show-album-delete", {album})
     } catch(error) {
         console.error(error)
@@ -137,8 +150,12 @@ exports.deleteAlbum = async (req,res) => {
     const albumID = req.params.id;
 
     try {
-        let success = await Album.deleteAlbum(albumID);
+        const album = await Album.findByID(albumID);
+        if (album.createdBy.toString() !== req.session.user.id) {
+            return res.status(403).send('<h1>Unauthorized</h1><a href="/album/browse">Go back</a>');
+        }
 
+        let success = await Album.deleteAlbum(albumID);
         if (success.deletedCount===1){
             res.send(`<h1>Album has been successfully deleted.</h1><br>
                 <a href="/album/browse"><strong>View Your Changes</strong></a>
@@ -151,7 +168,7 @@ exports.deleteAlbum = async (req,res) => {
 
 exports.searchSongs = async (req, res) => {
     const songs = await Song.find({
-        title: { $regex: req.query.q, $options: 'i' }
+        title: { $regex: '^' + req.query.q, $options: 'i' }
     }).select('_id title artist').limit(10);
     res.json(songs);
 };

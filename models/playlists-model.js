@@ -45,61 +45,26 @@ const playlistSchema = new mongoose.Schema({
 const Playlist = mongoose.model('Playlist', playlistSchema, 'playlists');
 
 
-// Private Functions
-function convertTime(timeSec) {
-    const minute = Math.floor(timeSec / 60);
-    const second = timeSec % 60;
-
-    return `${minute}:${second.toString().padStart(2, "0")}`;
-}
-
-
 // CRUD Functions
 exports.retrieveAll = async function() {
-    return await Playlist.find();
+    return await Playlist.find().populate('owner');
 }
 
 exports.retrievePublic = async function() {
-    return await Playlist.find({visibility: "Public"});
+    return await Playlist.find({visibility: "Public"}).populate('owner');
 }
 
 exports.retrieveByOwnerID = async function(ownerID) {
     return await Playlist.find({owner: ownerID});
 }
 
-exports.getByID = async function(id, loadSong = false) {
-    const playlist =  await Playlist.findById(id);
-    // The playlist returned is either null or not.
+exports.getByID = async function(id, loadSong) {
+    const playlist = Playlist.findById(id);
     
     if (loadSong) {
-        // Return early if no playlist is found.
-        if (!playlist) {return {playlist};}
-
-        // Query songs from the database
-        let songLUT = new Map();
-        for (const songID of playlist.songs) {
-            if (!songLUT.has(songID.toString())) {
-                // TODO: replace with song's create method
-                let eachSong = await Song.findById(songID);
-                songLUT.set(songID.toString(), eachSong);
-                console.log(`Queried: ${eachSong.title}`);
-            }
-        }
-
-        // Fill songsList
-        let songsList = [];
-        let songsDuration = [];
-        let playlistDuration = 0;
-        for (let i = 0; i < playlist.songs.length; i++) {
-            const songID = playlist.songs[i];
-            const eachSong = songLUT.get(songID.toString());
-            songsList.push(eachSong);
-            songsDuration.push(convertTime(eachSong.duration));
-            playlistDuration += eachSong.duration;
-        }
-        return {playlist, songsList, songsDuration, playlistDuration};
+        return await playlist.populate(["owner", "songs"]);
     } else {
-        return playlist;
+        return await playlist.populate(["owner"]);
     }
 }
 
@@ -131,4 +96,12 @@ exports.updateByID = async function(id, newValue) {
 
 exports.deleteByID = async function(id) {
     await Playlist.deleteOne({_id: id});
+}
+
+//Carolyn 
+exports.retrievePublicByOwnerID = async function(ownerID) {
+    return await Playlist.find({
+        owner: ownerID,
+        visibility: 'Public'
+    });
 }

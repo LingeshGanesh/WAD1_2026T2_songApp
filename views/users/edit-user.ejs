@@ -21,7 +21,7 @@
                 <% for(let i=1; i <=5; i++) { %>
                     <td align="center">
                         <label>
-                            <input type="radio" name="avatar" value="/image/profilepic<%=i%>.jpg"
+                            <input type="radio" name="newAvatar" value="/image/profilepic<%=i%>.jpg"
                                 <%=formData?.avatar || user.profilePicture ==='/image/profilepic' + i + '.jpg' ? 'checked' : '' %> required>
                             <br>
                             <img src="/image/profilepic<%=i%>.jpg" width="120">

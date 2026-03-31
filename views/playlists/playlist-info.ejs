@@ -11,7 +11,7 @@
 <body>
     <%- include("../navbar-user") %>
     <main>
-        <%- include("subpages/playlist-header", {playlist, owner}) %>
+        <%- include("subpages/playlist-header", {playlist}) %>
         <% if (isOwner) { %>
             <ul>
                 <li><a href="/playlist/edit/<%= playlist._id %>">Edit</a></li>
@@ -49,7 +49,7 @@
             </tr>
         </table><br>
         <!-- Songs -->
-        <%- include("subpages/songs-table", {songs: songsList, durations: songsDuration}) %>
+        <%- include("subpages/songs-table", {songs: playlist.songs, durations: songsDuration}) %>
     </main>
     <%- include("../footer") %>
 </body>

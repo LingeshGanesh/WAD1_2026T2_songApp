@@ -29,7 +29,7 @@ router.post('/change-password',authMiddleware.isLoggedIn,usersController.updateP
 
 //delete user
 router.get('/delete',authMiddleware.isLoggedIn, usersController.displayUser);
-router.post('/delete',authMiddleware.isLoggedIn, usersController.deleteUser);
+router.post('/delete',authMiddleware.isLoggedIn, usersController.deleteUserAndData);
 
 //search friends
 router.get('/search', authMiddleware.isLoggedIn, usersController.search);
