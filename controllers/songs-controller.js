@@ -129,6 +129,7 @@ exports.createSong = async (req, res) => {
     const fields = normalizeSongFields(req.body);
     const validationError = validateSong(fields);
     fields.uploader = req.user.username; // Use the username as the uploader
+    fields.album = ""; // Set album as empty
 
     // If validation fails, re-render form with error message and previously entered values
     if (validationError) {

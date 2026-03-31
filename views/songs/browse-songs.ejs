@@ -10,51 +10,51 @@
 
 <body>
     <%- include("../navbar-user") %>
-        <div class="browse-songs">
-            <h1>Browse Songs</h1>
-            <button><a href="/songs/create">Add a new song</a></button>
-            <br><br>
+    <div class="browse-songs">
+        <h1>Browse Songs</h1>
+        <button><a href="/songs/create">Add a new song</a></button>
+        <br><br>
 
-            <!-- If no songs, display message, else display table of songs -->
-            <% if (songs.length> 0) { %>
-                <table border="1">
-                    <tr>
-                        <th>Uploader</th>
-                        <th>Title</th>
-                        <th>Artist</th>
-                        <th>Album</th>
-                        <th>Genre</th>
-                        <th>Duration</th>
-                    </tr>
-                    <% songs.forEach(song=> { %>
-                        <tr>
-                            <td>
-                                <%= song.uploader %>
-                            </td>
-                            <td><a href="/songs/<%= song._id %>">
-                                    <%= song.title %>
-                                </a></td>
-                            <td>
-                                <%= song.artist %>
-                            </td>
-                            <td>
-                                <%= song.album || "-" %>
-                            </td>
-                            <td>
-                                <%= song.genre || "-" %>
-                            </td>
-                            <td>
-                                <%= formatDuration(song.duration) %>
-                            </td>
-                        </tr>
-                        <% }) %>
-                </table>
-                <% } else { %>
-                    <p>No songs have been added yet.</p>
-                    <% } %>
-        </div>
+        <!-- If no songs, display message, else display table of songs -->
+        <% if (songs.length> 0) { %>
+        <table border="1">
+            <tr>
+                <th>Uploader</th>
+                <th>Title</th>
+                <th>Artist</th>
+                <th>Album</th>
+                <th>Genre</th>
+                <th>Duration</th>
+            </tr>
+            <% songs.forEach(song=> { %>
+            <tr>
+                <td>
+                    <%= song.uploader %>
+                </td>
+                <td><a href="/songs/<%= song._id %>">
+                        <%= song.title %>
+                    </a></td>
+                <td>
+                    <%= song.artist %>
+                </td>
+                <td>
+                    <%= song.album || "-" %>
+                </td>
+                <td>
+                    <%= song.genre || "-" %>
+                </td>
+                <td>
+                    <%= formatDuration(song.duration) %>
+                </td>
+            </tr>
+            <% }) %>
+        </table>
+        <% } else { %>
+        <p>No songs have been added yet.</p>
+        <% } %>
+    </div>
 
-        <%- include("../footer") %>
+    <%- include("../footer") %>
 </body>
 
 </html>
