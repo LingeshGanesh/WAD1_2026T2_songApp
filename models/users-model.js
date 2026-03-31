@@ -181,6 +181,61 @@ exports.deleteUserAndData = async (userId) => {
     await User.deleteOne({ _id: userId });
 };
 
+//get suggested users 
+exports.getSuggestedUsers = async function (currentUserId) {
+    const currentUser = await User.findById(currentUserId);
+
+    const users = await User.find({
+        _id: { $ne: currentUserId }
+    });
+
+    const currentFollowings = currentUser.followings.map(f => f.toString());
+
+    let suggestions = [];
+
+    for (let user of users) {
+
+        // skip if already following
+        if (currentFollowings.includes(user._id.toString())) continue;
+
+        // // mutual followers
+        // const mutualFollowers = user.followers.filter(f =>
+        //     currentUser.followings.includes(f.toString())
+        // );
+
+        // // mutual followings
+        // const mutualFollowings = user.followings.filter(f =>
+        //     currentUser.followings.includes(f.toString())
+        // );
+
+        //check only shared followings
+        const sharedFollowings = user.followings.filter(f =>
+            currentFollowings.includes(f.toString())
+        );
+
+        const sharedFollowingUsers = await User.find(
+            { _id: { $in: sharedFollowings } },
+            { username: 1, profilePicture: 1 }
+        );
+
+        const score = sharedFollowings.length
+
+        if (score > 0) {
+            suggestions.push({
+                user,
+                score,
+                sharedFollowings: sharedFollowingUsers
+            });
+        }
+
+    }
+    console.log(suggestions)
+    // sort by highest score
+    suggestions.sort((a, b) => b.score - a.score);
+
+    return suggestions.slice(0, 5); // top 5
+};
+
 //update event in user
 exports.updateOne = function (filter, update) {
     return User.updateOne(filter, update);
