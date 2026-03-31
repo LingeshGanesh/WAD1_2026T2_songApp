@@ -35,7 +35,7 @@ exports.registerPost = async (req, res) => {
         } else if (!passwordRegex.test(password)) {
             errors.push("Password must be at least 8 characters and include uppercase, lowercase, number, and special character (@#$%^&!?)");
         };
-
+        console.log(password)
         if (!cfmpassword) {
             errors.push("Please confirm your password");
         } else if (password !== cfmpassword) {
@@ -75,7 +75,8 @@ exports.registerPost = async (req, res) => {
         await User.createUser(user);
         console.log(`Successfully register with
             user:${user.username}
-            email:${user.email}`)
+            email:${user.email},
+            cfmpassword`)
         return res.redirect('/user/login');
 
     } catch (error) {
@@ -357,19 +358,16 @@ exports.displayUser = async (req, res) => {
     }
 };
 
-//delete hasn't done yet
-exports.deleteUserAndData = async (req, res) => {
-
-    const id = req.session.user.id;
-    const user = await User.findUserByID(id);
-
+exports.deleteAll = async (req, res) => {
     try {
-        let user = await User.deleteUser(id);
+        const id = req.session.user.id;
+        const username = req.session.user.username;
+
+        await User.deleteUserAndData(id, username);
 
         req.session.destroy((err) => {
             if (err) {
                 console.log("Error while destorying session:", err);
-                //need change
                 return res.redirect('/user/profile')
             }
             res.redirect('/user/login')

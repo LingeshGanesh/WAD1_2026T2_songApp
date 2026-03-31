@@ -62,3 +62,9 @@ exports.updateReview = async (reviewId, rating, comment) => {
 exports.deleteReview = async (reviewId) => {
   return await Review.findByIdAndDelete(reviewId);
 };
+
+//delete many - Carolyn
+exports.deleteManyByUserId = function (userId) {
+    return Review.deleteMany({ userId });
+};
+//end of delete many

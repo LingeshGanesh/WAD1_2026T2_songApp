@@ -9,16 +9,16 @@
 
 <body>
     <p><strong>User Marked for Deletion.</strong></p>
-    
-    Email: <%=user.email%><br>
-    Username: <%=user.username%>
-    <!-- delete hasn't doen yet -->
-    <form action="/user/delete" method="post">
-        <p style="color: red;">
-            Click "Confirm" to permanently delete your account.<br> All your playlists and history will be removed and cannot be recovered.
-        </p>
-    </form>
-    
-    
 
+    Email: <%=user.email%><br>
+        Username: <%=user.username%>
+            <!-- delete hasn't doen yet -->
+            <form action="/user/delete" method="post">
+                <p style="color: red;">
+                    Click "Confirm" to permanently delete your account.<br> All your playlists and history will be
+                    removed and cannot be recovered.
+                </p>
+                <button type="submit">Confirm</button>
+            </form>
+</body>
 </html>
