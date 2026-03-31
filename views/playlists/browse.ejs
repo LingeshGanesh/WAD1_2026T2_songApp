@@ -8,7 +8,10 @@
 <body>
     <%- include("../navbar-user") %>
     <h1>Browse Playlists</h1>
-    <a href="/playlist/create">Create a new playlist</a>
+    <ul>
+        <li><a href="/playlist/create">Create a new playlist</a></li>
+        <li><a href="/playlist/random">I'm feeling lucky!</a></li>
+    </ul>
     <form action="/playlist/<%= subroute %>" method="get">
         <label for="sortby">Sort by:</label>
         <select name="sortby" id="sortby">

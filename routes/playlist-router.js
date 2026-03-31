@@ -13,6 +13,7 @@ const playlistControllers = require("../controllers/playlist-controllers.js");
 // Read
 router.get("/browse", playlistControllers.browse);
 router.get("/yours", playlistControllers.yourPlaylists);
+router.get("/random", playlistControllers.randomPlaylist);
 
 // Creation
 router.get("/create", playlistControllers.showCreationForm);
