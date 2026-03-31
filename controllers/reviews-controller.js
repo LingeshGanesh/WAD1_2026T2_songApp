@@ -27,10 +27,18 @@ exports.createReview = async (req, res) => {
     }
 
     if (error) {
+      const reviews = await Review.findByID({ songId });
+      // Populate usernames for each review
+      if (reviews && reviews.length > 0) {
+        for (let review of reviews) {
+          const user = await User.findUserByID(review.userId);
+          review.userName = user ? user.username : 'Unknown User';
+        }
+      }
       return res.render("reviews", {
         songTitle: (await Song.findByID(songId)).title,
         songId, 
-        error: "All fields are required",
+        error: error,
         reviews: reviews,
         currentUser: req.session.user || null
       });

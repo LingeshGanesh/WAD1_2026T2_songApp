@@ -46,6 +46,9 @@
                 <td>
                     <%= formatDuration(song.duration) %>
                 </td>
+                <td>
+                    <a href="/reviews/<%= song._id %>">View Reviews</a>
+                </td>
             </tr>
             <% }) %>
         </table>
