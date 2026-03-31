@@ -39,6 +39,11 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Event'
     }],
+    alerts: [{
+        message: { type: String, required: true },
+        read: { type: Boolean, default: false },
+        createdAt: { type: Date, default: Date.now }
+    }],
     createdAt: {
         type: Date,
         default: Date.now
@@ -241,3 +246,17 @@ exports.updateOne = function (filter, update) {
     return User.updateOne(filter, update);
 }
 
+// Functions for users to receive and view alerts
+exports.addAlertToMany = function (userIds, message) {
+    return User.updateMany(
+        { _id: { $in: userIds } },
+        { $push: { alerts: { message } } }
+    );
+};
+
+// Functions to delete all alerts
+exports.clearAlerts = function (userId) {
+    return User.updateOne({ _id: userId }, { $set: { alerts: [] } });
+};
+
+// end of alerts features

@@ -26,16 +26,33 @@
             <tr>
                 <th>Location:</th><td><input type="text" name="location" value="<%= result.location %>"></td>
             </tr>
+            <tr>
+                <th>Capacity:</th><td><input type="text" name="capacity" value="<%= result.capacity %>"></td>
+            </tr>
             <input type="hidden" name="id" value="<%= result._id %>">
             <tr>
-                <td colspan="2"><button type="submit">Update Event</button></td>
+                <td colspan="2"><button type="submit" id="submitBtn" disabled>Update Event</button></td>
             </tr>
         </table>
     </form>
 
+    <!--Shows errors with updating if any-->
     <% if(msg) { %>
         <p><%- msg %></p>
     <%}%>
+
+    <!--Makes sure you can only submit if there's been a change in the fields-->
+    <script>
+        const form = document.querySelector('form');
+        const btn = document.getElementById('submitBtn');
+        const original = new FormData(form);
+
+        form.addEventListener('input', () => {
+            const current = new FormData(form);
+            const changed = [...original.keys()].some(k => original.get(k) !== current.get(k));
+            btn.disabled = !changed;
+        });
+    </script>
     
     <% } %>
 

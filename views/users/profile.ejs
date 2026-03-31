@@ -50,6 +50,21 @@
                         <% } else { %>
                             <p>You have no playlists yet.</p>
                             <% } %>
+        
+        <h3>Your Alerts</h3>
+        <form action="/user/clear-alerts" method="POST">
+            <button type="submit">Clear All</button>
+        </form>
+        <% if (user.alerts && user.alerts.length > 0) { %>
+            <% [...user.alerts].reverse().forEach(alert => { %>
+                <p <%= !alert.read ? 'class="unread"' : '' %>>
+                    <%= alert.message %>
+                    <small><%= alert.createdAt.toLocaleDateString() %></small>
+                </p>
+            <% }) %>
+        <% } else { %>
+            <p>You have no alerts.</p>
+        <% } %>
                                 <%- include("../footer") %>
 </body>
 

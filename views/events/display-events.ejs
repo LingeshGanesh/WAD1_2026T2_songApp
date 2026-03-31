@@ -25,7 +25,16 @@
         Entry Fee: <%= event.entryFee %><br>
         Location: <%= event.location %><br>
         Participants: <%= event.participants.length %>/<%= event.capacity %><br><br>
-        
+
+        <strong>Also attended by:</strong>
+        <% const friendsHere = event.participants.filter(p => followings.some(f => f.toString() === p._id.toString())); %>
+        <% if (friendsHere.length > 0) { %>
+          <!-- <strong>Mutuals attending:</strong> <%= friendsHere.map(p => p.username).join(', ') %><br> -->
+          <% friendsHere.forEach(p => { %>
+            <img src="<%= p.profilePicture %>" style="width:24px;height:24px;border-radius:50%;vertical-align:middle;"> <%= p.username %>
+          <% }); %>
+        <% } %>
+        <br><br>
         <% if (event.author && event.author.toString() === userId) { %>
           <button disabled>Your event</button>
         <% } else if (userEvents.some(e => e.toString() === event._id.toString())) { %>
