@@ -23,7 +23,6 @@
             <legend><strong>Description</strong></legend>
             <%- include("subpages/playlist-desc", {playlist}) %>
         </fieldset>
-        
         <!-- Other information -->
         <table class="pinfo">
             <tr>
@@ -42,14 +41,17 @@
                 <td><%= playlist.songs.length %> song<%= playlist.songs.length == 1? "": "s" %></td>
             </tr>
             <tr>
-                <% const playlistMinute = Math.round(playlistDuration / 60) %>
+                <% const minute = Math.floor(playlistDuration / 60) %>
+                <% const second = playlistDuration % 60 %>
                 <th>Total Duration</th>
                 <th>:</th>
-                <td><%= playlistMinute %> minute<%= playlistMinute == 1? "": "s" %></td>
+                <td><%= minute %> minute<%= minute == 1? "": "s" %> <%= second? `${second} second${second == 1? "": "s"}`: ""  %></td>
             </tr>
         </table><br>
         <!-- Songs -->
         <%- include("subpages/songs-table", {songs: playlist.songs, durations: songsDuration}) %>
+        
+        <p><a href="/playlist/random">I'm feeling lucky!</a></p>
     </main>
     <%- include("../footer") %>
 </body>
