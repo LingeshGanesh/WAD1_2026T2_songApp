@@ -32,12 +32,12 @@ exports.retrieveAll = function() {
 };
 
 exports.findByID = function (songId) {
-    console.log("Finding reviews for song ID:", songId);
+    // console.log("Finding reviews for song ID:", songId);
     return Review.find( songId );
 };
 
 exports.findByReviewId = function (reviewId) {
-    console.log("Finding review for review ID:", reviewId);
+    // console.log("Finding review for review ID:", reviewId);
     return Review.findById(reviewId);
 };
 

@@ -6,7 +6,7 @@ exports.createReview = async (req, res) => {
     // const userId = req.session.user.id;
     const songId = req.params.songID;
     const userId = '507f1f77bcf86cd799439011'; // Placeholder user ID for testing
-    console.log("Creating review for user ID:", userId);
+    // console.log("Creating review for user ID:", userId);
     const { rating, comment } = req.body;
     let error = ''
 
@@ -40,7 +40,7 @@ exports.getAllReviews = async (req, res) => {
     const reviews = await Review.retrieveAll();
     res.render('reviews', { reviews, output:null });
   } catch (err) {
-    console.log(err.message)
+    // console.log(err.message)
     res.send('Error fetching reviews');
   }
 };
@@ -57,7 +57,7 @@ exports.getReviewInfo = async (req, res) => {
     }
     res.render('reviews', { reviews, output, error, songId });
   } catch (err) {
-    console.log(err.message)
+    // console.log(err.message)
     res.send('Error fetching reviews');
   }
 }
@@ -69,7 +69,7 @@ exports.updateReview = async (req, res) => {
   let output = '';
 
   const review = await Review.findByReviewId(reviewId);
-  console.log("Review to update:", review);
+  // console.log("Review to update:", review);
   const old_comment = review.comment;
   const old_rating = review.rating;
 
@@ -89,7 +89,7 @@ exports.updateReview = async (req, res) => {
       output = 'No changes made. Please provide a new rating or comment.';
     }
 
-    const reviews = await Review.retrieveAll();
+    const reviews = await Review.findByID({ songId });
 
     res.render('reviews', { reviews, output, songId, error: null});
   } catch (err) {
@@ -105,7 +105,9 @@ exports.deleteReview = async (req, res) => {
 
     await Review.deleteReview(reviewId);
 
-    res.redirect('/reviews/' + songId);
+    const reviews = await Review.findByID({ songId });
+
+    res.render('reviews', { reviews, output, songId, error: null});
   } catch (err) {
     res.send('Error deleting review');
   }
