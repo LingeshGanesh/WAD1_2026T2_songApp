@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Reviews</title>
+</head>
+<body>
+  <a href="/homepage"><strong>Back to Main Page</strong></a><br>
+  <a href="/songs/browse"><strong>Back to Browse Songs</strong></a><br><br>
+
+  <h3><u>Review List:</u></h3>
+    <% if (!reviews) { %>
+      <%= output %>
+    <br>
+    <% } else { %>
+
+    <h4><%= reviews.length %> review(s) found.</h4>
+
+  <ol>
+
+      <% songs.forEach(function(song) { %>
+        <% reviews.forEach(function(review) { %>
+            <% if (review.songId.toString() === song._id.toString()) { %>       
+          <li>
+            <strong>Song: <%= song.title %></strong><br>
+            <strong>User ID: <%= review.userId %></strong><br>
+            Rating: <%= review.rating %><br>
+            Comment: <%= review.comment %>
+          </li>
+        <% }}) %>
+      <% }) %>  
+        
+
+      <br>
+    <% } %>
+
+    
+  </ol>
+
+</body>
+</html>
