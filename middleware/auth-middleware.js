@@ -16,6 +16,9 @@ exports.isLoggedIn = async (req, res, next) => {
 
         //can reuse the user array
         req.user = user; 
+        // adding this for alerts so it'll know there's alerts
+        // for the user even on pages without middleware
+        res.locals.currentUser = user; 
         next();
 
     } catch (err) {

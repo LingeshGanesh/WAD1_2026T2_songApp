@@ -188,6 +188,7 @@ exports.loginPost = async (req, res) => {
 exports.profile = async (req, res) => {
     try {
         const playlists = await Playlist.retrieveByOwnerID(req.user._id);
+        await User.markAlertsRead(req.user._id);
         res.render('users/profile', { user: req.user, playlists });
     } catch (error) {
         console.error("Error loading profile:", error);
