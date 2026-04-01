@@ -5,8 +5,9 @@ const Song = require('../models/songs-model');
 
 exports.showAlbumList = async (req,res) => {
     try {
+        // populate allows each key-value pairs data to be fetched
         const allAlbums = await Album.retrieveAll().populate('createdBy') || [];
-        res.render("albums/show-album-list", {allAlbums});
+        res.render("albums/show-album-list", {allAlbums}); 
     } catch(error) {
         console.error(error)
     }
@@ -15,6 +16,7 @@ exports.showAlbumList = async (req,res) => {
 exports.albumInfo = async (req,res) => {
     const albumID = req.params.id
     try {
+        // populate to get song and creator details
         const album = await Album.findByID(albumID).populate('songs').populate('createdBy');
         res.render("albums/show-album-created", {album})
     } catch(error) {
@@ -24,7 +26,7 @@ exports.albumInfo = async (req,res) => {
 
 exports.showAddForm = async (req,res) => {
     try {
-        res.render("albums/add-album", {result: "", msg: ""})
+        res.render("albums/add-album", {msg: ""})
     } catch (error) {
         console.error(error)
     }
@@ -36,43 +38,39 @@ exports.createAlbum = async (req,res) => {
     const year = req.body.year;
     const songs = req.body.songs 
 
-    console.log(req.session.user.id);
-
-
-    if (year.toString().length !== 4) {
+    if (year.toString().length !== 4) { // validation for year field
         return res.render("albums/add-album", {msg: "Year must be a 4-digit number." });
     }
 
-    if (!songs) {
+    if (!songs) { // validation for song field
         return res.render("albums/add-album", {msg: "Please add at least one song." });
     }
 
+    // split comma separated songIDs into array of strings
+    // .map(id=> ...) loops over each string, trims any whitespace and converts the string 
+    // into a proper MongoDB ObjectId object 
     const songIds = songs.split(',').map(id => new mongoose.Types.ObjectId(id.trim()));
 
     let newAlbum = {
         title: title,
         yearReleased: year,
         songs: songIds,
-        createdBy: req.session.user.id,
+        createdBy: req.session.user.id, // saves the user who created the album for authorization purposes
         description: description
     }
 
     try {
-        let msg = "";
         let result = await Album.addAlbum(newAlbum);
         const newId = result._id;
         await result.populate('songs');
         await result.populate('createdBy');
         res.redirect(`/album/${newId}`);
 
-
-
     } catch (error) {
         console.error(error);
-        let result = "fail";
         let msg = error;
 
-        res.render("albums/add-album", { result, msg });
+        res.render("albums/add-album", {msg });
     }
 };
 
@@ -81,7 +79,7 @@ exports.showEditForm = async (req, res) => {
     try {
         const album = await Album.findByIDAndPopulate(albumID);
         if (album.createdBy._id.toString() !== req.session.user.id) {
-            return res.status(403).send('<h1>Unauthorized</h1><a href="/album/browse">Go back</a>');
+            return res.send('<h1>You do not have permission to access this</h1><a href="/album/browse">Go back</a>');
         }
 
         res.render("albums/edit-album", { album, msg: "" }); // add msg: ""
@@ -95,7 +93,7 @@ exports.updateAlbum = async (req, res) => {
     const album = await Album.findByIDAndPopulate(albumID);
 
     if (album.createdBy._id.toString() !== req.session.user.id) {
-        return res.status(403).send('<h1>Unauthorized</h1><a href="/album/browse">Go back</a>');
+        return res.send('<h1>You do not have permission to access this</h1><a href="/album/browse">Go back</a>');
     }
 
     const title = req.body.title;
@@ -106,12 +104,12 @@ exports.updateAlbum = async (req, res) => {
 
     if (!title || !year) {
         const album = await Album.findByIDAndPopulate(albumID);
-        return res.render("albums/edit-album", { album, msg: "All fields are required." });
+        return res.render("albums/edit-album", {album, msg: "All fields are required." });
     }
 
     if (!songs){
         const album = await Album.findByIDAndPopulate(albumID);
-        return res.render("albums/edit-album", { album, msg: "Please add at least one song." });
+        return res.render("albums/edit-album", {album, msg: "Please add at least one song." });
     }
 
     if (year.toString().length !== 4) {
@@ -138,7 +136,7 @@ exports.getMarkedAlbum = async (req,res) => {
     try {
         const album = await Album.findByID(albumID).populate('songs').populate('createdBy');
         if (album.createdBy._id.toString() !== req.session.user.id) {
-            return res.status(403).send('<h1>Unauthorized</h1><a href="/album/browse">Go back</a>');
+            return res.send('<h1>You do not have permission to access this</h1><a href="/album/browse">Go back</a>');
         }
         res.render("albums/show-album-delete", {album})
     } catch(error) {
@@ -152,7 +150,7 @@ exports.deleteAlbum = async (req,res) => {
     try {
         const album = await Album.findByID(albumID);
         if (album.createdBy.toString() !== req.session.user.id) {
-            return res.status(403).send('<h1>Unauthorized</h1><a href="/album/browse">Go back</a>');
+            return res.send('<h1>You do not have permission to access this</h1><a href="/album/browse">Go back</a>');
         }
 
         let success = await Album.deleteAlbum(albumID);
