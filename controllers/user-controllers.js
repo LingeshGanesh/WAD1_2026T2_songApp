@@ -1,5 +1,7 @@
 const User = require('../models/users-model');
 const Playlist = require('../models/playlists-model');
+const Reviews = require('../models/reviews-model');
+const Song = require('../models/songs-model');
 const bcrypt = require('bcrypt');
 
 exports.stats = (req, res) => {
@@ -200,7 +202,15 @@ exports.profile = async (req, res) => {
     try {
         const playlists = await Playlist.retrieveByOwnerID(req.user._id);
         await User.markAlertsRead(req.user._id);
-        res.render('users/profile', { user: req.user, playlists });
+
+        const reviewsEntered = await Reviews.findByUserId(req.user._id); // maegan
+        console.log("Reviews entered by user:", reviewsEntered); // maegan
+        console.log(req.user._id) // maegan
+
+        const allSongs = await Song.retrieveAll(); // maegan
+    
+        res.render('users/profile', { user: req.user, playlists, reviewsEntered, allSongs});
+
     } catch (error) {
         console.error("Error loading profile:", error);
         res.redirect('/homepage');
