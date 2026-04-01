@@ -20,16 +20,15 @@ const eventSchema = new mongoose.Schema({
     },
     date: {
         type: Date,
-        required: [true, 'An event must have a date'],
+        required: [true, 'An event must have a start time'],
         validate: {
             validator: function(value) {
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
+                const now = new Date();
 
-                const maxDate = new Date(today);
+                const maxDate = new Date(now);
                 maxDate.setMonth(maxDate.getMonth() + 3);
 
-                return value >= today && value <= maxDate;
+                return value >= now && value <= maxDate;
             },
             message: 'Event date cannot be in the past and can only be scheduled up to 3 months in advance'
         }
@@ -66,7 +65,9 @@ exports.findByName = function(name) {
 
 exports.retrieveAll = function() {
     // return Event.find().populate('participants', 'username');
-    return Event.find().populate('participants', 'username profilePicture').sort({ date: 1 });
+    return Event.find().populate('participants', 'username profilePicture')
+    .populate('author', 'username profilePicture')
+    .sort({ date: 1 });
 };
 
 exports.addEvent = function(newEvent) {
