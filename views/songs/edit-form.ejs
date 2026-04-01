@@ -20,7 +20,7 @@
         <!-- Edit song form pre-filled with existing song data -->
         <form action="/songs/edit/<%= song._id %>" method="post">
             <p><strong>Uploader:</strong>
-                <%= song.uploader %>
+                <%= song.uploader ? song.uploader.username : "-" %>
             </p>
             <%- include("form-fields", { fields: song, showUploader: false }) %>
             <input type="submit" value="Save Changes">

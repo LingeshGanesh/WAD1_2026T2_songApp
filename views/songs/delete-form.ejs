@@ -17,7 +17,7 @@
                 <%= song.artist %>
             </strong>.</p>
         <p>Uploaded by: <strong>
-                <%= song.uploader %>
+                <%= song.uploader ? song.uploader.username : "-" %>
             </strong></p>
         <p>Album: <%= song.album || "N/A" %>
         </p>

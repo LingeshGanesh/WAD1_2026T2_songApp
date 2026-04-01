@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const songSchema = new mongoose.Schema({
     // Adding uploader field to track who uploaded the song, which can be used for authorization in delete/edit operations
     uploader: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User', // Reference to User model
         required: [true, 'A song must have an uploader']
     },
     title: {
@@ -33,13 +34,13 @@ const Song = mongoose.model('Song', songSchema, 'songs');
 // Mongoose static methods for CRUD operations
 // Used in browse page to load all songs from the database
 Song.retrieveAll = function () {
-    return Song.find();
+    return Song.find().populate("uploader", "username");
 };
 
 // Used in edit form 
 // Used in delete confirmation page to check if song exists before allowing delete
 Song.findByID = function (songID) {
-    return Song.findOne({ _id: songID });
+    return Song.findOne({ _id: songID }).populate("uploader", "username");
 };
 
 // Used in create form to save new song to the database
@@ -52,7 +53,7 @@ Song.updateSongByID = function (songID, updatedSong) {
     return Song.findByIdAndUpdate(songID, updatedSong, {
         new: true,
         runValidators: true
-    });
+    }).populate("uploader", "username");
 };
 
 // Used in delete confirmation page to delete song from the database
@@ -61,8 +62,8 @@ Song.deleteSongByID = function (songID) {
 };
 
 //delete many - Carolyn
-Song.deleteManyByUploader = function (username) {
-    return Song.deleteMany({ uploader: username });
+Song.deleteManyByUploader = function (userId) {
+    return Song.deleteMany({ uploader: userId });
 };
 // end of delete many
 

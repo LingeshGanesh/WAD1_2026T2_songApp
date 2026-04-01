@@ -168,7 +168,7 @@ exports.deleteUserAndData = async (userId, username) => {
     await Album.deleteManyByCreatorId(userId);
 
     //songs
-    await Song.deleteManyByUploader(username);
+    await Song.deleteManyByUploader(userId);
 
     //remove from other users
     await User.updateMany(

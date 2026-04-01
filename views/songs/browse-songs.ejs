@@ -30,7 +30,7 @@
             <% songs.forEach(song=> { %>
             <tr>
                 <td>
-                    <%= song.uploader %>
+                    <%= song.uploader ? song.uploader.username : "-" %>
                 </td>
                 <td><a href="/songs/<%= song._id %>">
                         <%= song.title %>

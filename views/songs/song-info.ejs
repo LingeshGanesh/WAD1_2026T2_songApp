@@ -11,7 +11,7 @@
     <%- include("../navbar-user") %>
     <h1><%= song.title %></h1>
     <!-- Song information -->
-    <p><strong>Uploaded by:</strong> <%= song.uploader %></p>
+    <p><strong>Uploaded by:</strong> <%= song.uploader ? song.uploader.username : "-" %></p>
     <p><strong>Artist:</strong> <%= song.artist %></p>
     <p><strong>Album:</strong> <%= song.album || "N/A" %></p>
     <p><strong>Genre:</strong> <%= song.genre || "N/A" %></p>
