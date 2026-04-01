@@ -22,8 +22,18 @@
 <input type="text" name="album" id="album" value="<%= fields.album || '' %>"><br><br>
 <% } %>
 
+<!-- Genre (selected from a dropdown) -->
 <label for="genre">Genre</label><br>
-<input type="text" name="genre" id="genre" value="<%= fields.genre || '' %>"><br><br>
+<select name="genre" id="genre">
+    <option value="Classical" <%= fields.genre === "Classical" ? "selected" : "" %>>Classical</option>
+    <option value="Country" <%= fields.genre === "Country" ? "selected" : "" %>>Country</option>
+    <option value="Electronic" <%= fields.genre === "Electronic" ? "selected" : "" %>>Electronic</option>
+    <option value="Hip-Hop" <%= fields.genre === "Hip-Hop" ? "selected" : "" %>>Hip-Hop</option>
+    <option value="Indie" <%= fields.genre === "Indie" ? "selected" : "" %>>Indie</option>
+    <option value="Jazz" <%= fields.genre === "Jazz" ? "selected" : "" %>>Jazz</option>
+    <option value="Pop" <%= fields.genre === "Pop" ? "selected" : "" %>>Pop</option>
+    <option value="Rock" <%= fields.genre === "Rock" ? "selected" : "" %>>Rock</option>
+</select><br><br>
 
 <label for="duration">Duration (seconds)</label><br>
 <input type="number" name="duration" id="duration" min="1" value="<%= fields.duration || '' %>" required><br><br>

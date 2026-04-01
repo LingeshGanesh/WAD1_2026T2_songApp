@@ -114,7 +114,6 @@ exports.showDeleteForm = async (req, res) => {
 // READ: Browse all songs
 exports.browse = async (req, res) => {
     try {
-        // For simplicity, we are not implementing sorting and filtering in this function, but it can be added later by parsing query parameters from req.query
         const songs = await Song.retrieveAll().sort({ artist: 1, title: 1 });
         res.render("songs/browse-songs", { songs, formatDuration });
     } catch (error) {

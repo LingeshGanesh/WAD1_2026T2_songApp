@@ -33,12 +33,14 @@ const Song = mongoose.model('Song', songSchema, 'songs');
 
 // Mongoose static methods for CRUD operations
 // Used in browse page to load all songs from the database
+// populate uploader field to get the username of the uploader for display in the browse page
 Song.retrieveAll = function () {
     return Song.find().populate("uploader", "username");
 };
 
 // Used in edit form 
 // Used in delete confirmation page to check if song exists before allowing delete
+// populate uploader field to get the username of the uploader for display in the browse page
 Song.findByID = function (songID) {
     return Song.findOne({ _id: songID }).populate("uploader", "username");
 };
