@@ -26,7 +26,8 @@ const playlistSchema = new mongoose.Schema({
     },
     visibility: {
         type: String,
-        default: "Private"
+        default: "Private",
+        enum: ["Private", "Unlisted", "Public"]
     },
     creationDate: {
         type: Date,
