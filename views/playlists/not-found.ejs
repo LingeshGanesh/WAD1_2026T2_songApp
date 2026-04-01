@@ -6,11 +6,13 @@
     <title>Playlist Not Found</title>
 </head>
 <body>
+    <%- include("../navbar-user") %>
     <h1>Playlist Not Found</h1>
     <p>The playlist you're looking for is either private or not found.</p>
     <ul>
         <li><a href="/playlist/browse">Browse Playlist</a></li>
         <li><a href="/">Go to homepage</a></li>
     </ul>
+    <%- include("../footer") %>
 </body>
 </html>

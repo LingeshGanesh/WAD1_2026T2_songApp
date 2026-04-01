@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const Song = require("./../models/songs-model.js");
 const authMiddleware = require('../middleware/auth-middleware');
 
 // Import routers
@@ -22,7 +21,7 @@ router.use("/songs", songsRouter);
 
 // 404 Not Found
 router.all(/.*/, (req, res) => {
-    res.status(404).render('not-found', { url: req.url, user: req.session.user || null });
+    res.status(404).render('status/not-found', { url: req.url, user: req.session.user || null });
 })
 
 // Export

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const Song = require('./songs-model');
 
 // File System to store thumbnails
 const fs = require('fs/promises');
@@ -110,4 +109,3 @@ exports.retrievePublicByOwnerID = async function(ownerID) {
 exports.deleteManyByOwnerId = async function (ownerId) {
     return await Playlist.deleteMany({ owner: ownerId });
 };
-//Carolyn

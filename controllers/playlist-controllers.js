@@ -24,6 +24,14 @@ function convertTime(timeSec) {
     return `${minute}:${second.toString().padStart(2, "0")}`;
 }
 
+function renderISE(res, message) {
+    return res.status(500).render("status/internal", {message: message});
+}
+
+function renderForbidden(res, message) {
+    return res.status(403).render("status/forbidden", {message: message});
+}
+
 // Controllers
 // Read
 exports.browse = async (req, res) => {
@@ -38,7 +46,7 @@ exports.browse = async (req, res) => {
         allPlaylists = await Playlist.retrievePublic();
     } catch (error) {
         console.error(error);
-        return res.status(500).send("Error fetching playlists from database.")
+        return renderISE(res, "Error fetching playlists from database.");
     }
 
     // Sort the playlists by the sorting fields
@@ -49,7 +57,7 @@ exports.browse = async (req, res) => {
         allPlaylists,
         sortby, 
         isAscending, 
-        subroute: "browse"}
+        subroute: "browse"};
 
     res.render('playlists/browse', option);
 };
@@ -60,7 +68,7 @@ exports.playlistInfo = async (req, res) => {
 
     // The given playlistID is not a valid ID.
     if (!mongoose.isValidObjectId(playlistID)) {
-        return res.status(404).render("not-found", {url: req.url});
+        return res.status(404).render("status/not-found", {url: req.url});
     }
     
     try {
@@ -97,7 +105,7 @@ exports.playlistInfo = async (req, res) => {
         res.render('playlists/playlist-info', option);
     } catch (error) {
         console.error(error);
-        return res.status(500).send("Error calling database.")
+        return renderISE(res, "Error calling database.");
     }
 };
 
@@ -114,7 +122,7 @@ exports.yourPlaylists = async (req, res) => {
         allPlaylists = await Playlist.retrieveByOwnerID(user.id);
     } catch (error) {
         console.error(error);
-        return res.status(500).send("Error calling database.")
+        return renderISE(res, "Error calling database.");
     }
 
     // Sort the playlists by the sorting fields
@@ -129,7 +137,7 @@ exports.yourPlaylists = async (req, res) => {
         owners, 
         sortby, 
         isAscending, 
-        subroute: "yours"}
+        subroute: "yours"};
 
     res.render('playlists/browse', option);
 };
@@ -144,7 +152,7 @@ exports.randomPlaylist = async (req, res) => {
         return res.status(200).redirect(`/playlist/${allPlaylists[i]._id}`);
     } catch (error) {
         console.error(error);
-        return res.status(500).send("Error calling database");
+        return renderISE(res, "Error calling database.");
     }
 }
 
@@ -200,7 +208,7 @@ exports.createPlaylist = async (req, res) => {
         res.render('playlists/create-success', {playlist: playlistDoc});
     } catch (error) {
         console.error(error);
-        return res.status(500).send("Error adding playlist to the database.")
+        return renderISE(res, "Error calling database.");
     }
 }
 
@@ -212,10 +220,15 @@ exports.showEditForm = async (req, res) => {
     try {
         // Fetch the playlist info
         let playlist = await Playlist.getByID(playlistID, true);
+
+        // If the playlist does not exist, show playlist not found page
+        if (!playlist) {
+            return res.status(404).render('playlists/not-found');
+        }
         
         // Only allow the owner to edit (Authorization)
         if (!checkOwnership(user, playlist)) {
-            return res.status(403).send("You are not allowed to edit this playlist.")
+            return renderForbidden(res, "You are not allowed to edit this playlist.");
         }
         
         // Render page
@@ -227,7 +240,7 @@ exports.showEditForm = async (req, res) => {
         res.render('playlists/edit-form', option);
     } catch (error) {
         console.error(error);
-        return res.status(500).send("Error calling database.")
+        return renderISE(res, "Error calling database.");
     }
 }
 
@@ -260,7 +273,7 @@ exports.updatePlaylist = async (req, res) => {
         // Only allow the owner to edit (Authorization)
         const playlist = await Playlist.getByID(playlistID, false);
         if (!checkOwnership(user, playlist)) {
-            return res.status(403).send("You are not allowed to edit this playlist.")
+            return renderForbidden(res, "You are not allowed to edit this playlist.");
         }
 
         // Update non-thumbnail data
@@ -284,7 +297,7 @@ exports.updatePlaylist = async (req, res) => {
         }
     } catch (error) {
         console.error(error);
-        return res.status(500).send("Error updating playlist in the database.")
+        return renderISE(res, "Error calling database.");
     }
 
     // Render success page
@@ -299,16 +312,21 @@ exports.showDeleteForm = async (req, res) => {
     try {
         let playlist = await Playlist.getByID(playlistID, true);
         
+        // If the playlist does not exist, show playlist not found page
+        if (!playlist) {
+            return res.status(404).render('playlists/not-found');
+        }
+
         // Only allow the owner to delete (Authorization)
         if (!checkOwnership(user, playlist)) {
-            return res.status(403).send("You are not allowed to delete this playlist.")
+            return renderForbidden(res, "You are not allowed to delete this playlist.");
         }
         
         // Render form
         res.render('playlists/delete-form', {user, errorMsgs: false, playlist});
     } catch (error) {
         console.error(error);
-        return res.status(500).send("Error calling database.")
+        return renderISE(res, "Error calling database.");
     }
 }
 
@@ -337,7 +355,7 @@ exports.deletePlaylist = async (req, res) => {
     
     // 3. Check if the owner matches
     if (!checkOwnership(user, playlist)) {
-        return res.status(403).send("You are not allowed to delete this playlist.")
+        return renderForbidden(res, "You are not allowed to delete this playlist.");
     }
 
     // If there are errors, return to the form.
@@ -352,6 +370,6 @@ exports.deletePlaylist = async (req, res) => {
         res.render("playlists/delete-success");
     } catch (error) {
         console.error(error);
-        return res.status(500).send("Error deleting playlist from the database.")
+        return renderISE(res, "Error deleting playlist from the database.");
     }
 }
