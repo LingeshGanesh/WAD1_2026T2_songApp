@@ -50,7 +50,41 @@
                         <% } else { %>
                             <p>You have no playlists yet.</p>
                             <% } %>
-        
+
+            <h3>Your Reviews</h3>
+
+            <% if (reviewsEntered && reviewsEntered.length > 0) { %>
+                <table border="1" >
+                    <thead>
+                        <tr>
+                            <th>Review No.</th>
+                            <th>Song</th>
+                            <th>Rating</th>
+                            <th>Comment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% reviewsEntered.forEach((review, idx) => { %>
+                            <% let songTitle = review.songId; %>
+                            <% for (let song of allSongs) { %>
+                                <% if (song._id.toString() === review.songId.toString()) { %>
+                                    <% songTitle = song.title; %>
+                                    <% break; %>
+                                <% } %>
+                            <% } %>
+                            <tr>
+                                <td><%= idx + 1 %></td>
+                                <td><%= songTitle %></td>
+                                <td><%= review.rating %>/5</td>
+                                <td><%= review.comment %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } else { %>
+                <p>You have not entered any reviews yet.</p>
+            <% } %>
+
         <h3>Your Alerts</h3>
         <form action="/user/clear-alerts" method="POST">
             <button type="submit">Clear All</button>

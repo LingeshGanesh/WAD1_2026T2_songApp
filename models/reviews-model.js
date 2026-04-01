@@ -33,12 +33,16 @@ exports.retrieveAll = function() {
 
 exports.findByID = function (songId) {
     // console.log("Finding reviews for song ID:", songId);
-    return Review.find( songId );
+    return Review.find(songId);
 };
 
 exports.findByReviewId = function (reviewId) {
     // console.log("Finding review for review ID:", reviewId);
     return Review.findById(reviewId);
+};
+
+exports.findByUserId = function (userId) {
+    return Review.find({ userId });
 };
 
 exports.createReview = async (userId, songId, rating, comment) => {
