@@ -1,11 +1,31 @@
-<h1><%= event.name %></h1>
-
-<a href="/events/event-list">Back</a>
-
-<p><strong>Description: </strong><%= event.desc %></p>
-<p><strong>Location: </strong><%= event.location %></p>
-<p><strong>Starting Time: </strong><%= event.date %></p>
-<p><strong>Participants</strong></p>
-<% event.participants.forEach(p => { %>
-    <img src="<%= p.profilePicture %>" style="width:32px;height:32px;border-radius:50%;vertical-align:middle;"> <%= p.username %><br>
-<% }) %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title><%= event.name %></title>
+    <link rel="stylesheet" href="/css/events-styles.css">
+</head>
+<body>
+    <%- include("../navbar-user") %>
+    <br><br><br>
+    <div class="view-event">
+        <a href="/events/event-list" class="back-link">← Back</a>
+        <h1><%= event.name %></h1>
+        <div class="view-event-details">
+            <p class="events-section-label">Details</p>
+            <p><span class="detail-label">Description</span> <%= event.desc %></p>
+            <p><span class="detail-label">Location</span> <%= event.location %></p>
+            <p><span class="detail-label">Starting Time</span> <%= event.date %></p>
+        </div>
+        <p class="events-section-label">Participants</p>
+        <div class="view-event-participants">
+            <% event.participants.forEach(p => { %>
+                <div class="participant-row">
+                    <img src="<%= p.profilePicture %>" style="width:32px;height:32px;border-radius:50%;vertical-align:middle;"> <%= p.username %>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+    <br><br><br>
+    <%- include("../footer") %>
+</body>
+</html>

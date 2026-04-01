@@ -1,37 +1,52 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <title>Edit Events</title>
+  <link rel="stylesheet" href="/css/events-styles.css">
 </head>
 <body>
+  <%- include("../navbar-user") %>
+  <br><br><br>
+  <div class="event-list-page">
 
-  <% if (events.length === 0) { %>
-    <p>No events yet.</p>
-  <% } else { %>
-    <h1>Your Event List</h1>
-    <a href="/events">Back to Home Page</a>
-    <hr>
-    <h2>Add New Event</h2>
-    <a href="add-event"><button>Add new event</button></a><br><br>
-    <hr>
-    <% events.forEach(event => { %>
-      
-        <p><strong>Name: <%= event.name %></strong></p>
-        Description: <%= event.desc %><br>
-        Date: <%= event.date %><br>
-        Entry Fee: <%= event.entryFee %><br>
-        Location: <%= event.location %><br>
-        Participants: <%= event.participants.length %>/<%= event.capacity %><br><br>
-        <% if (new Date() > new Date(event.date)) { %>
-          <button disabled>Can't make changes after event has passed</button>
-          <a href="/events/delete-event?id=<%= event._id %>"><button>Delete</button></a>
-        <% } else { %>
-          <a href="/events/update-event?id=<%= event._id %>"><button>Edit</button></a>
-          <a href="/events/delete-event?id=<%= event._id %>"><button>Delete</button></a>
-        <% } %>
-        <hr>
-    <% }); %>
-    
-  <% } %>
-     
+    <% if (events.length === 0) { %>
+      <a href="/events" class="back-link">← Back</a>
+      <p class="empty-state">No events yet.</p>
+    <% } else { %>
+
+      <a href="/events" class="back-link">← Back</a>
+      <h1>Your Event List</h1>
+
+      <a href="add-event"><button class="btn-add">Add new event</button></a>
+
+      <div class="event-cards" style="margin-top:1.5rem;">
+        <% events.forEach(event => { %>
+          <div class="event-card">
+            <div class="event-card-top">
+              <a href="/events/view-event?id=<%= event._id %>" class="event-card-name"><%= event.name %></a>
+              <span class="event-card-fee"><%= event.entryFee == 0 ? 'Free' : '$' + event.entryFee %></span>
+            </div>
+            <div class="event-card-meta">
+              <span><%= event.location %> · <%= event.date %></span>
+              <span><%= event.desc %></span>
+              <span>Participants: <%= event.participants.length %>/<%= event.capacity %></span>
+            </div>
+            <div class="event-card-actions">
+              <% if (new Date() > new Date(event.date)) { %>
+                <button disabled>Can't make changes after event has passed</button>
+                <a href="/events/delete-event?id=<%= event._id %>"><button>Delete</button></a>
+              <% } else { %>
+                <a href="/events/update-event?id=<%= event._id %>"><button>Edit</button></a>
+                <a href="/events/delete-event?id=<%= event._id %>"><button>Delete</button></a>
+              <% } %>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+
+    <% } %>
+  </div>
+  <br><br><br>
+  <%- include("../footer") %>
 </body>
 </html>

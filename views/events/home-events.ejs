@@ -3,24 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/events-styles.css">
     <title>Events</title>
 </head>
-<body style="text-align: center;">
-    <%- include("../navbar-user") %>
-    <h1 style="text-align: center;">EVENTS</h1>
-
-    <form action="/events/search-event" method="POST">
+<body>
+  <%- include("../navbar-user") %>
+  <br><br><br>
+  <div class="events-home">
+    <h1>Events</h1>
+    <h2>Connect with others over your love for music!</h2>
+    <div class="events-search">
+      <form action="/events/search-event" method="POST">
         <input type="text" name="name" placeholder="Search events...">
         <button type="submit">Search</button>
-    </form><br><br>
-    <h3>Upcoming Events</h3>
-    <% upcomingEvents.forEach(event => { %>
-        <p><strong><%= event.name %></strong><br>
-        <%= event.location %> — <%= new Date(event.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) %> <%= new Date(event.date).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) %></p>
-    <% }) %>
-    <br><br>
-    <a href="events/event-list"><button>View all events</button></a><br><br>
-    <a href="events/edit-events"><button>View your events</button></a><br><br>
-    <%- include("../footer") %>
+      </form>
+    </div>
+    <p class="events-section-label">Upcoming</p>
+    <div class="events-upcoming">
+      <% upcomingEvents.forEach(event => { %>
+        <div class="event-row">
+          <div>
+            <a href="/events/view-event?id=<%= event._id %>" class="event-row-name"><%= event.name %></a>
+            <p class="event-row-sub"><%= event.location %> · <%= new Date(event.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) %>, <%= new Date(event.date).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) %></p>
+          </div>
+          <span class="event-row-fee"><%= event.entryFee == 0 ? 'Free' : '$' + event.entryFee %></span>
+        </div>
+      <% }) %>
+    </div>
+    <div class="events-actions">
+      <a href="events/event-list"><button>View all events</button></a>
+      <a href="events/edit-events"><button>View your events</button></a>
+    </div>
+  </div>
+  <br><br><br>
+  <%- include("../footer") %>
 </body>
 </html>
