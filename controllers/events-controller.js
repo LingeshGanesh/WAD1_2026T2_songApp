@@ -49,7 +49,7 @@ exports.createEvent = async (req, res) => {
         // get user input
         const name = req.body.name;
         const desc = req.body.desc;
-        const date = new Date(req.body.date + ':00+08:00');S
+        const date = new Date(req.body.date + ':00+08:00');
         const entryFee = req.body.entryFee;
         const location = req.body.location;
         const capacity = req.body.capacity;

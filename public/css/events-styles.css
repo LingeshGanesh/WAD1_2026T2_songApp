@@ -483,3 +483,79 @@ h2 {
     font-weight: 600;
     text-align: center;
 }
+
+
+/* START OF EVENTS */
+.events-home { max-width: 700px; margin: 0 auto; }
+.events-home h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 1.5rem; background-image: url('/image/eventsHomeBG.jpg'); background-size: cover; background-position: center; padding: 2rem; border-radius: 14px; }
+.events-home h2 { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.03em; color: #e8e6e1; margin-bottom: 1.5rem; margin-top: -1rem; }
+.events-search { display: flex; margin-bottom: 2rem; width: 100%; }
+.events-search form { display: flex; width: 100%; }
+.events-search input { flex: 1; height: 42px; padding: 0 12px; border: 1px solid #6b6b72; border-radius: 10px 0 0 10px; background: transparent; color: #e8e6e1; }
+.events-search button { height: 42px; padding: 0 1.2rem; border: none; border-radius: 0 10px 10px 0; background: #1ed760; color: #111; font-weight: 700; cursor: pointer; }
+.events-section-label { font-size: 0.8rem; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1rem; }
+.events-upcoming { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; }
+.event-row { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; background: #18181c; border: 1px solid #26262b; border-radius: 14px; }
+.event-row-name { font-weight: 700; margin-bottom: 0.2rem; }
+.event-row-sub { font-size: 0.85rem; color: #888; }
+.event-row-fee { font-size: 0.75rem; font-weight: 600; color: #1ed760; }
+.event-row-fee:not(:only-child) { color: #888; }
+.events-actions { display: flex; gap: 0.75rem; }
+.events-actions a { flex: 1; }
+.events-actions button { width: 100%; height: 42px; border: 1px solid #26262b; border-radius: 10px; background: #18181c; color: #e8e6e1; font-weight: 600; cursor: pointer; }
+a.event-row-name { color: #e8e6e1; text-decoration: none; }
+a.event-row-name:hover { color: #1ed760; }
+
+.success-page { max-width: 700px; margin: 4rem auto; text-align: center; }
+.success-page h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 1rem; color: #1ed760; }
+.success-page p { color: #888; }
+
+.view-event { max-width: 700px; margin: 0 auto; }
+.view-event h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 1.5rem; }
+.view-event-details { display: flex; flex-direction: column; gap: 0.75rem; padding: 1.25rem; background: #18181c; border: 1px solid #26262b; border-radius: 14px; margin-bottom: 1.5rem; }
+.view-event-details p { display: flex; gap: 1rem; }
+.detail-label { color: #888; min-width: 120px; }
+.view-event-participants { display: flex; flex-direction: column; gap: 0.5rem; }
+.participant-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; background: #18181c; border: 1px solid #26262b; border-radius: 10px; }
+
+.event-list-page { max-width: 700px; margin: 0 auto; }
+.event-list-page h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 1.5rem; }
+.filter-tabs { display: flex; gap: 0.5rem; margin-bottom: 2rem; }
+.filter-tabs button { height: 36px; padding: 0 1rem; border: 1px solid #26262b; border-radius: 999px; background: transparent; color: #888; font-weight: 600; font-size: 0.85rem; cursor: pointer; }
+.filter-tabs button:hover { border-color: #1ed760; color: #1ed760; }
+.event-card { background: #18181c; border: 1px solid #26262b; border-radius: 16px; padding: 1.25rem; margin-bottom: 1rem; }
+.event-card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; }
+.event-card-name { font-size: 1.1rem; font-weight: 800; color: #f6f3ee; text-decoration: none; }
+.event-card-name:hover { color: #1ed760; }
+.event-card-fee { font-size: 0.75rem; font-weight: 600; color: #888; }
+.event-card-host { display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; color: #888; margin-bottom: 0.75rem; }
+.follow-badge { color: #1ed760; font-weight: 600; }
+.event-card-meta { font-size: 0.85rem; color: #888; display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 0.75rem; }
+.event-card-friends { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: #888; margin-bottom: 0.75rem; }
+.event-card-actions { display: flex; align-items: center; gap: 0.5rem; }
+.view-details-link { font-size: 0.8rem; color: #888; text-decoration: none; margin-right: auto; }
+.view-details-link:hover { color: #e8e6e1; }
+.event-card-actions button { height: 36px; padding: 0 1rem; border: none; border-radius: 999px; background: #1ed760; color: #111; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
+.event-card-actions button:disabled { background: transparent; border: 1px solid #26262b; color: #555; cursor: not-allowed; }
+.btn-remove { background: #145c30 !important; color: #e8e6e1 !important; }
+.filter-tabs button { height: 36px; padding: 0 1rem; border: 1px solid #26262b; border-radius: 999px; background: transparent; color: #888; font-weight: 600; font-size: 0.85rem; cursor: pointer; }
+.tab-active { border-color: #1ed760 !important; color: #1ed760 !important; }
+
+.event-card-actions a button { height: 36px; padding: 0 1rem; border-radius: 999px; font-weight: 700; font-size: 0.85rem; cursor: pointer; border: none; background: #1ed760; color: #111; }
+.event-card-actions a:last-child button { background: transparent; border: 1px solid #ff4d4d; color: #ff4d4d; }
+a .btn-add { height: 36px; padding: 0 1rem; border: none; border-radius: 999px; background: #1ed760; color: #111; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
+
+.event-form { background: #18181c; border: 1px solid #26262b; border-radius: 16px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; }
+.form-field { display: flex; flex-direction: column; gap: 0.4rem; }
+.form-field label { font-size: 0.8rem; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.08em; }
+.form-field input { height: 42px; padding: 0 12px; border: 1px solid #6b6b72; border-radius: 10px; background: transparent; color: #e8e6e1; font-size: 0.95rem; }
+.form-error { color: #ff8d8d; font-size: 0.9rem; }
+.event-form button[type="submit"] { height: 48px; width: 100%; border: none; border-radius: 999px; background: #1ed760; color: #111; font-weight: 700; font-size: 1rem; cursor: pointer; margin-top: 0.5rem; }
+.event-form button[type="submit"]:hover { filter: brightness(1.05); transform: translateY(-2px); transition: all 0.2s; }
+
+.event-form button[type="submit"]:disabled { background: #145c30; color: #555; cursor: not-allowed; transform: none; filter: none; }
+
+/* DELTE */
+.btn-delete { width: 100%; height: 48px; border: none; border-radius: 999px; background: #ff4d4d; color: #fff; font-weight: 700; font-size: 1rem; cursor: pointer; margin-top: 0.5rem; }
+.btn-delete:hover { filter: brightness(1.1); transform: translateY(-2px); transition: all 0.2s; }
+/* END OF EVENTS */

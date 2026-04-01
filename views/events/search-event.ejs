@@ -2,33 +2,47 @@
 <html lang="en">
 <head>
     <title>Search Events</title>
+    <link rel="stylesheet" href="/css/events-styles.css">
 </head>
 <body>
-    <form action="/events/search-event" method="POST">
-        Event Name:
-        <input type="text" name="name">
-        <button type="submit">Find</button>
-    </form>
+    <%- include("../navbar-user") %>
+    <br><br><br>
+    <div class="event-list-page">
+        <a href="/events" class="back-link">← Back</a>
+        <h1>Search Events</h1>
 
-    <br><br>
+        <div class="events-search">
+            <form action="/events/search-event" method="POST">
+                <input type="text" name="name" placeholder="Search events...">
+                <button type="submit">Search</button>
+            </form>
+        </div>
 
-    <% if (searchTerm) { %>
-        <h3>Search results for: <%= searchTerm %></h3>
-    <% } %>
+        <% if (searchTerm) { %>
+            <p class="events-section-label">Results for: <%= searchTerm %></p>
+        <% } %>
 
-    <% if (result && result.length > 0) { %>
-        <% result.forEach(event => { %>
-            Name: <%= event.name %><br>
-            Description: <%= event.desc %><br>
-            Date: <%= event.date %><br>
-            Entry Fee: $<%= event.entryFee %><br>
-            Location: <%= event.location %><br>
-            <hr>
-        <% }); %>
-    <% } else if (result === null || (result && result.length === 0)) { %>
-        <p>Event not found</p>
-    <% } %>
+        <% if (result && result.length > 0) { %>
+            <div class="event-cards">
+                <% result.forEach(event => { %>
+                    <div class="event-card">
+                        <div class="event-card-top">
+                            <a href="/events/view-event?id=<%= event._id %>" class="event-card-name"><%= event.name %></a>
+                            <span class="event-card-fee"><%= event.entryFee == 0 ? 'Free' : '$' + event.entryFee %></span>
+                        </div>
+                        <div class="event-card-meta">
+                            <span><%= event.location %> · <%= new Date(event.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) %> <%= new Date(event.date).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) %></span>
+                            <span><%= event.desc %></span>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        <% } else if (result === null || (result && result.length === 0)) { %>
+            <p class="empty-state">Event not found</p>
+        <% } %>
 
-    <a href="/events">back</a>
+    </div>
+    <br><br><br>
+    <%- include("../footer") %>
 </body>
 </html>
