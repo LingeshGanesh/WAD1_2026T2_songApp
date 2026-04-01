@@ -152,7 +152,7 @@ exports.unfollowUser = function (currentUserId, targetUserId) {
 };
 
 //delete evrything user created and delete user
-exports.deleteUserAndData = async (userId, username) => {
+exports.deleteUserAndData = async (userId) => {
 
     //reviews
     await Review.deleteManyByUserId(userId);

@@ -5,20 +5,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User deletion</title>
+     <link rel="stylesheet" href="/css/events-styles.css">
 </head>
 
-<body>
-    <p><strong>User Marked for Deletion.</strong></p>
+<body class="auth-page">
+    <div class="auth-shell">
+        <a href="/user/profile" class="back-link auth-back-link">Cancel</a>
 
-    Email: <%=user.email%><br>
-        Username: <%=user.username%>
-            <!-- delete hasn't doen yet -->
-            <form action="/user/delete" method="post">
-                <p style="color: red;">
-                    Click "Confirm" to permanently delete your account.<br> All your playlists and history will be
-                    removed and cannot be recovered.
-                </p>
-                <button type="submit">Confirm</button>
-            </form>
+        <h1 class="auth-title">Delete account</h1>
+        <p class="delete-warning">
+            This action is permanent and cannot be undone.
+        </p>
+
+        <div class="delete-card">
+            <img src="<%= user.profilePicture %>" alt="<%= user.username %>" width="90" height="90">
+            <h2><%= user.username %></h2>
+            <p><%= user.email %></p>
+        </div>
+
+        <ul class="delete-list" style="color: red;">
+            <li>Your account will be deleted permanently</li>
+            <li>Your playlists and history will be removed</li>
+            <li>You will be logged out immediately</li>
+        </ul>
+
+        <form action="/user/delete" method="post">
+            <button type="submit" class="delete-btn">Delete my account</button>
+        </form>
+    </div>
 </body>
+
 </html>

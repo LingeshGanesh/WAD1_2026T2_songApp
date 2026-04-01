@@ -19,11 +19,19 @@ exports.registerGet = (req, res) => {
 exports.registerPost = async (req, res) => {
     try {
         const { username = '', email = '', password = '', cfmpassword = '', avatar = '' } = req.body;
-        console.log(username, email, avatar, password, cfmpassword);
+        //console.log(username, email, avatar, password, cfmpassword);
 
         const trimmedUsername = username.trim();
         const trimmedEmail = email.trim();
 
+        //check avatar
+        const allowedAvatars = [
+            '/image/profilepic1.jpg',
+            '/image/profilepic2.jpg',
+            '/image/profilepic3.jpg',
+            '/image/profilepic4.jpg',
+            '/image/profilepic5.jpg'
+        ];
 
         let errors = [];
 
@@ -37,14 +45,18 @@ exports.registerPost = async (req, res) => {
         } else if (!passwordRegex.test(password)) {
             errors.push("Password must be at least 8 characters and include uppercase, lowercase, number, and special character (@#$%^&!?)");
         };
-        console.log(password)
+        //console.log(password)
         if (!cfmpassword) {
             errors.push("Please confirm your password");
         } else if (password !== cfmpassword) {
             errors.push("Passwords do not match");
         }
 
-        if (!avatar) errors.push("Please select a profile picture");
+        if (!avatar) {
+            errors.push("Please select a profile picture");
+        } else if (!allowedAvatars.includes(avatar)) {
+            errors.push("Please select a valid profile picture");
+        }
 
         const existUsername = await User.findUserByUsername(trimmedUsername);
 
@@ -71,7 +83,6 @@ exports.registerPost = async (req, res) => {
             password: await bcrypt.hash(password, 10),
             profilePicture: avatar
         };
-
 
         // check user exist inside or not if not don't update
         await User.createUser(user);
@@ -233,6 +244,21 @@ exports.updateUser = async (req, res) => {
 
         let errors = [];
 
+        //check avatar
+        const allowedAvatars = [
+            '/image/profilepic1.jpg',
+            '/image/profilepic2.jpg',
+            '/image/profilepic3.jpg',
+            '/image/profilepic4.jpg',
+            '/image/profilepic5.jpg'
+        ];
+
+        if (!newAvatar) {
+            errors.push("Please select a profile picture");
+        } else if (!allowedAvatars.includes(newAvatar)) {
+            errors.push("Please select a valid profile picture");
+        }
+
         //check empty
         if (!newUsername) errors.push("Username is required");
         if (!newEmail) errors.push("Email is required");
@@ -372,9 +398,8 @@ exports.displayUser = async (req, res) => {
 exports.deleteAll = async (req, res) => {
     try {
         const id = req.session.user.id;
-        const username = req.session.user.username;
 
-        await User.deleteUserAndData(id, username);
+        await User.deleteUserAndData(id);
 
         req.session.destroy((err) => {
             if (err) {
@@ -529,6 +554,11 @@ exports.followUser = async (req, res) => {
         }
 
         await User.followUser(currentUserId, targetUserId);
+
+        await User.addAlertToMany(
+            [targetUserId],
+            `${req.user.username} started following you`
+        );
 
         res.redirect(`/user/displayProfile?id=${targetUserId}`);
     } catch (error) {

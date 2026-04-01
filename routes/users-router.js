@@ -17,7 +17,7 @@ router.post('/login', usersController.loginPost);
 router.get('/profile',authMiddleware.isLoggedIn, usersController.profile);
 
 //log out (kill session)
-router.get('/logout', usersController.logout);
+router.post('/logout', usersController.logout);
 
 //edit user
 router.get('/edit',authMiddleware.isLoggedIn, usersController.editUser);
