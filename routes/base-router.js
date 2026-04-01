@@ -22,7 +22,7 @@ router.use("/songs", songsRouter);
 
 // 404 Not Found
 router.all(/.*/, (req, res) => {
-    res.status(404).render('not-found', { url: req.url });
+    res.status(404).render('not-found', { url: req.url, user: req.session.user || null });
 })
 
 // Export
