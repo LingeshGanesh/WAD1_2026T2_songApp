@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Reviews</title>
+  <!-- <link rel="stylesheet" href="/css/events-styles.css"> -->
 </head>
 <body>
   <a href="/homepage"><strong>Back to Main Page</strong></a><br>
@@ -20,14 +21,14 @@
   <% } %>
 
   <h3><u>Review List:</u></h3>
-    <% if (!reviews) { %>
+    <% if (!reviews || reviews.length === 0) { %>
       <%= output %>
     <br>
     <% } else { %>
 
-    <h4><%= reviews.length %> review(s) found.</h4>
+    <h4><%= totalReviews %> review(s) found.</h4>
 
-  <ol>
+  <ol start="<%= ((page || 1) - 1) * 5 + 1 %>">
 
       <% reviews.forEach(function(review) { %>
       <li>
@@ -59,6 +60,18 @@
 
     
   </ol>
+
+  <% if (totalPages > 1) { %>
+  <div>
+    <% if (page > 1) { %>
+      <a href="/reviews/<%= songId %>?page=<%= page - 1 %>">Previous</a>
+    <% } %>
+    Page <%= page %> of <%= totalPages %>
+    <% if (page < totalPages) { %>
+      <a href="/reviews/<%= songId %>?page=<%= page + 1 %>">Next</a>
+    <% } %>
+  </div>
+  <% } %>
 
 </body>
 </html>
