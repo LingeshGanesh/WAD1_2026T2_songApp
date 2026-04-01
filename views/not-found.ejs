@@ -6,8 +6,14 @@
     <title>404 Not Found</title>
 </head>
 <body>
+    <% if (user) { %>
+        <%- include("./navbar-user") %>
+    <% } else { %>
+        <%- include("./navbar-guest") %>
+    <% } %>
     <h1>404 Not Found</h1>
-    <p>The url <strong>&hellip;<%= url %></strong> does not exist.</p>
+    <p>The url <strong>example.com<%= url %></strong> does not exist.</p>
     <a href="/">Return to homepage</a>
+    <%- include("./footer") %>
 </body>
 </html>
