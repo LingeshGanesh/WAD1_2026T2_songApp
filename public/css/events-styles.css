@@ -484,6 +484,25 @@ h2 {
     text-align: center;
 }
 
+/* delete user */
+.delete-warning {
+    color: #ffb3b3;
+    text-align: center;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+
+.delete-btn {
+    width: 100%;
+    min-width: 100px;
+    padding: 0 2rem;
+}
+
+
+.delete-btn:hover {
+    background: #e63c3c;
+}
 
 /* START OF EVENTS */
 .events-home { max-width: 700px; margin: 0 auto; }

@@ -545,6 +545,11 @@ exports.followUser = async (req, res) => {
 
         await User.followUser(currentUserId, targetUserId);
 
+        await User.addAlertToMany(
+            [targetUserId],
+            `${req.user.username} started following you`
+        );
+
         res.redirect(`/user/displayProfile?id=${targetUserId}`);
     } catch (error) {
         console.log('Error occurs while following user', error);
