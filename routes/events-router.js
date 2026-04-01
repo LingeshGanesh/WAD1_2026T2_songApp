@@ -8,6 +8,9 @@ const router = express.Router(); // sub application
 // Loading the events landing page
 router.get('/', authMiddleware.isLoggedIn, eventsController.getIndex);
 
+// Routes for single event page
+router.get("/view-event", authMiddleware.isLoggedIn, eventsController.viewEvent);
+
 // Define a GET route to display the list of events
 router.get("/event-list", authMiddleware.isLoggedIn, eventsController.showEvents);
 router.post("/event-list", authMiddleware.isLoggedIn, eventsController.attendEvent);

@@ -95,8 +95,9 @@ exports.findByIdAndAuthor = function(id, authorId) {
     return Event.findOne({ _id: id, author: authorId });
 };
 
+// has populate so we can show name and profile pic in single evenmt page
 exports.findById = function(id) {
-    return Event.findOne({ _id: id});
+    return Event.findOne({ _id: id }).populate('participants', 'username profilePicture');
 };
 
 exports.deleteEvent = function(id, authorId) {
@@ -104,7 +105,7 @@ exports.deleteEvent = function(id, authorId) {
 };
 
 exports.getUpcomingEvents = function() {
-    return Event.find().sort({ date: 1 }).limit(3);
+    return Event.find({ date: { $gte: new Date() } }).sort({ date: 1 }).limit(3);
 };
 
 exports.updateOne = function(filter, update) {
