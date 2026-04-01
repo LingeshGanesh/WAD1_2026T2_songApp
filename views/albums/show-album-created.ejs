@@ -29,24 +29,20 @@
 
     <% if (album.songs && album.songs.length > 0) { %>
     <table border="1">
-        <thead>
+        <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>Artist</th>
+            <th>Duration</th>
+        </tr>
+        <% album.songs.forEach((song, index) => { %>
             <tr>
-                <th>#</th>
-                <th>Title</th>
-                <th>Artist</th>
-                <th>Duration</th>
+                <td><%= index + 1 %></td>
+                <td><%= song.title %></td>
+                <td><%= song.artist %></td>
+                <td><%= Math.floor(song.duration / 60) %>:<%= (song.duration % 60).toString().padStart(2, '0') %></td>
             </tr>
-        </thead>
-        <tbody>
-            <% album.songs.forEach((song, index) => { %>
-                <tr>
-                    <td><%= index + 1 %></td>
-                    <td><%= song.title %></td>
-                    <td><%= song.artist %></td>
-                    <td><%= Math.floor(song.duration / 60) %>:<%= (song.duration % 60).toString().padStart(2, '0') %></td>
-                </tr>
-            <% }) %>
-        </tbody>
+        <% }) %>
     </table>
     <% } else { %>
         <p>No songs available.</p>
