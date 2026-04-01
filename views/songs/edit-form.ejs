@@ -22,7 +22,7 @@
             <p><strong>Uploader:</strong>
                 <%= song.uploader ? song.uploader.username : "-" %>
             </p>
-            <%- include("form-fields", { fields: song, showUploader: false }) %>
+            <%- include("form-fields", { fields: song, showUploader: false, showAlbum: false }) %>
             <input type="submit" value="Save Changes">
         </form>
     </fieldset>
