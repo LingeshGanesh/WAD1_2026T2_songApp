@@ -48,13 +48,12 @@ exports.createEvent = async (req, res) => {
         // get user input
         const name = req.body.name;
         const desc = req.body.desc;
-        const date = req.body.date;
+        const date = new Date(req.body.date + ':00+08:00');S
         const entryFee = req.body.entryFee;
         const location = req.body.location;
         const capacity = req.body.capacity;
 
         const userId = req.session.user?.id;
-
         if (!userId) {
         return res.redirect("/login");
         }

@@ -16,9 +16,15 @@
      
     <% eventList.forEach(event => { %>
       
-        <p><strong>Name: <%= event.name %></strong></p>
+        <h2><strong>Name: <%= event.name %></strong></h2>
+        <% const authorIsFollowing = event.author && followings.some(f => f.toString() === event.author._id.toString()); %>
+        <img src="<%= event.author.profilePicture %>" style="width:24px;height:24px;border-radius:50%;vertical-align:middle;"> 
+        hosted by: <%= event.author.username %><br>
+        <% if (authorIsFollowing) { %>
+          <p><strong>Hosted by someone you follow</strong></p>
+        <% } %>
         Description: <%= event.desc %><br>
-        Date: <%= new Date(event.date).toLocaleDateString('en-GB', {
+        Start Time: <%= new Date(event.date).toLocaleDateString('en-GB', {
           day: 'numeric',
           month: 'long',
           year: 'numeric'
@@ -30,16 +36,17 @@
         Location: <%= event.location %><br>
         Participants: <%= event.participants.length %>/<%= event.capacity %><br><br>
 
-        <strong>Also attended by:</strong>
+        
         <% const friendsHere = event.participants.filter(p => followings.some(f => f.toString() === p._id.toString())); %>
         <% if (friendsHere.length > 0) { %>
-          <!-- <strong>Mutuals attending:</strong> <%= friendsHere.map(p => p.username).join(', ') %><br> -->
+          <strong>Also attended by:</strong>
           <% friendsHere.forEach(p => { %>
             <img src="<%= p.profilePicture %>" style="width:24px;height:24px;border-radius:50%;vertical-align:middle;"> <%= p.username %>
           <% }); %>
+          <br><br>
         <% } %>
-        <br><br>
-        <% if (event.author && event.author.toString() === userId) { %>
+
+        <% if (event.author && event.author._id.toString() === userId) { %>
           <button disabled>Your event</button>
         <% } else if (userEvents.some(e => e.toString() === event._id.toString())) { %>
           <form action="/events/event-list/remove" method="POST">

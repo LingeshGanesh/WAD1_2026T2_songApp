@@ -51,6 +51,10 @@ const userSchema = new mongoose.Schema({
     updatedAt: {
         type: Date,
         default: Date.now
+    },
+    hasUnreadAlerts: {
+    type: Boolean,
+    default: false
     }
 });
 
@@ -244,13 +248,17 @@ exports.updateOne = function (filter, update) {
 exports.addAlertToMany = function (userIds, message) {
     return User.updateMany(
         { _id: { $in: userIds } },
-        { $push: { alerts: { message } } }
+        { $push: { alerts: { message } }, $set: { hasUnreadAlerts: true } }
     );
 };
 
 // Functions to delete all alerts
 exports.clearAlerts = function (userId) {
-    return User.updateOne({ _id: userId }, { $set: { alerts: [] } });
+    return User.updateOne({ _id: userId }, { $set: { alerts: [], hasUnreadAlerts: false } });
+};
+
+exports.markAlertsRead = function (userId) {
+    return User.updateOne({ _id: userId }, { $set: { hasUnreadAlerts: false } });
 };
 
 // end of alerts features
