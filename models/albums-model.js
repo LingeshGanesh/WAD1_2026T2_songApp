@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { createIndexes } = require('./songs-model');
+//const { createIndexes } = require('./songs-model');
 
 const albumSchema = new mongoose.Schema({
     title: {
@@ -9,6 +9,8 @@ const albumSchema = new mongoose.Schema({
     yearReleased: {
         type: Number,
         required: [true, 'An album must have year of release'],
+        min: [1900, 'Year must be after 1900'],
+        max: [new Date().getFullYear(), `Year cannot be in the future`],
         validate: {
             validator: function(value) {
                 return value.toString().length === 4; //Ensure it's 4 digit number

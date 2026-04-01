@@ -14,7 +14,8 @@ exports.showAlbumList = async (req,res) => {
 };
 
 exports.albumInfo = async (req,res) => {
-    const albumID = req.params.id
+    const albumID = req.params.id // extracts album ID from url, req.params.id returns the objectID
+    // if /album/123456789, req.params.id returns '123456789' stored in albumID to find specific album in the database
     try {
         // populate to get song and creator details
         const album = await Album.findByID(albumID).populate('songs').populate('createdBy');
@@ -38,8 +39,18 @@ exports.createAlbum = async (req,res) => {
     const year = req.body.year;
     const songs = req.body.songs 
 
-    if (year.toString().length !== 4) { // validation for year field
-        return res.render("albums/add-album", {msg: "Year must be a 4-digit number." });
+    const currentYear = new Date().getFullYear();
+
+    if (year.toString().length !== 4) {
+        return res.render("albums/add-album", { result: "", msg: "Year must be a 4-digit number." });
+    }
+
+    if (year < 1900) {
+        return res.render("albums/add-album", { result: "", msg: "Year must be after 1900." });
+    }
+
+    if (year > currentYear) {
+        return res.render("albums/add-album", { result: "", msg: `Year cannot be after ${currentYear}.` });
     }
 
     if (!songs) { // validation for song field
@@ -62,6 +73,14 @@ exports.createAlbum = async (req,res) => {
     try {
         let result = await Album.addAlbum(newAlbum);
         const newId = result._id;
+
+        //Song.updateMany(...) runs update on all documents that match the filter
+        // _id: { $in: songIds} is the filter. $in is a MongoDB operator that 
+        // matches any document whose _id is in the songIds array.
+        await Song.updateMany(
+               { _id: { $in: songIds} },
+               {album: title}
+        );
         await result.populate('songs');
         await result.populate('createdBy');
         res.redirect(`/album/${newId}`);
@@ -101,6 +120,8 @@ exports.updateAlbum = async (req, res) => {
     const year = req.body.year;
     const songs = req.body.songs;
 
+    const currentYear = new Date().getFullYear();
+
 
     if (!title || !year) {
         const album = await Album.findByIDAndPopulate(albumID);
@@ -117,10 +138,29 @@ exports.updateAlbum = async (req, res) => {
         return res.render("albums/edit-album", {album, msg: "Year must be 4 digits"})
     }
 
+    if (year < 1900){
+        const album = await Album.findByIDAndPopulate(albumID);
+        return res.render("albums/edit-album", { album, msg: "Year must be after the 1900s" })
+    }
+
+    if (year > currentYear) {
+        const album = await Album.findByIDAndPopulate(albumID);
+        return res.render("albums/edit-album", { album, msg: `Year cannot be after ${currentYear}.` })
+    }
+
     const songIds = songs.split(',').map(id => new mongoose.Types.ObjectId(id.trim()));
 
     try {
         await Album.editAlbum(albumID, title, description,songIds, year);
+
+        //Song.updateMany(...) runs update on all documents that match the filter
+        // _id: { $in: songIds} is the filter. $in is a MongoDB operator that 
+        // matches any document whose _id is in the songIds array.
+        await Song.updateMany(
+            { _id: { $in: songIds } },
+            { album: title }
+        );
+
         res.send(`<h1>Your album has been edited!</h1>
             <a href="/album/${albumID}">View Your Changes</a>`);
     } catch (error) {
@@ -164,9 +204,14 @@ exports.deleteAlbum = async (req,res) => {
     }
 };
 
+// Song.find({...}) queries the song collection with 2 conditions: title and uploader
 exports.searchSongs = async (req, res) => {
     const songs = await Song.find({
-        title: { $regex: '^' + req.query.q, $options: 'i' }
-    }).select('_id title artist').limit(10);
-    res.json(songs);
+        // $regex: '^' matches any title starting from the first letter
+        // req.query.q is the search term for the url eg /album/song-search?q=hi gives q = "hi"
+        // $options: 'i' makes it case-insensitive
+        title: { $regex: '^' + req.query.q, $options: 'i' }, 
+        uploader: req.session.user.id // only the song that uploader added will be returned
+    }).select('_id title artist').limit(10); //only the songid, song title and song artist will be returned
+    res.json(songs); // sends the result back as JSON objects for EJS to fetch and render as dropdown list
 };
