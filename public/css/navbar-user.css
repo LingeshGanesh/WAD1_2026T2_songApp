@@ -1,13 +1,12 @@
 .navbar-user ul {
-    list-style-type: none;
+    list-style: none;
     margin: 0;
     padding: 0;
-    overflow: hidden;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
     background-color: #333333;
-}
-
-.navbar-user ul li {
-    float: left;
 }
 
 .navbar-user ul li a {
@@ -16,8 +15,29 @@
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
+    border-radius: 6px;
 }
 
 .navbar-user ul li a:hover {
     background-color: #111111;
+}
+
+.navbar-user .nav-profile {
+    margin-left: auto;
+}
+
+.navbar-user .profile-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 10px;
+}
+
+.navbar-user .profile-link img {
+    display: block;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
 }
