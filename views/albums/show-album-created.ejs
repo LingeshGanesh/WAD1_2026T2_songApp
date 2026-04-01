@@ -13,7 +13,6 @@
     <button type="button"><a href="/album/browse"><strong>Back To Main Page</strong></a></button>
     <button type="button"><a href="/album/edit/<%= album._id%>"><strong>Edit Album</strong></a></button>
     <button type="button"><a href="/album/delete/<%= album._id%>"><strong>Delete Album</strong></a></button>
-    <p>Album</p>
     <h1><%= album.title %></h1>
 
     <strong><%= album.createdBy.username %></strong> • <%= album.yearReleased %> • <%= album.songs.length %> <%= album.songs.length === 1 ? 'song' : 'songs' %>, <%= Math.floor(album.songs.reduce((acc, s)=> acc + s.duration, 0) / 60) %> min, <%= (album.songs.reduce((acc, s)=> acc +
