@@ -1,29 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Event Marked for Deletion</title>
+    <title>Delete Event</title>
+    <link rel="stylesheet" href="/css/events-styles.css">
 </head>
 <body>
-    <p><strong>Event Marked for Deletion.</strong></p>
+    <%- include("../navbar-user") %>
+    <br><br><br>
+    <div class="event-list-page">
+        <a href="/events/edit-events" class="back-link">← Back</a>
+        <h1>Delete Event</h1>
 
-    <% if (result) { %>
-        Name: <%= result.name %><br>
-        Description: <%= result.desc %><br>
-        Date: <%= result.date %><br>
-        Entry Fee: $<%= result.entryFee %><br>
-        Location: <%= result.location %><br>
-
-        <form action="/events/delete-event" method="POST">
-            <p>Click the Confirm button to delete this event.</p>
-            <input type="hidden" name="id" value="<%= result._id %>">
-            <input type="hidden" name="name" value="<%= result.name %>">
-            <button type="submit">Confirm</button>
-        </form>
-        
-    <% } else if (result === null) { %>
-        <p>Event not found</p>
-    <% } %>
-
-    <br><br><a href="/events/edit-events">back</a>
+        <% if (result) { %>
+            <div class="event-form">
+                <div class="form-field"><label>Name</label><p><%= result.name %></p></div>
+                <div class="form-field"><label>Description</label><p><%= result.desc %></p></div>
+                <div class="form-field"><label>Date</label><p><%= result.date %></p></div>
+                <div class="form-field"><label>Entry Fee</label><p>$<%= result.entryFee %></p></div>
+                <div class="form-field"><label>Location</label><p><%= result.location %></p></div>
+            </div>
+            <form action="/events/delete-event" method="POST" style="margin-top:1rem;width:100%;">
+                <input type="hidden" name="id" value="<%= result._id %>">
+                <input type="hidden" name="name" value="<%= result.name %>">
+                <button type="submit" class="btn-delete">Confirm Delete</button>
+            </form>
+        <% } else if (result === null) { %>
+            <p class="empty-state">Event not found</p>
+        <% } %>
+    </div>
+    <br><br><br>
+    <%- include("../footer") %>
 </body>
 </html>

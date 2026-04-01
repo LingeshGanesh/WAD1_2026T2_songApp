@@ -2,60 +2,44 @@
 <html lang="en">
 <head>
     <title>Update Event</title>
+    <link rel="stylesheet" href="/css/events-styles.css">
 </head>
 <body>
+    <%- include("../navbar-user") %>
+    <br><br><br>
+    <div class="event-list-page">
     <% if (result.name) { %>
-    <h3>Update Event</h3>
-    <a href="/events/edit-events">back</a><br><br>
+        <a href="/events/edit-events" class="back-link">← Back</a>
+        <h1>Update Event</h1>
 
-    <form action="/events/update-event" method="POST">
-        <table border="1">
-            <tr>
-                <th>Name:</th><td><%= result.name %></td>
-                <input type="hidden" name="name" value="<%= result.name %>">
-            </tr>
-            <tr>
-                <th>Description:</th><td><input type="text" name="desc" value="<%= result.desc %>"></td>
-            </tr>
-            <tr>
-                <th>Date:</th><td><input type="date" name="date" value="<%= result.date ? result.date.toISOString().split('T')[0] : '' %>"></td>
-            </tr>
-            <tr>
-                <th>Entry Fee:</th><td><input type="text" name="entryFee" value="<%= result.entryFee %>"></td>
-            </tr>
-            <tr>
-                <th>Location:</th><td><input type="text" name="location" value="<%= result.location %>"></td>
-            </tr>
-            <tr>
-                <th>Capacity:</th><td><input type="text" name="capacity" value="<%= result.capacity %>"></td>
-            </tr>
+        <form action="/events/update-event" method="POST" class="event-form">
+            <input type="hidden" name="name" value="<%= result.name %>">
             <input type="hidden" name="id" value="<%= result._id %>">
-            <tr>
-                <td colspan="2"><button type="submit" id="submitBtn" disabled>Update Event</button></td>
-            </tr>
-        </table>
-    </form>
+            <div class="form-field"><label>Name</label><p><%= result.name %></p></div>
+            <div class="form-field"><label>Description</label><input type="text" name="desc" value="<%= result.desc %>"></div>
+            <div class="form-field"><label>Date</label><input type="date" name="date" value="<%= result.date ? result.date.toISOString().split('T')[0] : '' %>"></div>
+            <div class="form-field"><label>Entry Fee</label><input type="text" name="entryFee" value="<%= result.entryFee %>"></div>
+            <div class="form-field"><label>Location</label><input type="text" name="location" value="<%= result.location %>"></div>
+            <div class="form-field"><label>Capacity</label><input type="text" name="capacity" value="<%= result.capacity %>"></div>
+            <% if(msg) { %><p class="form-error"><%- msg %></p><% } %>
+            <button type="submit" id="submitBtn" disabled>Update Event</button>
+        </form>
 
-    <!--Shows errors with updating if any-->
-    <% if(msg) { %>
-        <p><%- msg %></p>
-    <%}%>
+        <script>
+            const form = document.querySelector('form');
+            const btn = document.getElementById('submitBtn');
+            const original = new FormData(form);
 
-    <!--Makes sure you can only submit if there's been a change in the fields-->
-    <script>
-        const form = document.querySelector('form');
-        const btn = document.getElementById('submitBtn');
-        const original = new FormData(form);
+            form.addEventListener('input', () => {
+                const current = new FormData(form);
+                const changed = [...original.keys()].some(k => original.get(k) !== current.get(k));
+                btn.disabled = !changed;
+            });
+        </script>
 
-        form.addEventListener('input', () => {
-            const current = new FormData(form);
-            const changed = [...original.keys()].some(k => original.get(k) !== current.get(k));
-            btn.disabled = !changed;
-        });
-    </script>
-    
     <% } %>
-
-    <br><br>
+    </div>
+    <br><br><br>
+    <%- include("../footer") %>
 </body>
 </html>

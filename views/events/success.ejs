@@ -2,11 +2,13 @@
 <html lang="en">
 <head>
     <title>Success</title>
+    <link rel="stylesheet" href="/css/events-styles.css">
 </head>
 <body>
-    <h2><%= msg %></h2>
-    <p>Redirecting...</p>
-
+    <div class="success-page">
+        <h1><%= msg %></h1>
+        <p>Redirecting...</p>
+    </div>
     <script>
         setTimeout(() => {
             window.location.href = "<%= redirectUrl %>";
