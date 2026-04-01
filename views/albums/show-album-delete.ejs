@@ -48,7 +48,7 @@
             <input type="checkbox" id="confirmDelete">
             I confirm that I want to delete this album
         </label><br><br>
-        <button type="submit" id="deleteBtn" disabled>Delete Album</button>
+        <button type="submit" id="deleteBtn" disabled>Delete Album</button> 
     </form>
     
 <% } else if (album === null) { %>
@@ -56,6 +56,8 @@
 <% } %>
 
 <script>
+    // enables or disables the checkbox button based on whether the checkbox is checked.
+    // button starts disabled and only becomes clickable after user check the checkbox
     document.getElementById('confirmDelete').addEventListener('change', function () {
         document.getElementById('deleteBtn').disabled = !this.checked;
     });
