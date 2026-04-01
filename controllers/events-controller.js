@@ -5,7 +5,8 @@ const Event = require('./../models/events-model');
 const User = require('./../models/users-model');
 
 exports.getIndex = async (req, res) => {
-  res.render("events/home-events");
+    const upcomingEvents = await Event.getUpcomingEvents();
+    res.render("events/home-events", { upcomingEvents });
 };
 
 //DUMMY USER ID TO BE USED ONLY UNTIL AUTH AND SESSION IS ONLINE
@@ -99,6 +100,16 @@ exports.showEventList = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.send("Error reading database");
+    }
+};
+
+exports.viewEvent = async (req, res) => {
+    try {
+        const event = await Event.findById(req.query.id);
+        res.render("events/view-event", { event });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Something went wrong");
     }
 };
 
@@ -204,10 +215,6 @@ exports.getMarkedEvent = async (req, res) => {
 
     try {
         const result = await Event.findByIdAndAuthor(id, userId);
-        // prevents bypassing using url
-        if (new Date() > new Date(result.date)){
-            return res.redirect("/events/edit-events");
-        }
         res.render("events/show-an-event", { result });
 
     } catch (error) {

@@ -23,6 +23,7 @@
         <% if (authorIsFollowing) { %>
           <p><strong>Hosted by someone you follow</strong></p>
         <% } %>
+        <br><a href="/events/view-event?id=<%= event._id %>">View Details</a><br>
         Description: <%= event.desc %><br>
         Start Time: <%= new Date(event.date).toLocaleDateString('en-GB', {
           day: 'numeric',

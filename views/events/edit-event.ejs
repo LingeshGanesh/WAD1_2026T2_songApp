@@ -7,9 +7,12 @@
   <% if (events.length === 0) { %>
     <p>No events yet.</p>
   <% } else { %>
-    <h2>Your Event List</h2>
+    <h1>Your Event List</h1>
     <a href="/events">Back to Home Page</a>
-
+    <hr>
+    <h2>Add New Event</h2>
+    <a href="add-event"><button>Add new event</button></a><br><br>
+    <hr>
     <% events.forEach(event => { %>
       
         <p><strong>Name: <%= event.name %></strong></p>
@@ -20,9 +23,10 @@
         Participants: <%= event.participants.length %>/<%= event.capacity %><br><br>
         <% if (new Date() > new Date(event.date)) { %>
           <button disabled>Can't make changes after event has passed</button>
+          <a href="/events/delete-event?id=<%= event._id %>"><button>Delete</button></a>
         <% } else { %>
-          <button><a href="/events/update-event?id=<%= event._id %>">Edit</a></button> |
-          <button><a href="/events/delete-event?id=<%= event._id %>">Delete</a></button>
+          <a href="/events/update-event?id=<%= event._id %>"><button>Edit</button></a>
+          <a href="/events/delete-event?id=<%= event._id %>"><button>Delete</button></a>
         <% } %>
         <hr>
     <% }); %>

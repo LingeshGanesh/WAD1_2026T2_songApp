@@ -1,0 +1,11 @@
+<h1><%= event.name %></h1>
+
+<a href="/events/event-list">Back</a>
+
+<p><strong>Description: </strong><%= event.desc %></p>
+<p><strong>Location: </strong><%= event.location %></p>
+<p><strong>Starting Time: </strong><%= event.date %></p>
+<p><strong>Participants</strong></p>
+<% event.participants.forEach(p => { %>
+    <img src="<%= p.profilePicture %>" style="width:32px;height:32px;border-radius:50%;vertical-align:middle;"> <%= p.username %><br>
+<% }) %>
