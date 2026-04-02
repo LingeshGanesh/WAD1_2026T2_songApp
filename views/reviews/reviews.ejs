@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-<!-- Individual Song Reviews Page - Shows reviews for a specific song with create/update/delete functionality -->
+<!-- Individual Song Reviews Page -->
 <html>
 <head>
   <title>Reviews</title>
+  <style>
+    body { background-color: black; color: white; }
+    a { color: rgb(46, 162, 108); }
+  </style>
 </head>
 <body>
   <!-- Include the user navbar at the top of the page -->
   <%- include('../navbar-user') %>
 
-  
   <!-- Navigation links back to main pages -->
   <a href="/homepage"><strong>Back to Main Page</strong></a><br>
   <a href="/songs/browse"><strong>Back to Browse Songs</strong></a><br><br>
@@ -16,11 +19,11 @@
   <!-- Display the song title being reviewed -->
   <h1><u>Song to Review: <%= songTitle %></u></h1>
 
-  <!-- Section for creating new reviews -->
+  <!-- CREATE FORM -->
   <h3>Add Your Reviews Here</h3>
   <form action="/reviews/create/<%= songId %>" method="POST">
 
-    <!-- Rating input field (1-5 stars) -->
+    <!-- Rating input field -->
     Rating (1-5): <input type="number" name="rating" min="1" max="5" /><br>
 
     <!-- Comment text input -->
@@ -60,7 +63,7 @@
         <!-- Display review comment -->
         Comment: <%= review.comment %>
 
-        <!-- Only show edit/delete options if user owns this review -->
+        <!-- UPDATE FORM - only show if user owns this review -->
         <% if (currentUser && review.userId.toString() === currentUser.id) { %>
         <form action="/reviews/update/<%= songId %>" method="POST">
           <!-- Hidden field to identify which review to update -->
@@ -74,7 +77,7 @@
         </form>
 
 
-        <!-- DELETE FORM - allows user to remove their review -->
+        <!-- DELETE FORM - only show if user owns this review -->
         <form action="/reviews/delete/<%= songId %>" method="POST">
           <!-- Hidden field to identify which review to delete -->
           <input type="hidden" name="reviewId" value="<%= review._id %>" />
@@ -87,7 +90,6 @@
       <br>
     <% }) %>
     <% } %>
-
 
   </ol>
 

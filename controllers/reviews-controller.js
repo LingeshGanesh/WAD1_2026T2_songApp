@@ -1,4 +1,3 @@
-// Reviews Controller - Handles all review-related operations (CRUD)
 // Dependencies: Review model, Song model, User model
 const Review = require('../models/reviews-model');
 const Song = require("../models/songs-model");
@@ -253,6 +252,6 @@ exports.isLoggedIn = (req, res, next) => {
   if (!req.session.user) {
     return res.redirect('/login');
   }
-  // Continue to next middleware/route handler
+  // Continue to next middleware
   next();
 };

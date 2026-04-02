@@ -29,7 +29,7 @@ const Review = mongoose.model('Review', reviewSchema, 'reviews');
 
 // Retrieve all reviews from the database
 exports.retrieveAll = function() { 
-    return Review.find();
+    return Review.find().sort({ createdAt: -1 });
 };
 
 // Find reviews for a specific song by songId
@@ -74,8 +74,7 @@ exports.deleteReview = async (reviewId) => {
   return await Review.findByIdAndDelete(reviewId);
 };
 
-//delete many - Carolyn
+// Delete many - Carolyn
 exports.deleteManyByUserId = function (userId) {
     return Review.deleteMany({ userId });
 };
-//end of delete many
