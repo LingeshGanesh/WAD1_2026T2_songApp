@@ -33,7 +33,7 @@ songSearch.addEventListener('input', async function () {
     }
 
     // Call API
-    const res = await fetch(`/album/song-search?q=${encodeURIComponent(q)}`);
+    const res = await fetch(`/playlist/song-search?q=${encodeURIComponent(q)}`);
     const songs = await res.json();
 
     // Show the result box
