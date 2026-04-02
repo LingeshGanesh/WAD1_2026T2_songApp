@@ -1,0 +1,52 @@
+[
+    {
+        "authorUsername": "admin",
+        "name": "Taylor Swift Listening Party",
+        "desc": "An evening to revisit Fearless, 1989, Lover, and more with fellow fans.",
+        "date": "2026-04-18T19:00:00.000+08:00",
+        "entryFee": 0,
+        "location": "Campus Music Lounge",
+        "capacity": 25,
+        "participantUsernames": [
+            "admin",
+            "jon"
+        ]
+    },
+    {
+        "authorUsername": "jon",
+        "name": "Pop Karaoke Night",
+        "desc": "Bring your best pop anthem and sing along to 2000s and 2010s hits.",
+        "date": "2026-04-25T20:00:00.000+08:00",
+        "entryFee": 8,
+        "location": "Downtown Karaoke Studio",
+        "capacity": 18,
+        "participantUsernames": [
+            "jon",
+            "admin"
+        ]
+    },
+    {
+        "authorUsername": "admin",
+        "name": "Album Review Circle",
+        "desc": "We will compare standout tracks, lyrics, and production choices from seeded albums.",
+        "date": "2026-05-09T15:30:00.000+08:00",
+        "entryFee": 5,
+        "location": "Library Discussion Room",
+        "capacity": 12,
+        "participantUsernames": [
+            "admin"
+        ]
+    },
+    {
+        "authorUsername": "jon",
+        "name": "Weekend Playlist Workshop",
+        "desc": "Build collaborative playlists and swap recommendations across pop and electronic tracks.",
+        "date": "2026-05-23T14:00:00.000+08:00",
+        "entryFee": 0,
+        "location": "Student Hub",
+        "capacity": 20,
+        "participantUsernames": [
+            "jon"
+        ]
+    }
+]

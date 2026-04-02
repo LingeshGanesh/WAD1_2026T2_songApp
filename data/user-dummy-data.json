@@ -1,0 +1,28 @@
+[
+    {
+        "_id": "69c61385043019af1b176196",
+        "username": "jon",
+        "email": "jon@gmail.com",
+        "password": "$2b$10$cIl0IslivMW8/PHU346wdufarvb/C0ukIpQuARsbeb3BO.t6Eg5OW",
+        "profilePicture": "/image/profilepic2.jpg",
+        "friends": [],
+        "events": [],
+        "createdAt": "2026-03-27T05:20:05.855+00:00",
+        "updatedAt": "2026-03-27T05:20:05.855+00:00",
+        "__v": 0,
+        "hasUnreadAlerts": false
+    },
+    {
+        "_id": "69c76ff28fd977d9ffeaa496",
+        "username": "admin",
+        "email": "admin@admin.com",
+        "password": "$2b$10$z/t5GF64fNGuEH0v5Ga26uNnD76IqVICYJ2MO1g6zVWTVemLtDLa2",
+        "profilePicture": "/image/profilepic1.jpg",
+        "friends": [],
+        "events": [],
+        "createdAt": "2026-03-28T06:06:42.078+00:00",
+        "updatedAt": "2026-03-28T06:06:42.078+00:00",
+        "__v": 0,
+        "hasUnreadAlerts": false
+    }
+]
