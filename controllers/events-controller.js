@@ -74,7 +74,7 @@ exports.createEvent = async (req, res) => {
             let result = await Event.addEvent(newEvent);
             console.log("event added:" + result);
 
-            res.render("events/success", { msg: msg, redirectUrl: "/events/edit-events"});
+            res.render("events/success", { msg: msg, redirectUrl: "/events/user-events"});
 
         } catch (error) {
             console.log(error);
@@ -101,7 +101,7 @@ exports.showEventList = async (req, res) => {
     try {
         let events = await Event.retrieveByAuthor(userId);
         console.log(events);
-        res.render("events/edit-event", { events });
+        res.render("events/user-events", { events });
     } catch (error) {
         console.error(error);
         res.send("Error reading database");
@@ -131,7 +131,7 @@ exports.getEvent = async (req, res) => {
         const result = await Event.findByIdAndAuthor(id, userId);
         // prevents bypassing using url
         if (new Date() > new Date(result.date)){
-            return res.redirect("/events/edit-events");
+            return res.redirect("/events/user-events");
         }
         res.render("events/update-event", { result, msg });
     } catch (error) {
@@ -176,7 +176,7 @@ exports.updateEvent = async (req, res) => {
 
         let msg = `Event ${name} has been editted successfully`;
         console.log(success);
-        res.render("events/success", { msg: msg, redirectUrl: "/events/edit-events"});
+        res.render("events/success", { msg: msg, redirectUrl: "/events/user-events"});
     } catch (error) {
         console.log(error);
 
@@ -207,7 +207,7 @@ exports.deleteAnEvent = async (req, res) => {
 
         if (success.deletedCount === 1) {
             let msg = `Event ${name} has been deleted successfully`;
-            res.render("events/success", { msg: msg, redirectUrl: "/events/edit-events"});
+            res.render("events/success", { msg: msg, redirectUrl: "/events/user-events"});
         }
 
     } catch (error) {
@@ -222,7 +222,7 @@ exports.getMarkedEvent = async (req, res) => {
 
     try {
         const result = await Event.findByIdAndAuthor(id, userId);
-        res.render("events/show-an-event", { result });
+        res.render("events/delete-event", { result });
 
     } catch (error) {
         console.log(error);

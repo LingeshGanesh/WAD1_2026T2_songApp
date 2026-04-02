@@ -1,0 +1,130 @@
+/* album-dark.css */
+
+/* Base */
+body {
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    font-family: sans-serif;
+}
+
+/* Links */
+a {
+    color: #7b9cff;
+}
+
+a:visited {
+    color: #a78bfa;
+}
+
+a:hover {
+    color: #a5b4fc;
+}
+
+/* Buttons */
+button {
+    background-color: #2d2d2d;
+    color: #e0e0e0;
+    border: 1px solid #444;
+    padding: 6px 14px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+button:hover {
+    background-color: #3a3a3a;
+}
+
+button:disabled {
+    background-color: #2a2a2a;
+    color: #555;
+    cursor: not-allowed;
+    border-color: #333;
+}
+
+/* Table */
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table,
+th,
+td {
+    border: 1px solid #444;
+}
+
+th {
+    background-color: #04AA6D;
+    color: #fff;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+td {
+    padding: 8px 12px;
+    color: #e0e0e0;
+}
+
+tr:hover {
+    background-color: #252525;
+}
+
+/* Form inputs */
+input[type="text"],
+input[type="number"],
+input[type="file"],
+textarea,
+select {
+    background-color: #2d2d2d;
+    color: #e0e0e0;
+    border: 1px solid #444;
+    padding: 6px 10px;
+    border-radius: 4px;
+    outline: none;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+textarea:focus {
+    border-color: #7b9cff;
+}
+
+/* Song search dropdown */
+#songResults {
+    background-color: #2d2d2d;
+    border: 1px solid #444;
+    color: #e0e0e0;
+}
+
+#songResults li:hover {
+    background-color: #3a3a3a !important;
+}
+
+/* Song tags */
+#selectedSongs span {
+    background-color: #3a3a3a !important;
+    color: #e0e0e0;
+}
+
+/* Headings */
+h1,
+h2,
+h3 {
+    color: #f0f0f0;
+}
+
+/* Error / info messages */
+p strong {
+    color: #ffffff;
+}
+
+/* Album cover image */
+img {
+    border: 1px solid #444;
+    border-radius: 4px;
+}
+
+/* Horizontal rule */
+hr {
+    border-color: #333;
+}
