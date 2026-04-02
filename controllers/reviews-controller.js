@@ -53,7 +53,6 @@ exports.createReview = async (req, res) => {
         songId, 
         error: error,
         reviews: paginatedReviews,
-        currentUser: req.session.user || null,
         page,
         totalPages,
         totalReviews
@@ -117,8 +116,6 @@ exports.getReviewInfo = async (req, res) => {
     const song = await Song.findByID(songId);
     const songTitle = song.title;
 
-    const currentUser = req.session.user || null;
-
     if (reviews && reviews.length > 0) {
       for (let review of reviews) {
         const user = await User.findUserByID(review.userId);
@@ -151,7 +148,6 @@ exports.getReviewInfo = async (req, res) => {
       output, 
       error, 
       songId, 
-      currentUser, 
       page, 
       totalPages, 
       totalReviews 

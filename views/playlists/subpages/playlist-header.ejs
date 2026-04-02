@@ -11,7 +11,7 @@
         <td>
             <h1><%= playlist.name %></h1>
             <% if (playlist.owner) { %>
-                <p><a href="/user/displayProfile?id=<%= playlist.owner._id %>">@<%= playlist.owner.username %></a></p>
+                <p><a href="/user/display-profile?id=<%= playlist.owner._id %>">@<%= playlist.owner.username %></a></p>
             <% } else { %>
                 <p><em>Unknown Owner</em></p>
             <% } %>

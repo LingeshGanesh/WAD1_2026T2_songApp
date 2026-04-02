@@ -84,12 +84,11 @@ exports.registerPost = async (req, res) => {
             profilePicture: avatar
         };
 
-        // check user exist inside or not if not don't update
+        // create new user in DB
         await User.createUser(user);
         console.log(`Successfully register with
             user:${user.username}
-            email:${user.email},
-            cfmpassword`)
+            email:${user.email}`)
         return res.redirect('/user/login');
 
     } catch (error) {
@@ -318,7 +317,7 @@ exports.updateUser = async (req, res) => {
 }
 
 exports.getEditPswForm = (req, res) => {
-    console.log("Updating password")
+    //console.log("Updating password")
     res.render('users/change-password', {
         errors: null,
         formData: {
@@ -337,13 +336,14 @@ exports.updatePassword = async (req, res) => {
         // console.log(currentPassword, cfmPassword, newPassword);
         let errors = [];
 
-        if (!currentPassword) errors.push('Please type in current password!');
-
         const user = await User.findUserByID(id);
 
-        const match = await bcrypt.compare(currentPassword, user.password);
-        if (!match) {
-            errors.push('Current password is wrong')
+        if (!currentPassword) {
+            errors.push('Please type in current password!');
+        } else {
+            //only run bcrypt if currentPassword is not empty
+            const match = await bcrypt.compare(currentPassword, user.password);
+            if (!match) errors.push('Current password is wrong');
         }
 
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&!?]).{8,}$/;
@@ -450,7 +450,7 @@ exports.searchUser = async (req, res) => {
         const query = req.query.query || '';
         const trimmedQuery = query.trim()
         const currentUserId = req.session.user.id;
-        const suggestions = await User.getSuggestedUsers(currentUserId);
+        suggestions = await User.getSuggestedUsers(currentUserId);
 
         if (!trimmedQuery) {
             return res.redirect('/user/search-friend');
@@ -487,6 +487,7 @@ exports.searchUser = async (req, res) => {
 
 exports.displayProfile = async (req, res) => {
     const id = req.query.id;
+    let isFollowing = false;
 
     try {
         const targetUser = await User.findUserByID(id);
@@ -503,38 +504,32 @@ exports.displayProfile = async (req, res) => {
         const playlists = await Playlist.retrievePublicByOwnerID(targetUser._id);
 
         //to decide whether to show following or follow
-        const isFollowing = currentUser.followings?.some(f =>
+        isFollowing = currentUser.followings?.some(f =>
             f.equals(targetUser._id)
         ) || false;
 
         //console.log(isFollowing, currentUser.followings, currentUser.followers, targetUser.followers, targetUser.followings);
 
-        if (targetUser) {
-            return res.render('users/profile-display', {
-                user: targetUser,
-                errors: [],
-                isFollowing,
-                playlists
-            })
-        } else {
-            return res.render('users/search-friend', {
-                result: [],
-                errors: ["Something went wrong while displaying the profile"],
-                isFollowing
-            })
-        }
+        return res.render('users/profile-display', {
+            user: targetUser,
+            errors: [],
+            isFollowing,
+            playlists
+        })
+
     } catch (error) {
         console.log(error);
         return res.render('users/search-friend', {
             result: [],
             errors: ["Server error occurred"],
-            isFollowing
+            isFollowing,
+            suggestions: []
         });
     }
 }
 
 exports.unfollowUser = async (req, res) => {
-    console.log("Unfollowing user")
+    //console.log("Unfollowing user")
     try {
         const currentUserId = req.session.user.id;
         const targetUserId = req.body.targetUserId;
@@ -545,7 +540,7 @@ exports.unfollowUser = async (req, res) => {
 
         await User.unfollowUser(currentUserId, targetUserId);
 
-        res.redirect(`/user/displayProfile?id=${targetUserId}`);
+        res.redirect(`/user/display-profile?id=${targetUserId}`);
     } catch (error) {
         console.log('Error occurs while unfollowing user', error);
         res.redirect('/user/search-friend');
@@ -553,7 +548,7 @@ exports.unfollowUser = async (req, res) => {
 }
 
 exports.followUser = async (req, res) => {
-    console.log("Following user")
+    //console.log("Following user")
     try {
         const currentUserId = req.session.user.id;
         const targetUserId = req.body.targetUserId;
@@ -569,7 +564,7 @@ exports.followUser = async (req, res) => {
             `${req.user.username} started following you`
         );
 
-        res.redirect(`/user/displayProfile?id=${targetUserId}`);
+        res.redirect(`/user/display-profile?id=${targetUserId}`);
     } catch (error) {
         console.log('Error occurs while following user', error);
         res.redirect('/user/search-friend');
@@ -627,8 +622,8 @@ exports.clearAlerts = async (req, res) => {
 
 exports.logout = (req, res) => {
     req.session.destroy(() => {
+        console.log("Logout successful")
         res.redirect('/user/login');
     });
-    console.log("Logout successful")
 }
 
