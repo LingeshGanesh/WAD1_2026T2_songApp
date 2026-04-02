@@ -4,10 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
+    <link rel="stylesheet" href="/css/events-styles.css">
 </head>
-<body>
+<body class="home-bg">
     <%- include('navbar-user') %>
-    <h1>Greetings, <%= user.username %>!</h1>
-    <p>Lorem ipsum dolor sit amet.</p>
+
+    <section class="home-hero">
+        <div class="home-eyebrow">Welcome back</div>
+        <h1>Greetings,<br><span class="home-accent"><%= user.username %>!</span></h1>
+        <p>Your music universe, all in one place. Discover new tracks, connect with friends, and never miss a show.</p>
+        <div class="home-cta-row">
+            <a href="/songs/browse"><button class="home-btn-primary">Explore Songs</button></a>
+            <a href="/events"><button class="home-btn-secondary">Browse Events</button></a>
+        </div>
+    </section>
 </body>
 </html>

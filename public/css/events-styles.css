@@ -1386,3 +1386,96 @@ a .btn-add {
 }
 
 /* END OF EVENTS */
+
+/* HOMEPAGE */
+.home-hero {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    min-height: calc(100vh - 55px);
+    padding: 0 3rem 4rem;
+}
+
+.home-eyebrow {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #1ed760;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    margin-bottom: 0.9rem;
+}
+
+.home-hero h1 {
+    font-size: clamp(2.8rem, 6vw, 4.5rem);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    color: #f6f3ee;
+    margin-bottom: 1.1rem;
+}
+
+.home-hero h1 .home-accent {
+    color: #1ed760;
+}
+
+.home-hero p {
+    font-size: 1rem;
+    color: #b8b4ae;
+    line-height: 1.6;
+    max-width: 400px;
+    margin-bottom: 2rem;
+}
+
+.home-cta-row {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.home-btn-primary {
+    height: 48px;
+    padding: 0 1.75rem;
+    border: none;
+    border-radius: 999px;
+    background: #1ed760;
+    color: #111;
+    font-size: 0.95rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.2s, filter 0.2s;
+}
+
+.home-btn-primary:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.05);
+}
+
+.home-btn-secondary {
+    height: 48px;
+    padding: 0 1.75rem;
+    border: 1px solid #3a3a42;
+    border-radius: 999px;
+    background: transparent;
+    color: #e8e6e1;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.home-btn-secondary:hover {
+    border-color: #e8e6e1;
+}
+
+body.home-bg {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
+                url("/image/homeBG.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
