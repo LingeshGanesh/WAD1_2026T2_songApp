@@ -44,11 +44,10 @@
 
       <% songs.forEach(function(song) { %>
 
-<<<<<<< Updated upstream
-        <!-- Loop through all reviews -->
+        <!-- loop through all reviews -->
         <% reviews.forEach(function(review) { %>
 
-          <!-- Only display review if it matches the current song -->
+          <!-- only display review if it matches the current song -->
           <% if (review.songId.toString() === song._id.toString()) { %>
             <li>
               <strong>Song: <%= song.title %></strong><br>
@@ -60,28 +59,6 @@
           <% } %>
         <% }) %>
       <% }) %>
-=======
-        <% reviews.forEach(function(review) { %>
-
-          <!-- match review to its song -->
-          <% if (review.songId.toString() === song._id.toString()) { %>       
-
-            <li>
-      
-              <strong>Song: <%= song.title %></strong><br>
-              <strong>Username: <%= review.userName %></strong><br>
-              Rating: <%= review.rating %><br>
-              Comment: <%= review.comment %><br>
-              Created At: <%= review.createdAt.toLocaleString() %><br> 
-            </li>
-            <br>
-
-          <% } %>
-
-        <% }) %>
-      <% }) %>  
-
->>>>>>> Stashed changes
     </ol>
 
     <br>
