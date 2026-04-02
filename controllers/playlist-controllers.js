@@ -138,6 +138,9 @@ exports.yourPlaylists = async (req, res) => {
 exports.randomPlaylist = async (req, res) => {
     try {
         const allPlaylists = await Playlist.retrievePublic();
+
+        if (!allPlaylists) {return res.status(404).render("playlists/not-found")}
+
         // Get a random index value
         const i = (Math.floor(Math.random() * allPlaylists.length) % allPlaylists.length);
     
