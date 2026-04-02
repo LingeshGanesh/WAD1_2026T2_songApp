@@ -3,6 +3,7 @@ const Playlist = require('../models/playlists-model');
 const Reviews = require('../models/reviews-model');
 const Song = require('../models/songs-model');
 const bcrypt = require('bcrypt');
+const mongoose = require('mongoose');
 
 exports.stats = (req, res) => {
     req.session.visit_count = req.session.visit_count + 1 || 1;
@@ -489,6 +490,13 @@ exports.displayProfile = async (req, res) => {
     const id = req.query.id;
     let isFollowing = false;
 
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).render('status/not-found', {
+            url: req.url,
+            user: req.user || req.session?.user || null
+        });
+    }
+
     try {
         const targetUser = await User.findUserByID(id);
         const currentUser = await User.findUserByID(req.session.user.id);
@@ -576,7 +584,21 @@ exports.showConnection = async (req, res) => {
         const type = req.query.type;
         const id = req.query.id;
 
+        if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(404).render('status/not-found', {
+                url: req.url,
+                user: req.user || req.session?.user || null
+            });
+        }
+
         const user = await User.findUserByID(id);
+
+        if (!user) {
+            return res.status(404).render('status/not-found', {
+                url: req.url,
+                user: req.user || req.session?.user || null
+            });
+        }
 
         let userIds = [];
 
