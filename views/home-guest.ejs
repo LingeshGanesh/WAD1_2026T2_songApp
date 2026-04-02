@@ -8,6 +8,18 @@
 <body>
     <%- include('navbar-guest') %>
     <h1>Welcome to Lowkify!</h1>
-    <p>Lorem ipsum dolor sit amet.</p>
+    <p>
+        Lowkify is a song and playlist manager for all music lovers. 
+        We are definitely not copying other similar application; 
+        it is purely coincidental. 😉
+    </p>
+    <p>
+        Join <strong><%= stats.user.length %></strong> users to listening
+        <strong><%= stats.song.length %></strong> songs! There are currently
+        <strong><%= stats.playlist.length %>+</strong> playlists posted and shared!
+    </p>
+    <h1>Join Lowkify now</h1>
+    <a href="/user/login"><button>Log-In</button></a>
+    <a href="/user/register"><button>Register</button></a>
 </body>
 </html>

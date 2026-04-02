@@ -213,8 +213,8 @@ exports.deleteAnEvent = async (req, res) => {
         const id = req.body.id;
         const name = req.body.name;
 
-        const old = await Event.findByIdAndAuthor(id, userId);
-        if (old.participants.length > 0) await User.addAlertToMany(old.participants, `${name} has been deleted`);
+        const markedEvent = await Event.findByIdAndAuthor(id, userId);
+        if (markedEvent.participants.length > 0) await User.addAlertToMany(markedEvent.participants, `${name} has been deleted`);
 
         let success = await Event.deleteEvent(id, userId);
         console.log(success);
