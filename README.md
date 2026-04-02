@@ -35,9 +35,14 @@ node server.js
 ```
 
 # 📂 Load Test Data
-Run `seed-all.js`.
+1. Run `seed-all.js`.
 ```
 node scripts/seed-all.js
+```
+2. You can log in as `admin` (no, you are still a normal user)
+```
+email    : admin@admin.com
+password : Admin123!
 ```
 
 # 🤖 Use of AI
