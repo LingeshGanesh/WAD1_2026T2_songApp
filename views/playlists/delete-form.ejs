@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/playlist-browse.css">
     <title>Delete Playlist</title>
     <style>
         table th.pinfo {text-align: left;}
@@ -14,6 +15,7 @@
     </style>
 </head>
 <body>
+    <%- include("../navbar-user") %>
     <h1>Delete Playlist "<%= playlist.name %>"</h1>
     <p>You're going to <strong>permanently</strong> delete this playlist:</p>
     <table>
@@ -79,5 +81,6 @@
         <br>
         <input type="submit" value="Delete Playlist">
     </form>
+    <%- include("../footer") %>
 </body>
 </html>

@@ -8,7 +8,6 @@ function normalizeSongFields(body) {
     return {
         title: (body.title || "").trim(),
         artist: (body.artist || "").trim(),
-        album: (body.album || "").trim(),
         genre: (body.genre || "").trim(),
         duration: Number(body.duration),
         youtubeUrl: (body.youtubeUrl || "").trim()
@@ -45,6 +44,10 @@ function buildSongPayload(fields) {
     };
 }
 
+function getAlbumTitle(song) {
+    return song.album && typeof song.album === "object" ? song.album.title || "" : "";
+}
+
 // Helper function to convert duration in seconds to M:SS format for display
 function formatDuration(seconds) {
     const mins = Math.floor(seconds / 60);
@@ -63,7 +66,7 @@ function getSongSortValue(song, sortKey) {
         case "artist":
             return song.artist || "";
         case "album":
-            return song.album || "";
+            return getAlbumTitle(song);
         case "genre":
             return song.genre || "";
         case "duration":
@@ -110,7 +113,6 @@ exports.showCreationForm = (req, res) => {
             uploader: "",
             title: "",
             artist: "",
-            album: "",
             genre: "",
             duration: "",
             youtubeUrl: ""
@@ -178,6 +180,7 @@ exports.browse = async (req, res) => {
         // Sort songs based on the validated sort key and direction
         // Defaults to sorting by artist ascending 
         const sortedSongs = sortSongs(songs, sort, dir);
+
         // Render the browse songs page with the sorted songs and current sort parameters for UI indication
         res.render("songs/browse-songs", {
             songs: sortedSongs,
@@ -197,7 +200,7 @@ exports.createSong = async (req, res) => {
     const fields = normalizeSongFields(req.body);
     const validationError = validateSong(fields);
     fields.uploader = req.user._id; // Store the uploader as a User ObjectId reference
-    fields.album = ""; // Set album as empty
+    fields.album = null; // Songs created here are not attached to an album initially
 
     // If validation fails, re-render form with error message and previously entered values
     if (validationError) {
@@ -271,6 +274,8 @@ exports.updateSong = async (req, res) => {
         }
         // Preserve the original uploader reference in the updated song data
         fields.uploader = existingSong.uploader._id;
+        // If the existing song has an album reference, preserve it in the updated song data; otherwise, set it to null 
+        fields.album = existingSong.album ? existingSong.album._id || existingSong.album : null;
         const updatedSong = await Song.updateSongByID(songID, buildSongPayload(fields));
         // If update is successful, redirect to the song info page
         res.redirect(`/songs/${updatedSong._id}`);

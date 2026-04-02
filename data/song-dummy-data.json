@@ -4,7 +4,7 @@
         "title": "Love Story",
         "artist": "Taylor Swift",
         "album": "Fearless",
-        "genre": "Country Pop",
+        "genre": "Country",
         "duration": 235,
         "youtubeUrl": "https://youtu.be/8xg3vE8Ie_E"
     },
@@ -13,7 +13,7 @@
         "title": "You Belong With Me",
         "artist": "Taylor Swift",
         "album": "Fearless",
-        "genre": "Country Pop",
+        "genre": "Country",
         "duration": 231,
         "youtubeUrl": "https://youtu.be/VuNIsY6JdUw"
     },
@@ -45,7 +45,7 @@
         "youtubeUrl": "https://youtu.be/ic8j13piAhQ"
     },
     {
-        "uploader": "69c61385043019af1b176196",
+        "uploader": "69c76ff28fd977d9ffeaa496",
         "title": "Shake It Off",
         "artist": "Taylor Swift",
         "album": "1989",
@@ -54,11 +54,11 @@
         "youtubeUrl": "https://youtu.be/nfWlot6h_JM"
     },
     {
-        "uploader": "69c61385043019af1b176196",
+        "uploader": "69c76ff28fd977d9ffeaa496",
         "title": "Wildest Dreams",
         "artist": "Taylor Swift",
         "album": "1989",
-        "genre": "Dream Pop",
+        "genre": "Pop",
         "duration": 220,
         "youtubeUrl": "https://youtu.be/IdneKLhsWOQ"
     },
@@ -108,7 +108,7 @@
         "youtubeUrl": "https://youtu.be/98ES3UQegVE"
     },
     {
-        "uploader": "69c61385043019af1b176196",
+        "uploader": "69c76ff28fd977d9ffeaa496",
         "title": "Firework",
         "artist": "Katy Perry",
         "album": "Teenage Dream",
@@ -130,16 +130,16 @@
         "title": "Telephone",
         "artist": "Lady Gaga",
         "album": "The Fame Monster",
-        "genre": "Electronic Pop",
+        "genre": "Electronic",
         "duration": 226,
         "youtubeUrl": "https://youtu.be/EVJsStKc01U"
     },
     {
-        "uploader": "69c61385043019af1b176196",
+        "uploader": "69c76ff28fd977d9ffeaa496",
         "title": "Alejandro",
         "artist": "Lady Gaga",
         "album": "The Fame Monster",
-        "genre": "Electronic Pop",
+        "genre": "Electronic",
         "duration": 240,
         "youtubeUrl": "https://youtu.be/niqrrmev4mA"
     },
@@ -153,7 +153,7 @@
         "youtubeUrl": "https://youtu.be/gV8cJZHiZcQ"
     },
     {
-        "uploader": "69c61385043019af1b176196",
+        "uploader": "69c76ff28fd977d9ffeaa496",
         "title": "What's My Name?",
         "artist": "Rihanna",
         "album": "Loud",
@@ -220,7 +220,7 @@
         "title": "Love the Way You Lie",
         "artist": "Eminem",
         "album": "Recovery",
-        "genre": "Hip Hop Pop",
+        "genre": "Hip-Hop",
         "duration": 245,
         "youtubeUrl": "https://youtu.be/uelHwf8o7_U"
     }

@@ -3,6 +3,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 
+require("../models/albums-model");
 const Song = require("../models/songs-model");
 
 dotenv.config({ path: path.join(__dirname, "../config.env") });
@@ -10,6 +11,7 @@ dotenv.config({ path: path.join(__dirname, "../config.env") });
 async function run() {
     try {
         await mongoose.connect(process.env.DB);
+        const Album = mongoose.model("Album");
 
         const filePath = path.join(__dirname, "../data/song-dummy-data.json");
         const fileContents = await fs.readFile(filePath, "utf-8");
@@ -19,11 +21,22 @@ async function run() {
         let skippedCount = 0;
 
         for (const song of songs) {
-            const existingSong = await Song.findOne({
+            const albumTitle = (song.album || "").trim();
+            const matchingAlbum = albumTitle ? await Album.findOne({ title: albumTitle }) : null;
+            const songPayload = {
                 uploader: song.uploader,
                 title: song.title,
                 artist: song.artist,
-                album: song.album || null
+                album: matchingAlbum ? matchingAlbum._id : null,
+                genre: song.genre,
+                duration: song.duration,
+                youtubeUrl: song.youtubeUrl
+            };
+
+            const existingSong = await Song.findOne({
+                uploader: songPayload.uploader,
+                title: songPayload.title,
+                artist: songPayload.artist
             });
 
             if (existingSong) {
@@ -31,7 +44,7 @@ async function run() {
                 continue;
             }
 
-            await Song.createSong(song);
+            await Song.createSong(songPayload);
             insertedCount += 1;
         }
 

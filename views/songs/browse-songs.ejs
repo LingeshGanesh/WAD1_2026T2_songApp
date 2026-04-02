@@ -54,12 +54,18 @@
                     <%= song.artist %>
                 </td>
                 <td>
-                    <%= song.album || "-" %>
+                    <% if (song.album && song.album._id) { %>
+                    <!-- Display album title if the song has an associated album -->
+                    <a href="/album/<%= song.album._id %>"><%= song.album.title %></a>
+                    <% } else { %>
+                    -
+                    <% } %>
                 </td>
                 <td>
                     <%= song.genre || "-" %>
                 </td>
                 <td>
+                    <!-- Call formatDuration function to display duration in M:SS format -->
                     <%= formatDuration(song.duration) %>
                 </td>
                 <td>

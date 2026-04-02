@@ -3,42 +3,42 @@ const mongoose = require('mongoose');
 const Album = require('../models/albums-model');
 const Song = require('../models/songs-model');
 
-exports.showAlbumList = async (req,res) => {
+exports.showAlbumList = async (req, res) => {
     try {
         // populate allows each key-value pairs data to be fetched
         const allAlbums = await Album.retrieveAll().populate('createdBy') || [];
-        res.render("albums/show-album-list", {allAlbums}); 
-    } catch(error) {
-        console.error(error)
-    }
-};
-
-exports.albumInfo = async (req,res) => {
-    const albumID = req.params.id // extracts album ID from url, req.params.id returns the objectID
-    // if /album/123456789, req.params.id returns '123456789' stored in albumID to find specific album in the database
-    try {
-        // populate to get song and creator details
-        const album = await Album.findByID(albumID).populate('songs').populate('createdBy');
-        res.render("albums/show-album-created", {album})
-    } catch(error) {
-        console.error(error)
-    }
-};
-
-exports.showAddForm = async (req,res) => {
-    try {
-        res.render("albums/add-album", {msg: ""})
+        res.render("albums/show-album-list", { allAlbums });
     } catch (error) {
         console.error(error)
     }
 };
 
-exports.createAlbum = async (req,res) => {
+exports.albumInfo = async (req, res) => {
+    const albumID = req.params.id // extracts album ID from url, req.params.id returns the objectID
+    // if /album/123456789, req.params.id returns '123456789' stored in albumID to find specific album in the database
+    try {
+        // populate to get song and creator details
+        const album = await Album.findByID(albumID).populate('songs').populate('createdBy');
+        res.render("albums/show-album-created", { album })
+    } catch (error) {
+        console.error(error)
+    }
+};
+
+exports.showAddForm = async (req, res) => {
+    try {
+        res.render("albums/add-album", { msg: "" })
+    } catch (error) {
+        console.error(error)
+    }
+};
+
+exports.createAlbum = async (req, res) => {
     const title = req.body.title;
     const description = req.body.description.trim();
     const year = req.body.year;
-    const songs = req.body.songs 
-    
+    const songs = req.body.songs
+
     const currentYear = new Date().getFullYear();
 
     if (year.toString().length !== 4) {
@@ -54,7 +54,7 @@ exports.createAlbum = async (req,res) => {
     }
 
     if (!songs) { // validation for song field
-        return res.render("albums/add-album", {msg: "Please add at least one song." });
+        return res.render("albums/add-album", { msg: "Please add at least one song." });
     }
 
     // split comma separated songIDs into array of strings
@@ -78,8 +78,8 @@ exports.createAlbum = async (req,res) => {
         // _id: { $in: songIds} is the filter. $in is a MongoDB operator that 
         // matches any document whose _id is in the songIds array.
         await Song.updateMany(
-               { _id: { $in: songIds} },
-               {album: title}
+            { _id: { $in: songIds } },
+            { album: newId }
         );
         await result.populate('songs');
         await result.populate('createdBy');
@@ -89,7 +89,7 @@ exports.createAlbum = async (req,res) => {
         console.error(error);
         let msg = error;
 
-        res.render("albums/add-album", {msg });
+        res.render("albums/add-album", { msg });
     }
 };
 
@@ -147,20 +147,20 @@ exports.updateAlbum = async (req, res) => {
 
     if (!title || !year) {
         const album = await Album.findByIDAndPopulate(albumID);
-        return res.render("albums/edit-album", {album, msg: "All fields are required." });
+        return res.render("albums/edit-album", { album, msg: "All fields are required." });
     }
 
-    if (!songs){
+    if (!songs) {
         const album = await Album.findByIDAndPopulate(albumID);
-        return res.render("albums/edit-album", {album, msg: "Please add at least one song." });
+        return res.render("albums/edit-album", { album, msg: "Please add at least one song." });
     }
 
     if (year.toString().length !== 4) {
         const album = await Album.findByIDAndPopulate(albumID);
-        return res.render("albums/edit-album", {album, msg: "Year must be 4 digits"})
+        return res.render("albums/edit-album", { album, msg: "Year must be 4 digits" })
     }
 
-    if (year < 1900){
+    if (year < 1900) {
         const album = await Album.findByIDAndPopulate(albumID);
         return res.render("albums/edit-album", { album, msg: "Year must be after the 1900s" })
     }
@@ -173,14 +173,24 @@ exports.updateAlbum = async (req, res) => {
     const songIds = songs.split(',').map(id => new mongoose.Types.ObjectId(id.trim()));
 
     try {
-        await Album.editAlbum(albumID, title, description,songIds, year);
+        const previousSongIds = album.songs.map((songId) => songId.toString());
+        await Album.editAlbum(albumID, title, description, songIds, year);
 
         //Song.updateMany(...) runs update on all documents that match the filter
         // _id: { $in: songIds} is the filter. $in is a MongoDB operator that 
         // matches any document whose _id is in the songIds array.
         await Song.updateMany(
             { _id: { $in: songIds } },
-            { album: title }
+            { album: albumID }
+        );
+
+        await Song.updateMany(
+            {
+                _id: {
+                    $in: previousSongIds.filter((songId) => !songIds.some((selectedId) => selectedId.toString() === songId))
+                }
+            },
+            { album: null }
         );
 
         res.send(`
@@ -202,7 +212,7 @@ exports.updateAlbum = async (req, res) => {
     }
 };
 
-exports.getMarkedAlbum = async (req,res) => {
+exports.getMarkedAlbum = async (req, res) => {
     const albumID = req.params.id;
 
     try {
@@ -221,13 +231,13 @@ exports.getMarkedAlbum = async (req,res) => {
                 </html>
             `);
         }
-        res.render("albums/show-album-delete", {album})
-    } catch(error) {
+        res.render("albums/show-album-delete", { album })
+    } catch (error) {
         console.error(error)
     }
 };
 
-exports.deleteAlbum = async (req,res) => {
+exports.deleteAlbum = async (req, res) => {
     const albumID = req.params.id;
 
     try {
@@ -250,11 +260,11 @@ exports.deleteAlbum = async (req,res) => {
         // Clear album title from all songs in this album
         await Song.updateMany(
             { _id: { $in: album.songs } },
-            { album: '' }
+            { album: null }
         );
 
         let success = await Album.deleteAlbum(albumID);
-        if (success.deletedCount===1){
+        if (success.deletedCount === 1) {
             return res.send(`
                 <!DOCTYPE html>
                 <html>
@@ -268,7 +278,7 @@ exports.deleteAlbum = async (req,res) => {
                 </html>
             `);
         }
-    } catch(error) {
+    } catch (error) {
         console.error(error);
     }
 };
@@ -279,7 +289,7 @@ exports.searchSongs = async (req, res) => {
         // $regex: '^' matches any title starting from the first letter
         // req.query.q is the search term for the url eg /album/song-search?q=hi gives q = "hi"
         // $options: 'i' makes it case-insensitive
-        title: { $regex: '^' + req.query.q, $options: 'i' }, 
+        title: { $regex: '^' + req.query.q, $options: 'i' },
         uploader: req.session.user.id // only the song that uploader added will be returned
     }).select('_id title artist').limit(10); //only the songid, song title and song artist will be returned
     res.json(songs); // sends the result back as JSON objects for EJS to fetch and render as dropdown list

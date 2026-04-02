@@ -1,0 +1,127 @@
+[
+    {
+        "createdBy": "69c76ff28fd977d9ffeaa496",
+        "title": "Fearless",
+        "yearReleased": 2008,
+        "description": "A country-pop album built around big emotions, vivid storytelling, and some of Taylor Swift's breakout songs.",
+        "songTitles": [
+            "Love Story",
+            "You Belong With Me"
+        ]
+    },
+    {
+        "createdBy": "69c76ff28fd977d9ffeaa496",
+        "title": "1989",
+        "yearReleased": 2014,
+        "description": "Taylor Swift's polished pop reinvention, full of synth-pop hooks and glossy production.",
+        "songTitles": [
+            "Blank Space",
+            "Style",
+            "Shake It Off",
+            "Wildest Dreams"
+        ]
+    },
+    {
+        "createdBy": "69c76ff28fd977d9ffeaa496",
+        "title": "Lover",
+        "yearReleased": 2019,
+        "description": "A bright and romantic pop record that mixes warmth, vulnerability, and playful songwriting.",
+        "songTitles": [
+            "Cruel Summer"
+        ]
+    },
+    {
+        "createdBy": "69c61385043019af1b176196",
+        "title": "Midnights",
+        "yearReleased": 2022,
+        "description": "A late-night pop album shaped by introspection, anxiety, and sleek electronic textures.",
+        "songTitles": [
+            "Anti-Hero"
+        ]
+    },
+    {
+        "createdBy": "69c61385043019af1b176196",
+        "title": "Speak Now",
+        "yearReleased": 2010,
+        "description": "A dramatic, self-written Taylor Swift album balancing arena-pop energy with confessional ballads.",
+        "songTitles": [
+            "Enchanted"
+        ]
+    },
+    {
+        "createdBy": "69c61385043019af1b176196",
+        "title": "Red",
+        "yearReleased": 2012,
+        "description": "A genre-blending Taylor Swift album that moves between heartbreak ballads and bold pop moments.",
+        "songTitles": [
+            "All Too Well"
+        ]
+    },
+    {
+        "createdBy": "69c76ff28fd977d9ffeaa496",
+        "title": "Teenage Dream",
+        "yearReleased": 2010,
+        "description": "A colorful pop album packed with candy-coated hooks, radio-ready singles, and youthful energy.",
+        "songTitles": [
+            "California Gurls",
+            "Teenage Dream",
+            "Firework"
+        ]
+    },
+    {
+        "createdBy": "69c76ff28fd977d9ffeaa496",
+        "title": "Doo-Wops & Hooligans",
+        "yearReleased": 2010,
+        "description": "Bruno Mars' debut album, mixing pop, soul, and retro influences with strong melodic hooks.",
+        "songTitles": [
+            "Just the Way You Are"
+        ]
+    },
+    {
+        "createdBy": "69c76ff28fd977d9ffeaa496",
+        "title": "The Fame Monster",
+        "yearReleased": 2009,
+        "description": "A dark electro-pop release from Lady Gaga that leans into theatrical production and bold club energy.",
+        "songTitles": [
+            "Telephone",
+            "Alejandro"
+        ]
+    },
+    {
+        "createdBy": "69c76ff28fd977d9ffeaa496",
+        "title": "Loud",
+        "yearReleased": 2010,
+        "description": "A vibrant Rihanna pop album with dancefloor-ready singles and bright Caribbean-influenced textures.",
+        "songTitles": [
+            "Only Girl (In the World)",
+            "What's My Name?"
+        ]
+    },
+    {
+        "createdBy": "69c76ff28fd977d9ffeaa496",
+        "title": "Rated R",
+        "yearReleased": 2009,
+        "description": "A darker Rihanna album with sharper edges, moody pop production, and defiant attitude.",
+        "songTitles": [
+            "Rude Boy"
+        ]
+    },
+    {
+        "createdBy": "69c61385043019af1b176196",
+        "title": "Circus",
+        "yearReleased": 2008,
+        "description": "A high-energy Britney Spears pop album built around sleek production, attitude, and big choruses.",
+        "songTitles": [
+            "If U Seek Amy"
+        ]
+    },
+    {
+        "createdBy": "69c76ff28fd977d9ffeaa496",
+        "title": "Recovery",
+        "yearReleased": 2010,
+        "description": "An introspective and hard-hitting Eminem album focused on resilience, reflection, and personal recovery.",
+        "songTitles": [
+            "Love the Way You Lie"
+        ]
+    }
+]
