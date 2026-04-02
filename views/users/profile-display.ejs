@@ -9,7 +9,10 @@
 </head>
 
 <body>
-    <a href="/user/profile" class="back-link">Back</a>
+    <!-- <a href="/user/profile" class="back-link">Back</a> -->
+     <%- include("../navbar-user") %>
+     <br><br><br>
+     <a href="#" class="back-link" onclick="history.back(); return false;">← Back</a>
 
     <!-- <h2>Profile: Username - <%=user.username%> 
     </h2>
