@@ -4,7 +4,7 @@
 -->
 
 <% if (allPlaylists.length > 0) { %>
-    <table border="1">
+    <table border="1" class="list">
         <tr>
             <th>Playlist</th>
             <th>Creation Date</th>
@@ -21,5 +21,5 @@
 
     </table>
 <% } else { %>
-    <p>No playlists yet.</p>
+    <p id="no-playlist">No playlists yet.</p>
 <% } %>

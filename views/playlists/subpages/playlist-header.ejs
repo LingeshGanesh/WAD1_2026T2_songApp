@@ -5,7 +5,7 @@
 -->
 
 <% const thumbURL = playlist.thumbnailExt? `/image/playlist-thumb/${playlist._id}${playlist.thumbnailExt}` : "/image/default-thumb.png" %>
-<table>
+<table class="playlist-header">
     <tr>
         <td><img src="<%= thumbURL %>" alt="" height="128" width="128"></td>
         <td>

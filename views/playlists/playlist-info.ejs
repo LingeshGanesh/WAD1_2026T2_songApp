@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= playlist.name %></title>
+    <link rel="stylesheet" href="/css/playlist-browse.css">
     <style>
         table.pinfo th {text-align: left;}
+        .random {background-color: red;}
     </style>
 </head>
 <body>
@@ -13,9 +15,9 @@
     <main>
         <%- include("subpages/playlist-header", {playlist}) %>
         <% if (isOwner) { %>
-            <ul>
-                <li><a href="/playlist/edit/<%= playlist._id %>">Edit</a></li>
-                <li><a href="/playlist/delete/<%= playlist._id %>">Delete</a></li>
+            <ul class="action-btns">
+                <li><a class="action-btn" href="/playlist/edit/<%= playlist._id %>">Edit</a></li>
+                <li><a class="action-btn" href="/playlist/delete/<%= playlist._id %>">Delete</a></li>
             </ul>
         <% } %>
         
@@ -51,7 +53,7 @@
         <!-- Songs -->
         <%- include("subpages/songs-table", {songs: playlist.songs, durations: songsDuration}) %>
         
-        <p><a href="/playlist/random">I'm feeling lucky!</a></p>
+        <p><a href="/playlist/random" class="action-btn">I'm feeling lucky!</a></p>
     </main>
     <%- include("../footer") %>
 </body>
