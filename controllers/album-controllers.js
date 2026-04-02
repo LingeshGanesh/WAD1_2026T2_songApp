@@ -38,7 +38,7 @@ exports.createAlbum = async (req,res) => {
     const description = req.body.description.trim();
     const year = req.body.year;
     const songs = req.body.songs 
-
+    
     const currentYear = new Date().getFullYear();
 
     if (year.toString().length !== 4) {
@@ -98,7 +98,18 @@ exports.showEditForm = async (req, res) => {
     try {
         const album = await Album.findByIDAndPopulate(albumID);
         if (album.createdBy._id.toString() !== req.session.user.id) {
-            return res.send('<h1>You do not have permission to access this</h1><a href="/album/browse">Go back</a>');
+            return res.send(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <link rel="stylesheet" href="/css/album-dark.css">
+                </head>
+                <body>
+                    <h1>You do not have permission to access this.</h1>
+                    <a href="/album/browse">Go back</a>
+                </body>
+                </html>
+            `);
         }
 
         res.render("albums/edit-album", { album, msg: "" }); // add msg: ""
@@ -112,7 +123,18 @@ exports.updateAlbum = async (req, res) => {
     const album = await Album.findByIDAndPopulate(albumID);
 
     if (album.createdBy._id.toString() !== req.session.user.id) {
-        return res.send('<h1>You do not have permission to access this</h1><a href="/album/browse">Go back</a>');
+        return res.send(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <link rel="stylesheet" href="/css/album-dark.css">
+                </head>
+                <body>
+                    <h1>You do not have permission to access this.</h1>
+                    <a href="/album/browse">Go back</a>
+                </body>
+                </html>
+            `);
     }
 
     const title = req.body.title;
@@ -161,8 +183,18 @@ exports.updateAlbum = async (req, res) => {
             { album: title }
         );
 
-        res.send(`<h1>Your album has been edited!</h1>
-            <a href="/album/${albumID}">View Your Changes</a>`);
+        res.send(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <link rel="stylesheet" href="/css/album-dark.css">
+            </head>
+            <body>
+                <h1>Your album has been edited!</h1>
+                <a href="/album/${albumID}">View Your Changes</a>
+            </body>
+            </html>
+            `);
     } catch (error) {
         console.error(error);
         const album = await Album.findByIDAndPopulate(albumID);
@@ -176,7 +208,18 @@ exports.getMarkedAlbum = async (req,res) => {
     try {
         const album = await Album.findByID(albumID).populate('songs').populate('createdBy');
         if (album.createdBy._id.toString() !== req.session.user.id) {
-            return res.send('<h1>You do not have permission to access this</h1><a href="/album/browse">Go back</a>');
+            return res.send(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <link rel="stylesheet" href="/css/album-dark.css">
+                </head>
+                <body>
+                    <h1>You do not have permission to access this.</h1>
+                    <a href="/album/browse">Go back</a>
+                </body>
+                </html>
+            `);
         }
         res.render("albums/show-album-delete", {album})
     } catch(error) {
@@ -190,14 +233,40 @@ exports.deleteAlbum = async (req,res) => {
     try {
         const album = await Album.findByID(albumID);
         if (album.createdBy.toString() !== req.session.user.id) {
-            return res.send('<h1>You do not have permission to access this</h1><a href="/album/browse">Go back</a>');
+            return res.send(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <link rel="stylesheet" href="/css/album-dark.css">
+                </head>
+                <body>
+                    <h1>You do not have permission to access this.</h1>
+                    <a href="/album/browse">Go back</a>
+                </body>
+                </html>
+            `);
         }
+
+        // Clear album title from all songs in this album
+        await Song.updateMany(
+            { _id: { $in: album.songs } },
+            { album: '' }
+        );
 
         let success = await Album.deleteAlbum(albumID);
         if (success.deletedCount===1){
-            res.send(`<h1>Album has been successfully deleted.</h1><br>
-                <a href="/album/browse"><strong>View Your Changes</strong></a>
-                `)
+            return res.send(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <link rel="stylesheet" href="/css/album-dark.css">
+                </head>
+                <body>
+                    <h1>Album has been successfully deleted.</h1>
+                    <a href="/album/browse"><strong>Go back to browse</strong></a>
+                </body>
+                </html>
+            `);
         }
     } catch(error) {
         console.error(error);
