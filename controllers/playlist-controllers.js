@@ -29,14 +29,20 @@ function convertTime(timeSec) {
 // Read
 exports.browse = async (req, res) => {
     // Get sorting fields
-    let {sortby, isAscending} = req.query;
+    let {query, sortby, isAscending} = req.query;
+    query = query || '';
+    query = query.trim();
     sortby = sortby || 'creationDate';
     isAscending = (isAscending === 'true') || false;
 
     // Get all public playlist
     let allPlaylists;
     try {
-        allPlaylists = await Playlist.retrievePublic();
+        if (query.length == 0) {
+            allPlaylists = await Playlist.retrieveAll();
+        } else {
+            allPlaylists = await Playlist.searchPlaylists(query);
+        }
     } catch (error) {
         console.error(error);
         return statusPage.renderISE(res, "Error fetching playlists from database.");
@@ -48,9 +54,10 @@ exports.browse = async (req, res) => {
     // Render page
     const option = {
         allPlaylists,
+        query,
         sortby, 
-        isAscending, 
-        subroute: "browse"};
+        isAscending
+    };
 
     res.render('playlists/browse', option);
 };
@@ -100,39 +107,6 @@ exports.playlistInfo = async (req, res) => {
         console.error(error);
         return statusPage.renderISE(res, "Error calling database.");
     }
-};
-
-exports.yourPlaylists = async (req, res) => {
-    // Get all sorting fields (and client info from session)
-    const {user} = req.session;
-    let {sortby, isAscending} = req.query;
-    sortby = sortby || 'creationDate'
-    isAscending = (isAscending === 'true') || false;
-
-    // Get the client's playlists
-    let allPlaylists;
-    try {
-        allPlaylists = await Playlist.retrieveByOwnerID(user.id);
-    } catch (error) {
-        console.error(error);
-        return statusPage.renderISE(res, "Error calling database.");
-    }
-
-    // Sort the playlists by the sorting fields
-    allPlaylists.sort((a, b) => comparePlaylist(a, b, sortby, isAscending));
-
-    // all playlist is owned by one user, set "owners" to that user.
-    let owners = user.username;
-    
-    // Render page
-    const option = {
-        allPlaylists, 
-        owners, 
-        sortby, 
-        isAscending, 
-        subroute: "yours"};
-
-    res.render('playlists/browse', option);
 };
 
 exports.randomPlaylist = async (req, res) => {
