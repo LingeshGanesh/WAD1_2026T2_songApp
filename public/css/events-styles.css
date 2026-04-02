@@ -487,7 +487,7 @@ h2 {
 /* profile */
 
 .page-body {
-    padding: 2rem 2.5rem;
+    padding: 1rem 1rem;
 }
 
 .plan-row {
@@ -870,6 +870,7 @@ h2 {
 @media (max-width: 700px) {
     .page-body {
         padding: 1rem;
+        padding-top: 2rem;
     }
 
     .profile-hero-card {
