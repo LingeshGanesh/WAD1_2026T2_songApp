@@ -1,55 +1,85 @@
 <!DOCTYPE html>
+<!-- Individual Song Reviews Page - Shows reviews for a specific song with create/update/delete functionality -->
 <html>
 <head>
   <title>Reviews</title>
-  <!-- <link rel="stylesheet" href="/css/events-styles.css"> -->
 </head>
 <body>
+  <!-- Include the user navbar at the top of the page -->
+  <%- include('../navbar-user') %>
+
+  
+  <!-- Navigation links back to main pages -->
   <a href="/homepage"><strong>Back to Main Page</strong></a><br>
   <a href="/songs/browse"><strong>Back to Browse Songs</strong></a><br><br>
 
+  <!-- Display the song title being reviewed -->
   <h1><u>Song to Review: <%= songTitle %></u></h1>
 
+  <!-- Section for creating new reviews -->
   <h3>Add Your Reviews Here</h3>
   <form action="/reviews/create/<%= songId %>" method="POST">
+
+    <!-- Rating input field (1-5 stars) -->
     Rating (1-5): <input type="number" name="rating" min="1" max="5" /><br>
+
+    <!-- Comment text input -->
     Comment: <input type="text" name="comment" /><br>
+
+    <!-- Submit button for new review -->
     <button type="submit">Submit</button>
   </form>
+
+  <!-- Display validation errors if any -->
   <% if(error) { %>
     <p><%= error %></p>
   <% } %>
 
+  <!-- Reviews display section -->
   <h3><u>Review List:</u></h3>
+
+    <!-- Check if there are no reviews -->
     <% if (!reviews || reviews.length === 0) { %>
       <%= output %>
     <br>
     <% } else { %>
 
+    <!-- Display total count of reviews -->
     <h4><%= totalReviews %> review(s) found.</h4>
 
+  <!-- Ordered list with proper numbering based on pagination -->
   <ol start="<%= ((page || 1) - 1) * 5 + 1 %>">
 
+      <!-- Loop through each review -->
       <% reviews.forEach(function(review) { %>
       <li>
+        <!-- Display reviewer's username -->
         <strong>Username: <%= review.userName %></strong><br>
+        <!-- Display star rating -->
         Rating: <%= review.rating %><br>
+        <!-- Display review comment -->
         Comment: <%= review.comment %>
 
+        <!-- Only show edit/delete options if user owns this review -->
         <% if (currentUser && review.userId.toString() === currentUser.id) { %>
-        <!-- UPDATE FORM -->
         <form action="/reviews/update/<%= songId %>" method="POST">
+          <!-- Hidden field to identify which review to update -->
           <input type="hidden" name="reviewId" value="<%= review._id %>" />
+          <!-- New rating input -->
           <input type="number" name="rating" min="1" max="5" placeholder="New Rating" style="width: 15ch;" />
-          <input type="text" name="comment" placeholder="New Comment" style="width: 15ch;" /> 
+          <!-- New comment input -->
+          <input type="text" name="comment" placeholder="New Comment" style="width: 15ch;" />
+          <!-- Update button -->
           <button type="submit">Update</button>
         </form>
-        
-        
-        <!-- DELETE FORM -->
+
+
+        <!-- DELETE FORM - allows user to remove their review -->
         <form action="/reviews/delete/<%= songId %>" method="POST">
+          <!-- Hidden field to identify which review to delete -->
           <input type="hidden" name="reviewId" value="<%= review._id %>" />
           <br>
+          <!-- Delete button -->
           <button type="submit">Delete</button>
         </form>
         <% } %>
@@ -58,15 +88,19 @@
     <% }) %>
     <% } %>
 
-    
+
   </ol>
 
+  <!-- Pagination controls - only show if multiple pages exist -->
   <% if (totalPages > 1) { %>
   <div>
+    <!-- Previous page link - only show if not on first page -->
     <% if (page > 1) { %>
       <a href="/reviews/<%= songId %>?page=<%= page - 1 %>">Previous</a>
     <% } %>
+    <!-- Current page indicator -->
     Page <%= page %> of <%= totalPages %>
+    <!-- Next page link - only show if not on last page -->
     <% if (page < totalPages) { %>
       <a href="/reviews/<%= songId %>?page=<%= page + 1 %>">Next</a>
     <% } %>
