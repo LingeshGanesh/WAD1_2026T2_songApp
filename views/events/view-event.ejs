@@ -44,7 +44,7 @@
                     <% if (p._id.toString() === userId) { %>
                         <span class="event-card-name"><%= p.username %></span> <span style="color:#888;">(you)</span>
                     <% } else { %>
-                        <a href="/user/displayProfile?id=<%= p._id %>" class="event-card-name"><%= p.username %></a>
+                        <a href="/user/display-profile?id=<%= p._id %>" class="event-card-name"><%= p.username %></a>
                     <% } %>
                 </div>
             <% }) %>

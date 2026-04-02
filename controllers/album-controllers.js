@@ -173,7 +173,7 @@ exports.updateAlbum = async (req, res) => {
     const songIds = songs.split(',').map(id => new mongoose.Types.ObjectId(id.trim()));
 
     try {
-        const previousSongIds = album.songs.map((songId) => songId.toString());
+        const previousSongIds = album.songs.map(s => s._id.toString());
         await Album.editAlbum(albumID, title, description, songIds, year);
 
         //Song.updateMany(...) runs update on all documents that match the filter
@@ -258,9 +258,11 @@ exports.deleteAlbum = async (req, res) => {
             `);
         }
 
+        const songIds = album.songs.map(s => s._id ? s._id : s);
+
         // Clear album title from all songs in this album
         await Song.updateMany(
-            { _id: { $in: album.songs } },
+            { _id: { $in: songIds } },
             { album: null }
         );
 

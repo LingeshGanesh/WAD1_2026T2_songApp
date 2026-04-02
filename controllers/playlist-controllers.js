@@ -74,6 +74,7 @@ exports.playlistInfo = async (req, res) => {
     
     try {
         let playlist = await Playlist.getByID(playlistID, true);
+
         // If the playlist does not exist, show playlist not found page
         if (!playlist) {
             return res.status(404).render('playlists/not-found');
@@ -113,6 +114,7 @@ exports.randomPlaylist = async (req, res) => {
     try {
         const allPlaylists = await Playlist.retrievePublic();
 
+        // Playlist not found
         if (!allPlaylists) {return res.status(404).render("playlists/not-found")}
 
         // Get a random index value
@@ -128,7 +130,7 @@ exports.randomPlaylist = async (req, res) => {
 
 exports.searchSongs = async (req, res) => {
     const songs = await Song.find({
-        // req.query.q is the search term for the url eg /album/song-search?q=hi gives q = "hi"
+        // req.query.q is the search term for the url eg /playlist/song-search?q=hi gives q = "hi"
         // $options: 'i' makes it case-insensitive
         title: { $regex: req.query.q.trim(), $options: 'i' }, 
     }).select('_id title artist').limit(10); //only the songid, song title and song artist will be returned
@@ -244,6 +246,7 @@ exports.updatePlaylist = async (req, res) => {
             error: true 
         });
     }
+
     // There are songs.
     songs = songs.split(",");
 

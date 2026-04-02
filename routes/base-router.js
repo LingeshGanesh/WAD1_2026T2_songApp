@@ -7,8 +7,7 @@ const baseControllers = require("../controllers/base-controllers.js");
 
 // Base Routes
 router.get("/", baseControllers.guestpage);
-// TODO: Keep/remove on consensus
-router.get("/homepage",authMiddleware.isLoggedIn, baseControllers.homepage);
+router.get("/home",authMiddleware.isLoggedIn, baseControllers.homepage);
 
 
 // Import routers

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -23,7 +23,7 @@
                     <% list.forEach(user=> { %>
                         <a href="<%= user._id.equals(currentUserId) 
                                 ? '/user/profile' 
-                                : `/user/displayProfile?id=${user._id}` %>" class="profile-card">
+                                : `/user/display-profile?id=${user._id}` %>" class="profile-card">
                             <div class="avatar-wrapper">
                                 <img src="<%= user.profilePicture %>" alt="<%= user.username %>">
                             </div>

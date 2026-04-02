@@ -30,6 +30,7 @@ exports.showEvents = async (req, res) => {
         // filter is the function that does for each event it'll only return if it meets the condition after =>
         if (filter === 'past') {
             eventList = eventList.filter(event => new Date(event.date) < now);
+            eventList.sort((a, b) => new Date(b.date) - new Date(a.date));
         } else if (filter === 'attending') {
             eventList = eventList.filter(event => user.events.some(id => id.equals(event._id)));
         } else {

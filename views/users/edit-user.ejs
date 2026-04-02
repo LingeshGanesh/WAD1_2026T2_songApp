@@ -40,9 +40,6 @@
             <input id="newEmail" type="email" name="newEmail" placeholder="Email"
                 value="<%= formData?.newEmail || user.email %>" required>
 
-            <label for="password">Password</label>
-            <input id="password" type="password" name="password" placeholder="Password" readonly>
-
             <button type="submit" class="auth-submit">Update</button>
 
             <% if (errors && errors.length> 0) { %>

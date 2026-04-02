@@ -11,7 +11,7 @@
 <body>
   <%- include('../navbar-user') %>
 
-  <a href="/homepage"><strong>Back to Main Page</strong></a><br>
+  <a href="/home"><strong>Back to Main Page</strong></a><br>
   <a href="/songs/browse"><strong>Back to Browse Songs</strong></a><br><br>
 
   <h1><u>Song to Review: <%= songTitle %></u></h1>
@@ -58,7 +58,7 @@
         Created At: <%= review.createdAt.toLocaleString() %><br> 
 
         <!-- UPDATE FORM (only if user owns the review) -->
-        <% if (currentUser && review.userId.toString() === currentUser.id) { %>
+        <% if (locals.currentUser && review.userId.toString() === locals.currentUser._id.toString()) { %>
         <form action="/reviews/update/<%= songId %>" method="POST">
 
           <input type="hidden" name="reviewId" value="<%= review._id %>" />

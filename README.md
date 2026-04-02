@@ -9,12 +9,13 @@ Lowkify is a song and playlist manager for all music lovers. We are definitely n
 
 
 # ⚙️ Installation
-1. Download zip or clone this repository
-2. Open the terminal in the app folder and type the following
+1. Install npm and nodejs.
+2. Download zip or clone this repository
+3. Open the terminal in the app folder and type the following
 ```
 npm install
 ```
-3. Create a file called `config.env` and type the following
+4. Create a file called `config.env` and type the following
 
 <details>
 <summary>Explanation</summary>
@@ -28,19 +29,15 @@ DB=mongodb+srv://[USERNAME][PASSWORD].mongodb.net/[DATABASE]?retryWrites=true&w=
 SECRET=[RANDOM_HASH_STRING]
 ```
 
-4. Run the server, then connect to [localhost:8000](http://localhost:8000/)
+5. Run the server, then connect to [localhost:8000](http://localhost:8000/)
 ```
 node server.js
 ```
 
 # 📂 Load Test Data
-1. Go to `scripts` folder.
+Run `seed-all.js`.
 ```
-cd scripts
-```
-2. Run `[name].js`.
-```
-node [name].js
+node scripts/seed-all.js
 ```
 
 # 🤖 Use of AI

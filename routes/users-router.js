@@ -34,7 +34,7 @@ router.post('/delete',authMiddleware.isLoggedIn, usersController.deleteAll);
 //search friends
 router.get('/search', authMiddleware.isLoggedIn, usersController.search);
 router.get('/search-friend',authMiddleware.isLoggedIn, usersController.searchUser);
-router.get('/displayProfile',authMiddleware.isLoggedIn,usersController.displayProfile);
+router.get('/display-profile',authMiddleware.isLoggedIn,usersController.displayProfile);
 
 //follow & unfollow
 router.post('/follow-user', authMiddleware.isLoggedIn, usersController.followUser);
