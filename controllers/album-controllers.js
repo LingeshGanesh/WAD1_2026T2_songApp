@@ -16,6 +16,17 @@ exports.showAlbumList = async (req, res) => {
 exports.albumInfo = async (req, res) => {
     const albumID = req.params.id // extracts album ID from url, req.params.id returns the objectID
     // if /album/123456789, req.params.id returns '123456789' stored in albumID to find specific album in the database
+
+    function renderAlbumNotFound(req, res) {
+        return res.status(404).render("status/not-found", {
+            url: req.url,
+            user: req.user || req.session?.user || null
+        });
+    }
+
+    if (!mongoose.isValidObjectId(albumID)) {
+        return renderAlbumNotFound(req, res)
+    }
     try {
         // populate to get song and creator details
         const album = await Album.findByID(albumID).populate('songs').populate('createdBy');
@@ -95,6 +106,17 @@ exports.createAlbum = async (req, res) => {
 
 exports.showEditForm = async (req, res) => {
     const albumID = req.params.id;
+
+    function renderAlbumNotFound(req, res) {
+        return res.status(404).render("status/not-found", {
+            url: req.url,
+            user: req.user || req.session?.user || null
+        });
+    }
+
+    if (!mongoose.isValidObjectId(albumID)) {
+        return renderAlbumNotFound(req, res)
+    }
     try {
         const album = await Album.findByIDAndPopulate(albumID);
         if (album.createdBy._id.toString() !== req.session.user.id) {
@@ -121,6 +143,20 @@ exports.showEditForm = async (req, res) => {
 exports.updateAlbum = async (req, res) => {
     const albumID = req.params.id;
     const album = await Album.findByIDAndPopulate(albumID);
+
+    // Helper function to render a 404 not found page for songs
+    // INPUT: req and res objects from Express route handlers
+    // OUTPUT: Rendered 404 not found page with the requested URL and user information if available
+    function renderAlbumNotFound(req, res) {
+        return res.status(404).render("status/not-found", {
+            url: req.url,
+            user: req.user || req.session?.user || null
+    });
+    }
+
+    if (!mongoose.isValidObjectId(albumID)) {
+        return renderAlbumNotFound(req,res)
+    }
 
     if (album.createdBy._id.toString() !== req.session.user.id) {
         return res.send(`
@@ -216,6 +252,17 @@ exports.updateAlbum = async (req, res) => {
 exports.getMarkedAlbum = async (req, res) => {
     const albumID = req.params.id;
 
+    function renderAlbumNotFound(req, res) {
+        return res.status(404).render("status/not-found", {
+            url: req.url,
+            user: req.user || req.session?.user || null
+        });
+    }
+
+    if (!mongoose.isValidObjectId(albumID)) {
+        return renderAlbumNotFound(req, res)
+    }
+
     try {
         const album = await Album.findByID(albumID).populate('songs').populate('createdBy');
         if (album.createdBy._id.toString() !== req.session.user.id) {
@@ -240,6 +287,17 @@ exports.getMarkedAlbum = async (req, res) => {
 
 exports.deleteAlbum = async (req, res) => {
     const albumID = req.params.id;
+
+    function renderAlbumNotFound(req, res) {
+        return res.status(404).render("status/not-found", {
+            url: req.url,
+            user: req.user || req.session?.user || null
+        });
+    }
+
+    if (!mongoose.isValidObjectId(albumID)) {
+        return renderAlbumNotFound(req, res)
+    }
 
     try {
         const album = await Album.findByID(albumID);
