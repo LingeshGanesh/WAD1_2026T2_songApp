@@ -9,26 +9,41 @@
 </head>
 
 <body class="songs-page">
+    <!-- Sort functions -->
+    <% function nextDir(sortKey) { return currentSort === sortKey && currentDir === "asc" ? "desc" : "asc"; } %>
+    <% function sortIndicator(sortKey) { %>
+    <% if (currentSort === sortKey) { %>
+    <%= currentDir === "asc" ? "▲" : "▼" %>
+    <% } else { %>
+    <%= "" %>
+    <% } %>
+    <% } %>
     <%- include("../navbar-user") %>
     <div class="browse-songs">
         <h1>Browse Songs</h1>
+        <!-- Add a new song button -->
         <button><a href="/songs/create">Add a new song</a></button>
         <br><br>
+        <!-- Search functionality -->
+        <label for="browseSongSearch">Search by title</label><br>
+        <input type="search" id="browseSongSearch" placeholder="Type a song title..." autocomplete="off">
+        <p id="browseSongSearchEmpty" class="browse-songs-empty" hidden>No songs match that title.</p>
+        <br>
 
         <!-- If no songs, display message, else display table of songs -->
         <% if (songs.length> 0) { %>
-        <table border="1">
+        <table border="1" id="browseSongsTable">
             <tr>
-                <th>Uploader</th>
-                <th>Title</th>
-                <th>Artist</th>
-                <th>Album</th>
-                <th>Genre</th>
-                <th>Duration</th>
+                <th><a href="/songs/browse?sort=uploader&dir=<%= nextDir("uploader") %>">Uploader <%= sortIndicator("uploader") %></a></th>
+                <th><a href="/songs/browse?sort=title&dir=<%= nextDir("title") %>">Title <%= sortIndicator("title") %></a></th>
+                <th><a href="/songs/browse?sort=artist&dir=<%= nextDir("artist") %>">Artist <%= sortIndicator("artist") %></a></th>
+                <th><a href="/songs/browse?sort=album&dir=<%= nextDir("album") %>">Album <%= sortIndicator("album") %></a></th>
+                <th><a href="/songs/browse?sort=genre&dir=<%= nextDir("genre") %>">Genre <%= sortIndicator("genre") %></a></th>
+                <th><a href="/songs/browse?sort=duration&dir=<%= nextDir("duration") %>">Duration <%= sortIndicator("duration") %></a></th>
                 <th>Reviews</th>
             </tr>
             <% songs.forEach(song=> { %>
-            <tr>
+            <tr data-song-title="<%= song.title.toLowerCase() %>">
                 <td>
                     <%= song.uploader ? song.uploader.username : "-" %>
                 </td>
@@ -59,6 +74,7 @@
     </div>
 
     <%- include("../footer") %>
+    <script src="/javascript/browse-songs.js" defer></script>
 </body>
 
 </html>

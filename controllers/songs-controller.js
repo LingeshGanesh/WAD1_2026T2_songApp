@@ -52,6 +52,54 @@ function formatDuration(seconds) {
     return `${mins}:${secs.toString().padStart(2, "0")}`;
 }
 
+// Function to get the value to sort by based on the sort key
+// This allows us to handle sorting by uploader username instead of just the uploader ID
+function getSongSortValue(song, sortKey) {
+    switch (sortKey) {
+        case "uploader":
+            return song.uploader ? song.uploader.username : "";
+        case "title":
+            return song.title || "";
+        case "artist":
+            return song.artist || "";
+        case "album":
+            return song.album || "";
+        case "genre":
+            return song.genre || "";
+        case "duration":
+            return Number(song.duration) || 0;
+        default:
+            return song.artist || "";
+    }
+}
+
+// Function to sort songs based on a given sort key and direction
+function sortSongs(songs, sortKey, direction) {
+    // Determine the sort direction factor: 1 for ascending, -1 for descending
+    const directionFactor = direction === "desc" ? -1 : 1;
+
+    // Create a new sorted array to avoid mutating the original songs array
+    return [...songs].sort((songA, songB) => {
+        // sort by the specified key, handling both string and numeric values appropriately
+        const valueA = getSongSortValue(songA, sortKey);
+        const valueB = getSongSortValue(songB, sortKey);
+
+        // If both values are numbers, sort numerically
+        if (typeof valueA === "number" && typeof valueB === "number") {
+            return (valueA - valueB) * directionFactor;
+        }
+
+        // For string values, use localeCompare for proper alphabetical sorting
+        const primaryComparison = valueA.localeCompare(valueB);
+        if (primaryComparison !== 0) {
+            return primaryComparison * directionFactor;
+        }
+
+        // If primary values are equal, sort by title as a secondary criterion to ensure consistent ordering
+        return (songA.title || "").localeCompare(songB.title || "");
+    });
+}
+
 // RENDER FUNCTIONS
 // Show form to create new song
 exports.showCreationForm = (req, res) => {
@@ -118,9 +166,25 @@ exports.showDeleteForm = async (req, res) => {
 // CRUD FUNCTIONS
 // READ: Browse all songs
 exports.browse = async (req, res) => {
+    // Validate and sanitize sort query parameters
+    const allowedSorts = ["uploader", "title", "artist", "album", "genre", "duration"];
+    // Default sort by artist ascending if invalid or missing parameters
+    const sort = allowedSorts.includes(req.query.sort) ? req.query.sort : "artist";
+    // Default sort direction is ascending  
+    const dir = req.query.dir === "desc" ? "desc" : "asc";
+
     try {
-        const songs = await Song.retrieveAll().sort({ artist: 1, title: 1 });
-        res.render("songs/browse-songs", { songs, formatDuration });
+        const songs = await Song.retrieveAll();
+        // Sort songs based on the validated sort key and direction
+        // Defaults to sorting by artist ascending 
+        const sortedSongs = sortSongs(songs, sort, dir);
+        // Render the browse songs page with the sorted songs and current sort parameters for UI indication
+        res.render("songs/browse-songs", {
+            songs: sortedSongs,
+            formatDuration,
+            currentSort: sort,
+            currentDir: dir
+        });
     } catch (error) {
         // Log the error and show a generic error message to the user
         console.error(error);
