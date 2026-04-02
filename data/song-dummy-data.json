@@ -4,7 +4,7 @@
         "title": "Love Story",
         "artist": "Taylor Swift",
         "album": "Fearless",
-        "genre": "Country Pop",
+        "genre": "Country",
         "duration": 235,
         "youtubeUrl": "https://youtu.be/8xg3vE8Ie_E"
     },
@@ -13,7 +13,7 @@
         "title": "You Belong With Me",
         "artist": "Taylor Swift",
         "album": "Fearless",
-        "genre": "Country Pop",
+        "genre": "Country",
         "duration": 231,
         "youtubeUrl": "https://youtu.be/VuNIsY6JdUw"
     },
@@ -58,7 +58,7 @@
         "title": "Wildest Dreams",
         "artist": "Taylor Swift",
         "album": "1989",
-        "genre": "Dream Pop",
+        "genre": "Pop",
         "duration": 220,
         "youtubeUrl": "https://youtu.be/IdneKLhsWOQ"
     },
@@ -130,7 +130,7 @@
         "title": "Telephone",
         "artist": "Lady Gaga",
         "album": "The Fame Monster",
-        "genre": "Electronic Pop",
+        "genre": "Electronic",
         "duration": 226,
         "youtubeUrl": "https://youtu.be/EVJsStKc01U"
     },
@@ -139,7 +139,7 @@
         "title": "Alejandro",
         "artist": "Lady Gaga",
         "album": "The Fame Monster",
-        "genre": "Electronic Pop",
+        "genre": "Electronic",
         "duration": 240,
         "youtubeUrl": "https://youtu.be/niqrrmev4mA"
     },
@@ -220,7 +220,7 @@
         "title": "Love the Way You Lie",
         "artist": "Eminem",
         "album": "Recovery",
-        "genre": "Hip Hop Pop",
+        "genre": "Hip-Hop",
         "duration": 245,
         "youtubeUrl": "https://youtu.be/uelHwf8o7_U"
     }
