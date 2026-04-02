@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const reviewController = require('../controllers/reviews-controller');
+const authMiddleware = require('../middleware/auth-middleware');
 
 router.get('/', authMiddleware.isLoggedIn, reviewController.getAllReviews);
 router.get("/:songID", authMiddleware.isLoggedIn, reviewController.getReviewInfo);
