@@ -1,6 +1,6 @@
 // Run the other scripts before running this script
 // Constants
-const totalPlaylistNum = 30;
+const playlistNumPerUser = 8;
 
 // Import
 const path = require("path");
@@ -62,7 +62,7 @@ async function run() {
         const allUsers = await User.retrieveAll();
         const allSongs = await Song.retrieveAll();
 
-        for (let i = 0; i < totalPlaylistNum; i++) {
+        for (let i = 0; i < playlistNumPerUser * allUsers.length; i++) {
             // playlist
             const name = fetch("https://random-words-api.kushcreates.com/api?language=en&words=2").then(x => x.json()).then(y => [y[0].word, y[1].word].join(" "));
             const desc = fetch("https://api.adviceslip.com/advice").then(x => x.json()).then(y => y.slip.advice);
