@@ -46,6 +46,7 @@ const Playlist = mongoose.model('Playlist', playlistSchema, 'playlists');
 
 
 // CRUD Functions
+// Read
 exports.retrieveAll = async function() {
     return await Playlist.find().populate('owner');
 }
@@ -68,6 +69,19 @@ exports.getByID = async function(id, loadSong) {
     }
 }
 
+exports.searchPlaylists = function (query) {
+    //https://stackoverflow.com/questions/76149327/how-to-solve-redos-pointed-out-by-snyk
+    //all special regular expression characters escaped
+    const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+    return Playlist.find({
+        //https://www.mongodb.com/docs/manual/reference/operator/query/regex/
+        // i matches lower or uppercase
+        name: { $regex: escapedQuery, $options: 'i' }
+    }).populate("owner").limit(10);
+}
+
+// Create
 exports.insert = async function(newPlaylist) {
     const doc = await Playlist.create(newPlaylist);
     return doc;
@@ -80,6 +94,12 @@ exports.addThumbnail = async function(playlistID, fileobject) {
     await fs.writeFile(path.join(thumbnailDir, `${playlistID}${path.extname(filename)}`), imagefile);
 }
 
+// Update
+exports.updateByID = async function(id, newValue) {
+    await Playlist.updateOne({_id: id}, newValue)
+}
+
+// Delete
 exports.removeThumbnail = async function(playlistID) {
     const playlistObj = await Playlist.findById(playlistID);
     const thumbnailExt = playlistObj.thumbnailExt;
@@ -89,11 +109,7 @@ exports.removeThumbnail = async function(playlistID) {
         await fs.rm(path.join(thumbnailDir, filename));
     }
 }
-
-exports.updateByID = async function(id, newValue) {
-    await Playlist.updateOne({_id: id}, newValue)
-}
-
+    
 exports.deleteByID = async function(id) {
     await Playlist.deleteOne({_id: id});
 }
