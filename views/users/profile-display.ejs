@@ -12,60 +12,70 @@
     <%- include("../navbar-user") %>
         <div class="page-body">
             <a href="#" class="back-link" onclick="history.back(); return false;">← Back</a>
-            <section class="profile-hero">
-                <div class="profile-hero-avatar">
-                    <img src="<%= user.profilePicture %>" alt="<%= user.username %>">
-                </div>
+            <% if (errors && errors.length> 0) { %>
+                <ul class="auth-errors">
+                    <% errors.forEach(error=> { %>
+                        <li>
+                            <%= error %>
+                        </li>
+                        <% }) %>
+                </ul>
+                <% } %>
 
-                <div class="profile-hero-info">
-                    <p class="profile-label">Profile</p>
-                    <h1 class="profile-big-name">
-                        <%= user.username %>
-                    </h1>
-                    <p class="profile-subtext">
-                        <%= playlists.length %> Public Playlists
-                    </p>
+                    <section class="profile-hero">
+                        <div class="profile-hero-avatar">
+                            <img src="<%= user.profilePicture %>" alt="<%= user.username %>">
+                        </div>
 
-                    <div class="profile-links">
-                        <a href="/user/show-connection?type=followers&id=<%= user._id %>">
-                            <%= user.followers.length %> followers
-                        </a>
-                        <a href="/user/show-connection?type=following&id=<%= user._id %>">
-                            <%= user.followings.length %> following
-                        </a>
-                    </div>
+                        <div class="profile-hero-info">
+                            <p class="profile-label">Profile</p>
+                            <h1 class="profile-big-name">
+                                <%= user.username %>
+                            </h1>
+                            <p class="profile-subtext">
+                                <%= playlists.length %> Public Playlists
+                            </p>
 
-                    <form action="/user/<%= isFollowing ? 'unfollow-user' : 'follow-user' %>" method="post">
-                        <input type="hidden" name="targetUserId" value="<%= user._id %>">
-                        <button type="submit" class="profile-follow-btn">
-                            <%= isFollowing ? 'Following' : 'Follow' %>
-                        </button>
-                    </form>
-                </div>
-            </section>
-
-            <section class="playlist-section">
-                <h2>Public Playlists</h2>
-
-                <% if (playlists.length> 0) { %>
-                    <div class="playlist-grid">
-                        <% playlists.forEach(playlist=> { %>
-                            <% const thumbURL=playlist.thumbnailExt ?
-                                `/image/playlist-thumb/${playlist._id}${playlist.thumbnailExt}`
-                                : '/image/default-thumb.png' %>
-
-                                <a href="/playlist/<%= playlist._id %>" class="playlist-card">
-                                    <img src="<%= thumbURL %>" alt="<%= playlist.name %>">
-                                    <span>
-                                        <%= playlist.name %>
-                                    </span>
+                            <div class="profile-links">
+                                <a href="/user/show-connection?type=followers&id=<%= user._id %>">
+                                    <%= user.followers.length %> followers
                                 </a>
-                                <% }) %>
-                    </div>
-                    <% } else { %>
-                        <div class="empty-state">No public playlists yet.</div>
-                        <% } %>
-            </section>
+                                <a href="/user/show-connection?type=following&id=<%= user._id %>">
+                                    <%= user.followings.length %> following
+                                </a>
+                            </div>
+
+                            <form action="/user/<%= isFollowing ? 'unfollow-user' : 'follow-user' %>" method="post">
+                                <input type="hidden" name="targetUserId" value="<%= user._id %>">
+                                <button type="submit" class="profile-follow-btn">
+                                    <%= isFollowing ? 'Following' : 'Follow' %>
+                                </button>
+                            </form>
+                        </div>
+                    </section>
+
+                    <section class="playlist-section">
+                        <h2>Public Playlists</h2>
+
+                        <% if (playlists.length> 0) { %>
+                            <div class="playlist-grid">
+                                <% playlists.forEach(playlist=> { %>
+                                    <% const thumbURL=playlist.thumbnailExt ?
+                                        `/image/playlist-thumb/${playlist._id}${playlist.thumbnailExt}`
+                                        : '/image/default-thumb.png' %>
+
+                                        <a href="/playlist/<%= playlist._id %>" class="playlist-card">
+                                            <img src="<%= thumbURL %>" alt="<%= playlist.name %>">
+                                            <span>
+                                                <%= playlist.name %>
+                                            </span>
+                                        </a>
+                                        <% }) %>
+                            </div>
+                            <% } else { %>
+                                <div class="empty-state">No public playlists yet.</div>
+                                <% } %>
+                    </section>
         </div>
 </body>
 

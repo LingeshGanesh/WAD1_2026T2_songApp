@@ -16,24 +16,34 @@
                 of User: <%= user ? user.username : '' %>
         </h2>
 
-        <% if (list.length===0) { %>
-            <p class="empty-state">No <%= type %> found</p>
-            <% } else { %>
-                <div class="connections-grid">
-                    <% list.forEach(user=> { %>
-                        <a href="<%= user._id.equals(currentUserId) 
+        <% if (errors && errors.length> 0) { %>
+            <ul class="auth-errors">
+                <% errors.forEach(err=> { %>
+                    <li>
+                        <%= err %>
+                    </li>
+                    <% }) %>
+            </ul>
+            <% } %>
+
+                <% if (list.length===0) { %>
+                    <p class="empty-state">No <%= type %> found</p>
+                    <% } else { %>
+                        <div class="connections-grid">
+                            <% list.forEach(user=> { %>
+                                <a href="<%= user._id.equals(currentUserId) 
                                 ? '/user/profile' 
                                 : `/user/display-profile?id=${user._id}` %>" class="profile-card">
-                            <div class="avatar-wrapper">
-                                <img src="<%= user.profilePicture %>" alt="<%= user.username %>">
-                            </div>
-                            <span class="profile-username">
-                                <%= user.username %>
-                            </span>
-                        </a>
-                        <% }) %>
-                </div>
-                <% } %>
+                                    <div class="avatar-wrapper">
+                                        <img src="<%= user.profilePicture %>" alt="<%= user.username %>">
+                                    </div>
+                                    <span class="profile-username">
+                                        <%= user.username %>
+                                    </span>
+                                </a>
+                                <% }) %>
+                        </div>
+                        <% } %>
     </div>
 </body>
 
