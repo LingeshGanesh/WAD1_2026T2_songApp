@@ -30,7 +30,7 @@
                         <td>
                             <%= user.username %>
                         </td>
-                        <td><a class="table-link" href="/user/displayProfile?id=<%= user._id %>">Profile</a></td>
+                        <td><a class="table-link" href="/user/display-profile?id=<%= user._id %>">Profile</a></td>
                     </tr>
                     <% }) %>
             </table>
@@ -50,7 +50,7 @@
                     <% if (suggestions && suggestions.length> 0) { %>
                         <div class="connections-grid">
                             <% suggestions.forEach(item=> { %>
-                                <a href="/user/displayProfile?id=<%= item.user._id %>" class="profile-card">
+                                <a href="/user/display-profile?id=<%= item.user._id %>" class="profile-card">
                                     <p><strong>
                                             <%= item.user.username %>
                                         </strong></p>
