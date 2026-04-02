@@ -30,19 +30,16 @@
       <% songs.forEach(function(song) { %>
 
         <!-- Loop through all reviews -->
-        <% reviews.forEach(function(review) { %>
-
-          <!-- Only display review if it matches the current song -->
-          <% if (review.songId.toString() === song._id.toString()) { %>
-            <li>
-              <strong>Song: <%= song.title %></strong><br>
-              <strong>Username: <%= review.userName %></strong><br>
-              Rating: <%= review.rating %><br>
-              Comment: <%= review.comment %>
-            </li>
-            <br>
-          <% } %>
-        <% }) %>
+       <% reviews.forEach(function(review) { %>
+        <% const song = songs.find(s => s._id.toString() === review.songId.toString()); %>
+        <li>
+          <strong>Song: <%= song ? song.title : 'Unknown Song' %></strong><br>
+          <strong>Username: <%= review.userName %></strong><br>
+          Rating: <%= review.rating %><br>
+          Comment: <%= review.comment %>
+        </li>
+        <br>
+      <% }) %>
       <% }) %>
     </ol>
 
