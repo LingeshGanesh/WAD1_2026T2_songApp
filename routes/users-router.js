@@ -37,10 +37,10 @@ router.get('/search-friend',authMiddleware.isLoggedIn, usersController.searchUse
 router.get('/displayProfile',authMiddleware.isLoggedIn,usersController.displayProfile);
 
 //follow & unfollow
-router.post('/followUser', authMiddleware.isLoggedIn, usersController.followUser);
-router.post('/unfollowUser', authMiddleware.isLoggedIn, usersController.unfollowUser);
+router.post('/follow-user', authMiddleware.isLoggedIn, usersController.followUser);
+router.post('/unfollow-user', authMiddleware.isLoggedIn, usersController.unfollowUser);
 
-router.get('/showConnection', authMiddleware.isLoggedIn, usersController.showConnection);
+router.get('/show-connection', authMiddleware.isLoggedIn, usersController.showConnection);
 
 // clear alerts
 router.post('/clear-alerts', authMiddleware.isLoggedIn, usersController.clearAlerts);

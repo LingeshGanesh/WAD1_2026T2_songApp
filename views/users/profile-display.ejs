@@ -27,15 +27,15 @@
                     </p>
 
                     <div class="profile-links">
-                        <a href="/user/showConnection?type=followers&id=<%= user._id %>">
+                        <a href="/user/show-connection?type=followers&id=<%= user._id %>">
                             <%= user.followers.length %> followers
                         </a>
-                        <a href="/user/showConnection?type=following&id=<%= user._id %>">
+                        <a href="/user/show-connection?type=following&id=<%= user._id %>">
                             <%= user.followings.length %> following
                         </a>
                     </div>
 
-                    <form action="/user/<%= isFollowing ? 'unfollowUser' : 'followUser' %>" method="post">
+                    <form action="/user/<%= isFollowing ? 'unfollow-user' : 'follow-user' %>" method="post">
                         <input type="hidden" name="targetUserId" value="<%= user._id %>">
                         <button type="submit" class="profile-follow-btn">
                             <%= isFollowing ? 'Following' : 'Follow' %>

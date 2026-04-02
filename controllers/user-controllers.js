@@ -204,12 +204,19 @@ exports.profile = async (req, res) => {
         await User.markAlertsRead(req.user._id);
 
         const reviewsEntered = await Reviews.findByUserId(req.user._id); // maegan
-        console.log("Reviews entered by user:", reviewsEntered); // maegan
-        console.log(req.user._id) // maegan
+        // console.log("Reviews entered by user:", reviewsEntered); // maegan
+        // console.log(req.user._id) // maegan
 
         const allSongs = await Song.retrieveAll(); // maegan
-    
-        res.render('users/profile', { user: req.user, playlists, reviewsEntered, allSongs});
+        const reviewsWithTitles = reviewsEntered.map(review => {
+            const song = allSongs.find(song => song._id.toString() === review.songId.toString());
+            return {
+                ...review.toObject(),
+                songTitle: song ? song.title : 'Unknown Song'
+            };
+        });
+
+        res.render('users/profile', { user: req.user, playlists, reviewsWithTitles });
 
     } catch (error) {
         console.error("Error loading profile:", error);
@@ -298,8 +305,7 @@ exports.updateUser = async (req, res) => {
         console.log(`Updated successful: 
                     Email: ${updatedUser.email}
                     Username: ${updatedUser.username}`)
-        const playlists = await Playlist.retrieveByOwnerID(req.user._id);
-        res.render('users/profile', { user: updatedUser, playlists });
+        res.redirect('/user/profile');
     } catch (error) {
         console.log('Error while updating User', error);
 
@@ -486,9 +492,12 @@ exports.displayProfile = async (req, res) => {
         const targetUser = await User.findUserByID(id);
         const currentUser = await User.findUserByID(req.session.user.id);
 
+        if (!targetUser) {
+            return res.redirect('/user/search');
+        }
+
         if (currentUser._id.equals(targetUser._id)) {
             return res.redirect('/user/profile');
-
         }
 
         const playlists = await Playlist.retrievePublicByOwnerID(targetUser._id);
@@ -607,8 +616,13 @@ exports.showConnection = async (req, res) => {
 
 // function to clear all alerts
 exports.clearAlerts = async (req, res) => {
-    await User.clearAlerts(req.session.user.id);
-    res.redirect('/user/profile');
+    try {
+        await User.clearAlerts(req.session.user.id);
+        res.redirect('/user/profile');
+    } catch (error) {
+        console.error("Error clearing alerts:", error);
+        res.redirect('/user/profile');
+    }
 };
 
 exports.logout = (req, res) => {
