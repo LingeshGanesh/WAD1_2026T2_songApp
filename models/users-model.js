@@ -159,7 +159,7 @@ exports.deleteUserAndData = async (userId) => {
     const userEvents = await Event.retrieveByAuthor(userId);
     for (const event of userEvents) {
         if (event.participants.length > 0) {
-            await User.addAlertToMany(
+            await exports.addAlertToMany(
                 event.participants,
                 `Event "${event.name}" has been cancelled because the organiser deleted their account`
             );
