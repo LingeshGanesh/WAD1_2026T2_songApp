@@ -3,7 +3,6 @@
 const totalPlaylistNum = 30;
 
 // Import
-const fs = require("fs/promises");
 const path = require("path");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
@@ -92,7 +91,7 @@ async function run() {
     } catch (error) {
         console.error("Playlist Generation failed:", error);
     }
-    process.exit(1);
+    process.exit(0);
 }
 
 run();
