@@ -7,31 +7,53 @@
   <a href="/homepage"><strong>Back to Main Page</strong></a><br>
   <a href="/songs/browse"><strong>Back to Browse Songs</strong></a><br><br>
 
-  <h3><u>Review List:</u></h3>
+  <h1><u>Review List:</u></h1>
     <% if (!reviews) { %>
       <%= output %>
     <br>
     <% } else { %>
 
-    <h4><%= reviews.length %> review(s) found.</h4>
+    <h4><%= totalReviews %> review(s) found.</h4>
 
   <ol>
 
-      <% songs.forEach(function(song) { %>
-        <% reviews.forEach(function(review) { %>
-            <% if (review.songId.toString() === song._id.toString()) { %>       
-          <li>
-            <strong>Song: <%= song.title %></strong><br>
-            <strong>User ID: <%= review.userId %></strong><br>
-            Rating: <%= review.rating %><br>
-            Comment: <%= review.comment %>
-          </li>
-        <% }}) %>
-      <% }) %>  
+     
         
 
       <br>
     <% } %>
+
+      <ol start="<%= ((page || 1) - 1) * 5 + 1 %>">
+        <% songs.forEach(function(song) { %>
+            <% reviews.forEach(function(review) { %>
+                <% if (review.songId.toString() === song._id.toString()) { %>       
+              <li>
+                <strong>Song: <%= song.title %></strong><br>
+                <strong>Username: <%= review.userName %></strong><br>
+                Rating: <%= review.rating %><br>
+                Comment: <%= review.comment %>
+              </li>
+              <br>
+            <% }}) %>
+          <% }) %>  
+      </ol>
+
+      <br>
+    <% if (totalPages > 1) { %>
+    <div>
+      <% if (page > 1) { %>
+        <a href="/reviews/?page=<%= page - 1 %>">Previous</a>
+      <% } %>
+      Page <%= page %> of <%= totalPages %>
+      <% if (page < totalPages) { %>
+        <a href="/reviews/?page=<%= page + 1 %>">Next</a>
+      <% } %>
+    </div>
+    <% } %>
+
+
+</body>
+</html>
 
     
   </ol>

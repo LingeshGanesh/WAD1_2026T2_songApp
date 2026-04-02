@@ -22,10 +22,6 @@ exports.createReview = async (req, res) => {
       error = 'All fields are required';
     }
 
-    if (rating < 1 || rating > 5) {
-      error = 'Rating must be between 1 and 5';
-    }
-
     if (error) {
       const reviews = await Review.findByID({ songId });
       // Populate usernames for each review
@@ -43,7 +39,7 @@ exports.createReview = async (req, res) => {
       const startIndex = (page - 1) * limit;
       const endIndex = page * limit;
       const paginatedReviews = reviews ? reviews.slice(startIndex, endIndex) : [];
-      return res.render("reviews", {
+      return res.render("reviews/reviews", {
         songTitle: (await Song.findByID(songId)).title,
         songId, 
         error: error,
@@ -74,7 +70,24 @@ exports.getAllReviews = async (req, res) => {
       output = 'No reviews found';
     }
 
-    res.render('reviews/display-reviews', { reviews, songs, output });
+    // Populate usernames for each review
+    if (reviews && reviews.length > 0) {
+      for (let review of reviews) {
+        const user = await User.findUserByID(review.userId);
+        review.userName = user ? user.username : 'Unknown User';
+      }
+    }
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = 5;
+    const totalReviews = reviews ? reviews.length : 0;
+    const totalPages = Math.ceil(totalReviews / limit);
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const paginatedReviews = reviews ? reviews.slice(startIndex, endIndex) : [];
+
+
+    res.render('reviews/display-reviews', { reviews: paginatedReviews, songs, output, page, totalPages, totalReviews });
   } catch (err) {
     // console.log(err.message)
     res.send('Error fetching reviews');
@@ -88,7 +101,7 @@ exports.getReviewInfo = async (req, res) => {
     const song = await Song.findByID(songId);
     const songTitle = song.title;
     const currentUser = req.session.user || null;
-    console.log("Current user:", currentUser);
+    // console.log("Current user:", currentUser);
 
     // Populate usernames for each review
     if (reviews && reviews.length > 0) {
@@ -113,7 +126,7 @@ exports.getReviewInfo = async (req, res) => {
     if (!reviews || reviews.length === 0) {
       output = 'No reviews found for this song';
     }
-    res.render('reviews', { reviews: paginatedReviews, songTitle, output, error, songId, currentUser, page, totalPages, totalReviews });
+    res.render('reviews/reviews', { reviews: paginatedReviews, songTitle, output, error, songId, currentUser, page, totalPages, totalReviews });
   } catch (err) {
     console.log(err.message)
     res.send('Error fetching reviews for this song');
@@ -124,18 +137,10 @@ exports.getReviewInfo = async (req, res) => {
 exports.updateReview = async (req, res) => {
   const songId = req.params.songID;
   const { reviewId } = req.body;
-  let output = '';
 
   if (!req.session.user) {
     return res.redirect('/user/login');
   }
-
-  const song = await Song.findByID(songId);
-  const songTitle = song.title;
-
-  const currentUser = req.session.user || null;
-
-  const userName = currentUser.username;
 
   const review = await Review.findByReviewId(reviewId);
   if (!review) {
@@ -147,7 +152,6 @@ exports.updateReview = async (req, res) => {
     return res.send('You are not authorized to update this review');
   }
 
-  // console.log("Review to update:", review);
   const old_comment = review.comment;
   const old_rating = review.rating;
 
@@ -162,31 +166,9 @@ exports.updateReview = async (req, res) => {
 
     } else if (comment) {
       await Review.updateReview(reviewId, old_rating, comment);
-
-    } else {
-      output = 'No changes made. Please provide a new rating or comment.';
     }
 
-    const reviews = await Review.findByID({ songId });
-    
-    // Populate usernames for each review
-    if (reviews && reviews.length > 0) {
-      for (let review of reviews) {
-        const user = await User.findUserByID(review.userId);
-        review.userName = user ? user.username : 'Unknown User';
-      }
-    }
-
-    // Pagination
-    const page = parseInt(req.query.page) || 1;
-    const limit = 5;
-    const totalReviews = reviews ? reviews.length : 0;
-    const totalPages = Math.ceil(totalReviews / limit);
-    const startIndex = (page - 1) * limit;
-    const endIndex = page * limit;
-    const paginatedReviews = reviews ? reviews.slice(startIndex, endIndex) : [];
-
-    res.render('reviews', { reviews: paginatedReviews, songTitle, output, songId, error: '', currentUser: req.session.user, page, totalPages, totalReviews });
+    res.redirect('/reviews/' + songId);
   } catch (err) {
     console.log(err.message);
     res.send('Error updating review');
@@ -196,17 +178,13 @@ exports.updateReview = async (req, res) => {
 // DELETE 
 exports.deleteReview = async (req, res) => {
   const songId = req.params.songID;
+  const { reviewId } = req.body;
+
+  if (!req.session.user) {
+    return res.redirect('/user/login');
+  }
+
   try {
-    const { reviewId } = req.body;
-
-    const currentUser = req.session.user || null;
-
-    const userName = currentUser.username;
-
-    if (!req.session.user) {
-      return res.redirect('/user/login');
-    }
-
     const review = await Review.findByReviewId(reviewId);
     if (!review) {
       return res.send('Review not found');
@@ -218,30 +196,7 @@ exports.deleteReview = async (req, res) => {
     }
 
     await Review.deleteReview(reviewId);
-
-    const reviews = await Review.findByID({ songId });
-    const song = await Song.findByID(songId);
-    const songTitle = song.title;
-    
-    // Populate usernames for each review
-    if (reviews && reviews.length > 0) {
-      for (let review of reviews) {
-        const user = await User.findUserByID(review.userId);
-        review.userName = user ? user.username : 'Unknown User';
-      }
-    }
-    
-    // Pagination
-    const page = parseInt(req.query.page) || 1;
-    const limit = 5;
-    const totalReviews = reviews ? reviews.length : 0;
-    const totalPages = Math.ceil(totalReviews / limit);
-    const startIndex = (page - 1) * limit;
-    const endIndex = page * limit;
-    const paginatedReviews = reviews ? reviews.slice(startIndex, endIndex) : [];
-    
-    let output = 'Review deleted successfully.';
-    res.render('reviews', { reviews: paginatedReviews, songTitle, output, songId, error: '', currentUser: req.session.user, page, totalPages, totalReviews });
+    res.redirect('/reviews/' + songId);
   } catch (err) {
     res.send('Error deleting review');
   }
