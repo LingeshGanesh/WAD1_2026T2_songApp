@@ -1,21 +1,21 @@
-body.songs-page {
+.songs-page {
     background-color: #000;
     color: #fff;
 }
 
-body.songs-page a {
+.songs-page a {
     color: #8ecbff;
 }
 
-body.songs-page fieldset {
+.songs-page fieldset {
     border: 1px solid #444;
     background-color: #111;
 }
 
-body.songs-page input,
-body.songs-page select,
-body.songs-page textarea,
-body.songs-page button {
+.songs-page input,
+.songs-page select,
+.songs-page textarea,
+.songs-page button {
     background-color: #111;
     color: #fff;
     border: 1px solid #555;
