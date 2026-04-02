@@ -5,10 +5,6 @@ const User = require('../models/users-model');
 // CREATE REVIEW
 exports.createReview = async (req, res) => {
   try {
-    // check if user is logged in
-    if (!req.session.user) {
-      return res.redirect('/user/login');
-    }
 
     const userId = req.session.user.id;
     const user = await User.findUserByID(userId);
@@ -53,7 +49,6 @@ exports.createReview = async (req, res) => {
         songId, 
         error: error,
         reviews: paginatedReviews,
-        currentUser: req.session.user || null,
         page,
         totalPages,
         totalReviews
@@ -117,7 +112,7 @@ exports.getReviewInfo = async (req, res) => {
     const song = await Song.findByID(songId);
     const songTitle = song.title;
 
-    const currentUser = req.session.user || null;
+    const currentUser = req.session.user;
 
     if (reviews && reviews.length > 0) {
       for (let review of reviews) {
@@ -168,11 +163,6 @@ exports.updateReview = async (req, res) => {
   const songId = req.params.songID;
   const { reviewId } = req.body;
 
-  // if user not logged in
-  if (!req.session.user) {
-    return res.redirect('/user/login');
-  }
-
   const review = await Review.findByReviewId(reviewId);
   if (!review) {
     return res.send('Review not found');
@@ -212,10 +202,6 @@ exports.deleteReview = async (req, res) => {
   const songId = req.params.songID;
   const { reviewId } = req.body;
 
-  if (!req.session.user) {
-    return res.redirect('/user/login');
-  }
-
   try {
     const review = await Review.findByReviewId(reviewId);
 
@@ -235,12 +221,4 @@ exports.deleteReview = async (req, res) => {
   } catch (err) {
     res.send('Error deleting review');
   }
-};
-
-// authorization middleware to check if user is logged in before allowing review actions
-exports.isLoggedIn = (req, res, next) => {
-  if (!req.session.user) {
-    return res.redirect('/login');
-  }
-  next(); // go to next middleware
 };
