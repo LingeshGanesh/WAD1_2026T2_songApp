@@ -7,9 +7,11 @@
     <title>
         <%= album.title %> - Album Details
     </title>
+    <link rel="stylesheet" href="/css/album-dark.css">
 </head>
 
 <body>
+    <%- include('../navbar-user') %>
     <button type="button"><a href="/album/browse"><strong>Back To Main Page</strong></a></button>
     <button type="button"><a href="/album/edit/<%= album._id%>"><strong>Edit Album</strong></a></button>
     <button type="button"><a href="/album/delete/<%= album._id%>"><strong>Delete Album</strong></a></button>
