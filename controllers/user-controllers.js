@@ -185,7 +185,7 @@ exports.loginPost = async (req, res) => {
                 }
 
                 console.log("Login successful");
-                return res.redirect('/homepage');
+                return res.redirect('/home');
             });
         });
     } catch (error) {
@@ -220,7 +220,7 @@ exports.profile = async (req, res) => {
 
     } catch (error) {
         console.error("Error loading profile:", error);
-        res.redirect('/homepage');
+        res.redirect('/home');
     }
 }
 
@@ -397,7 +397,7 @@ exports.displayUser = async (req, res) => {
         res.render('users/delete-user', { user: req.user });
     } catch (error) {
         console.error("Error loading profile:", error);
-        res.redirect('/homepage');
+        res.redirect('/home');
     }
 };
 
