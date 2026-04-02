@@ -1,285 +1,205 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile</title>
-    <link rel="stylesheet" href="/css/events-styles.css">
-</head>
-
-<body>
-    <%- include("../navbar-user") %>
-        <h2>Welcome, <%= user.username %>!</h2>
-        <a href="/user/search">Search Friends</a><br>
-        <form action="/user/logout" method="post">
-            <button type="submit">Log-Out</button>
-        </form>
-
-        <a href="/user/edit/">Edit personal info</a><br>
-        <a href="/user/change-password/">Change Password</a><br>
-        <a href="/user/delete/">Delete Account</a><br>
-        <img src="<%=user.profilePicture%>" width="150"><br>
-        <p>
-            <%= user.followers.length %>
-                <%- user.followers.length <=1 ? `<a
-                    href="/user/showConnection?type=followers&id=${user._id}">follower</a>`
-                    : `<a href="/user/showConnection?type=followers&id=${user._id}">followers</a>`
-                    %>
-        </p>
-
-        <p>
-            <%= user.followings.length %>
-                <a href="/user/showConnection?type=following&id=<%= user._id %>">following</a>
-        </p>
-        Email: <%= user.email %> <br>
-
-            <h3>Your Playlists</h3>
-
-            <% if (playlists.length> 0) { %>
-                <% playlists.forEach(playlist=> { %>
-                    <p>
-                        <a href="/playlist/<%= playlist._id %>">
-                            <%= playlist.name %><br>
-                                <% const thumbURL=playlist.thumbnailExt ?
-                                    `/image/playlist-thumb/${playlist._id}${playlist.thumbnailExt}`
-                                    : '/image/default-thumb.png' %>
-
-                                    <img src="<%= thumbURL %>" width="120">
-
-                        </a>
-
-                    </p>
-                    <% }) %>
-                        <% } else { %>
-                            <p>You have no playlists yet.</p>
-                            <% } %>
-
-                                <h3>Your Reviews</h3>
-
-                                <% if (reviewsEntered && reviewsEntered.length> 0) { %>
-                                    <table border="1">
-                                        <thead>
-                                            <tr>
-                                                <th>Review No.</th>
-                                                <th>Song</th>
-                                                <th>Rating</th>
-                                                <th>Comment</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <% reviewsEntered.forEach((review, idx)=> { %>
-                                                <% let songTitle=review.songId; %>
-                                                    <% for (let song of allSongs) { %>
-                                                        <% if (song._id.toString()===review.songId.toString()) { %>
-                                                            <% songTitle=song.title; %>
-                                                                <% break; %>
-                                                                    <% } %>
-                                                                        <% } %>
-                                                                            <tr>
-                                                                                <td>
-                                                                                    <%= idx + 1 %>
-                                                                                </td>
-                                                                                <td>
-                                                                                    <%= songTitle %>
-                                                                                </td>
-                                                                                <td>
-                                                                                    <%= review.rating %>/5
-                                                                                </td>
-                                                                                <td>
-                                                                                    <%= review.comment %>
-                                                                                </td>
-                                                                            </tr>
-                                                                            <% }) %>
-                                        </tbody>
-                                    </table>
-                                    <% } else { %>
-                                        <p>You have not entered any reviews yet.</p>
-                                        <% } %>
-
-                                            <h3>Your Alerts</h3>
-                                            <form action="/user/clear-alerts" method="POST">
-                                                <button type="submit">Clear All</button>
-                                            </form>
-                                            <% if (user.alerts && user.alerts.length> 0) { %>
-                                                <% [...user.alerts].reverse().forEach(alert=> { %>
-                                                    <p <%=!alert.read ? 'class="unread"' : '' %>>
-                                                        <%= alert.message %>
-                                                            <small>
-                                                                <%= alert.createdAt.toLocaleDateString() %>
-                                                            </small>
-                                                    </p>
-                                                    <% }) %>
-                                                        <% } else { %>
-                                                            <p>You have no alerts.</p>
-                                                            <% } %>
-
-                                                                <%- include("../footer") %>
-</body> -->
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile - <%= user.username %></title>
+    <title>Profile - <%= user.username %>
+    </title>
     <link rel="stylesheet" href="/css/events-styles.css">
 </head>
 
 <body>
+    <%- include("../navbar-user") %>
+        <div class="page-body">
+            <div class="plan-row">
+                <div class="profile-hero-card">
+                    <span class="profile-hero-tag">Your Profile</span>
+                    <div class="profile-hero-avatar">
+                        <img src="<%= user.profilePicture || '/images/default-avatar.png' %>" alt="<%= user.username %>"
+                            onerror="this.src='/images/default-avatar.png'">
+                    </div>
+                    <div class="profile-hero-info">
+                        <p class="profile-hero-label">Member</p>
+                        <h1 class="profile-hero-name">
+                            <%= user.username %>
+                        </h1>
+                        <p class="profile-hero-meta">
+                            <%= user.email %>
+                        </p>
+                        <div class="profile-hero-stats">
+                            <a href="/user/showConnection?type=followers&id=<%= user._id %>">
+                                <span>
+                                    <%= user.followers.length %>
+                                </span>
+                                <%= user.followers.length===1 ? 'Follower' : 'Followers' %>
+                            </a>
+                            <a href="/user/showConnection?type=following&id=<%= user._id %>">
+                                <span>
+                                    <%= user.followings.length %>
+                                </span> Following
+                            </a>
+                        </div>
+                    </div>
+                </div>
 
-<%- include("../navbar-user") %>
-
-<div class="page-body">
-
-    <div class="plan-row">
-
-        <!-- Profile card -->
-        <div class="profile-hero-card">
-            <span class="profile-hero-tag">Your Profile</span>
-            <div class="profile-hero-avatar">
-                <img
-                    src="<%= user.profilePicture || '/images/default-avatar.png' %>"
-                    alt="<%= user.username %>"
-                    onerror="this.src='/images/default-avatar.png'"
-                >
-            </div>
-            <div class="profile-hero-info">
-                <p class="profile-hero-label">Member</p>
-                <h1 class="profile-hero-name"><%= user.username %></h1>
-                <p class="profile-hero-meta"><%= user.email %></p>
-                <div class="profile-hero-stats">
-                    <a href="/user/showConnection?type=followers&id=<%= user._id %>">
-                        <span><%= user.followers.length %></span>
-                        <%= user.followers.length === 1 ? 'Follower' : 'Followers' %>
+                <div class="side-actions">
+                    <a class="profile-action-card" href="/user/edit/">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+                            viewBox="0 0 24 24">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                        </svg>
+                        Edit personal info
+                        <svg class="action-chevron" width="14" height="14" fill="none" stroke="currentColor"
+                            stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M9 18l6-6-6-6" />
+                        </svg>
                     </a>
-                    <a href="/user/showConnection?type=following&id=<%= user._id %>">
-                        <span><%= user.followings.length %></span> Following
+                    <a class="profile-action-card" href="/user/search">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+                            viewBox="0 0 24 24">
+                            <circle cx="11" cy="11" r="8" />
+                            <path d="m21 21-4.35-4.35" />
+                        </svg>
+                        Search friends
+                        <svg class="action-chevron" width="14" height="14" fill="none" stroke="currentColor"
+                            stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M9 18l6-6-6-6" />
+                        </svg>
+                    </a>
+                    <a class="profile-action-card" href="/user/change-password/">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+                            viewBox="0 0 24 24">
+                            <rect x="3" y="11" width="18" height="11" rx="2" />
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg>
+                        Change password
+                        <svg class="action-chevron" width="14" height="14" fill="none" stroke="currentColor"
+                            stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M9 18l6-6-6-6" />
+                        </svg>
+                    </a>
+                    <button class="profile-action-card" onclick="document.getElementById('logout-form').submit()">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+                            viewBox="0 0 24 24">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                            <polyline points="16 17 21 12 16 7" />
+                            <line x1="21" y1="12" x2="9" y2="12" />
+                        </svg>
+                        Log out
+                        <svg class="action-chevron" width="14" height="14" fill="none" stroke="currentColor"
+                            stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M9 18l6-6-6-6" />
+                        </svg>
+                    </button>
+                    <a class="profile-action-card danger action-full" href="/user/delete/">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+                            viewBox="0 0 24 24">
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                            <path d="M10 11v6" />
+                            <path d="M14 11v6" />
+                        </svg>
+                        Delete account
+                        <svg class="action-chevron" width="14" height="14" fill="none" stroke="currentColor"
+                            stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M9 18l6-6-6-6" />
+                        </svg>
                     </a>
                 </div>
             </div>
-        </div>
 
-        <div class="side-actions">
-            <a class="profile-action-card" href="/user/edit/">
-                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                </svg>
-                Edit personal info
-                <svg class="action-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
-            </a>
-            <a class="profile-action-card" href="/user/search">
-                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-                </svg>
-                Search friends
-                <svg class="action-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
-            </a>
-            <a class="profile-action-card" href="/user/change-password/">
-                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                    <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                </svg>
-                Change password
-                <svg class="action-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
-            </a>
-            <button class="profile-action-card" onclick="document.getElementById('logout-form').submit()">
-                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                    <polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
-                </svg>
-                Log out
-                <svg class="action-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
-            </button>
-            <a class="profile-action-card danger action-full" href="/user/delete/">
-                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                    <polyline points="3 6 5 6 21 6"/>
-                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-                    <path d="M10 11v6"/><path d="M14 11v6"/>
-                </svg>
-                Delete account
-                <svg class="action-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
-            </a>
-        </div>
-    </div>
+            <form id="logout-form" action="/user/logout" method="post" style="display:none"></form>
 
-    <form id="logout-form" action="/user/logout" method="post" style="display:none"></form>
-
-    <div class="section-header">
-        <h2 class="section-title">Your Playlists</h2>
-    </div>
-
-    <% if (playlists.length > 0) { %>
-        <div class="playlist-grid">
-            <% playlists.forEach(playlist => { %>
-                <% const thumbURL = playlist.thumbnailExt
-                    ? `/image/playlist-thumb/${playlist._id}${playlist.thumbnailExt}`
-                    : '/image/default-thumb.png' %>
-                <a class="profile-playlist-card" href="/playlist/<%= playlist._id %>">
-                    <img src="<%= thumbURL %>" alt="<%= playlist.name %>">
-                    <span><%= playlist.name %></span>
-                </a>
-            <% }) %>
-        </div>
-    <% } else { %>
-        <div class="empty-state empty-dashed">You have no playlists yet.</div>
-    <% } %>
-
-    <div class="bottom-grid">
-
-        <div class="panel">
-            <div class="panel-head">
-                <h3>Your Reviews</h3>
+            <div class="section-header">
+                <h2 class="section-title">Your Playlists</h2>
             </div>
-            <div class="panel-body">
-                <% if (reviewsEntered && reviewsEntered.length > 0) { %>
-                    <% reviewsEntered.forEach((review) => { %>
-                        <% let songTitle = review.songId; %>
-                        <% for (let song of allSongs) { %>
-                            <% if (song._id.toString() === review.songId.toString()) { %>
-                                <% songTitle = song.title; break; %>
-                            <% } %>
-                        <% } %>
-                        <div class="review-row">
-                            <div class="review-song"><%= songTitle %></div>
-                            <div><span class="review-rating"><%= review.rating %>/5</span></div>
-                            <div class="review-comment"><%= review.comment %></div>
-                        </div>
-                    <% }) %>
+
+            <% if (playlists.length> 0) { %>
+                <div class="playlist-grid">
+                    <% playlists.forEach(playlist=> { %>
+                        <% const thumbURL=playlist.thumbnailExt ?
+                            `/image/playlist-thumb/${playlist._id}${playlist.thumbnailExt}` : '/image/default-thumb.png'
+                            %>
+                            <a class="profile-playlist-card" href="/playlist/<%= playlist._id %>">
+                                <img src="<%= thumbURL %>" alt="<%= playlist.name %>">
+                                <span>
+                                    <%= playlist.name %>
+                                </span>
+                            </a>
+                            <% }) %>
+                </div>
                 <% } else { %>
-                    <div class="empty-state">No reviews yet.</div>
-                <% } %>
-            </div>
-        </div>
+                    <div class="empty-state empty-dashed">You have no playlists yet.</div>
+                    <% } %>
 
-        <div class="panel">
-            <div class="panel-head">
-                <h3>Alerts</h3>
-                <form action="/user/clear-alerts" method="POST">
-                    <button class="btn-sm" type="submit">✓ Clear all</button>
-                </form>
-            </div>
-            <div class="panel-body">
-                <% if (user.alerts && user.alerts.length > 0) { %>
-                    <% [...user.alerts].reverse().forEach(alert => { %>
-                        <div class="alert-row">
-                            <div class="alert-dot <%= !alert.read ? 'unread' : '' %>"></div>
-                            <span class="alert-text"><%= alert.message %></span>
-                            <span class="alert-date"><%= alert.createdAt.toLocaleDateString() %></span>
+                        <div class="bottom-grid">
+
+                            <div class="panel">
+                                <div class="panel-head">
+                                    <h3>Your Reviews</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <% if (reviewsEntered && reviewsEntered.length> 0) { %>
+                                        <% reviewsEntered.forEach((review)=> { %>
+                                            <% let songTitle=review.songId; %>
+                                                <% for (let song of allSongs) { %>
+                                                    <% if (song._id.toString()===review.songId.toString()) { %>
+                                                        <% songTitle=song.title; break; %>
+                                                            <% } %>
+                                                                <% } %>
+                                                                    <div class="review-row">
+                                                                        <div class="review-song">
+                                                                            <%= songTitle %>
+                                                                        </div>
+                                                                        <div><span class="review-rating">
+                                                                                <%= review.rating %>/5
+                                                                            </span></div>
+                                                                        <div class="review-comment">
+                                                                            <%= review.comment %>
+                                                                        </div>
+                                                                    </div>
+                                                                    <% }) %>
+                                                                        <% } else { %>
+                                                                            <div class="empty-state">No reviews yet.
+                                                                            </div>
+                                                                            <% } %>
+                                </div>
+                            </div>
+
+                            <div class="panel">
+                                <div class="panel-head">
+                                    <h3>Alerts</h3>
+                                    <form action="/user/clear-alerts" method="POST">
+                                        <button class="btn-sm" type="submit">✓ Clear all</button>
+                                    </form>
+                                </div>
+                                <div class="panel-body">
+                                    <% if (user.alerts && user.alerts.length> 0) { %>
+                                        <% [...user.alerts].reverse().forEach(alert=> { %>
+                                            <div class="alert-row">
+                                                <div class="alert-dot <%= !alert.read ? 'unread' : '' %>"></div>
+                                                <span class="alert-text">
+                                                    <%= alert.message %>
+                                                </span>
+                                                <span class="alert-date">
+                                                    <%= alert.createdAt.toLocaleDateString() %>
+                                                </span>
+                                            </div>
+                                            <% }) %>
+                                                <% } else { %>
+                                                    <div class="empty-state">No alerts.</div>
+                                                    <% } %>
+                                </div>
+                            </div>
+
                         </div>
-                    <% }) %>
-                <% } else { %>
-                    <div class="empty-state">No alerts.</div>
-                <% } %>
-            </div>
+
         </div>
 
-    </div>
-
-</div>
-
-<%- include("../footer") %>
+        <%- include("../footer") %>
 
 </body>
+
 </html>
