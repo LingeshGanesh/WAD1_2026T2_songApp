@@ -45,8 +45,8 @@ const userSchema = new mongoose.Schema({
         createdAt: { type: Date, default: Date.now }
     }],
     hasUnreadAlerts: {
-    type: Boolean,
-    default: false
+        type: Boolean,
+        default: false
     }
 });
 
@@ -148,6 +148,15 @@ exports.deleteUserAndData = async (userId) => {
     await Playlist.deleteManyByOwnerId(userId);
 
     //events
+    const userEvents = await Event.retrieveByAuthor(userId);
+    for (const event of userEvents) {
+        if (event.participants.length > 0) {
+            await User.addAlertToMany(
+                event.participants,
+                `Event "${event.name}" has been cancelled because the organiser deleted their account`
+            );
+        }
+    }
     await Event.deleteManyByAuthorId(userId);
     await Event.removeParticipantFromAllEvents(userId);
 
