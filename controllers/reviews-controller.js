@@ -1,6 +1,17 @@
 const Review = require('../models/reviews-model');
 const Song = require("../models/songs-model");
 const User = require('../models/users-model');
+const mongoose = require("mongoose");
+
+// Helper function to render a 404 not found page for songs
+// INPUT: req and res objects from Express route handlers
+// OUTPUT: Rendered 404 not found page with the requested URL and user information if available
+function renderSongNotFound(req, res) {
+  return res.status(404).render("status/not-found", {
+    url: req.url,
+    user: req.user || req.session?.user || null
+  });
+}
 
 // CREATE REVIEW
 exports.createReview = async (req, res) => {
@@ -18,8 +29,12 @@ exports.createReview = async (req, res) => {
     const { rating, comment } = req.body;
 
     let error = '';
+    // 404 if invalid song ID
+    if (!mongoose.isValidObjectId(songId)) {
+      return renderSongNotFound(req, res);
+    }
 
-    // error validatiom
+    // error validation
     if (!rating || !comment) {
       error = 'All fields are required';
     }
@@ -46,7 +61,7 @@ exports.createReview = async (req, res) => {
 
       return res.render("reviews/reviews", {
         songTitle: (await Song.findByID(songId)).title,
-        songId, 
+        songId,
         error: error,
         reviews: paginatedReviews,
         page,
@@ -54,12 +69,12 @@ exports.createReview = async (req, res) => {
         totalReviews
       });
     }
-    
+
     await Review.createReview(userId, songId, rating, comment);
 
     res.redirect('/reviews/' + songId);
 
-  } catch (err) { 
+  } catch (err) {
     res.send('Error creating review: ' + err.message);
   }
 };
@@ -90,13 +105,13 @@ exports.getAllReviews = async (req, res) => {
     const endIndex = page * limit;
     const paginatedReviews = reviews ? reviews.slice(startIndex, endIndex) : [];
 
-    res.render('reviews/display-reviews', { 
-      reviews: paginatedReviews, 
-      songs, 
-      output, 
-      page, 
-      totalPages, 
-      totalReviews 
+    res.render('reviews/display-reviews', {
+      reviews: paginatedReviews,
+      songs,
+      output,
+      page,
+      totalPages,
+      totalReviews
     });
 
   } catch (err) {
@@ -105,6 +120,12 @@ exports.getAllReviews = async (req, res) => {
 };
 
 exports.getReviewInfo = async (req, res) => {
+  // 404 if invalid song ID
+  const songId = req.params.songID;
+  if (!mongoose.isValidObjectId(songId)) {
+    return renderSongNotFound(req, res);
+  }
+
   try {
     const songId = req.params.songID;
     let reviews = await Review.findByID({ songId });
@@ -119,8 +140,7 @@ exports.getReviewInfo = async (req, res) => {
       }
     }
 
-    reviews = reviews.reverse(); 
-    
+    reviews = reviews.reverse();
 
     const page = parseInt(req.query.page) || 1;
     const limit = 5;
@@ -138,15 +158,15 @@ exports.getReviewInfo = async (req, res) => {
       output = 'No reviews found for this song';
     }
 
-    res.render('reviews/reviews', { 
-      reviews: paginatedReviews, 
-      songTitle, 
-      output, 
-      error, 
-      songId, 
-      page, 
-      totalPages, 
-      totalReviews 
+    res.render('reviews/reviews', {
+      reviews: paginatedReviews,
+      songTitle,
+      output,
+      error,
+      songId,
+      page,
+      totalPages,
+      totalReviews
     });
 
   } catch (err) {
@@ -164,8 +184,11 @@ exports.updateReview = async (req, res) => {
   if (!review) {
     return res.send('Review not found');
   }
+  // 404 if invalid song ID
+  if (!mongoose.isValidObjectId(songId)) {
+    return renderSongNotFound(req, res);
+  }
 
-  
   if (review.userId.toString() !== req.session.user.id) {
     return res.send('You are not authorized to update this review');
   }
@@ -198,6 +221,10 @@ exports.updateReview = async (req, res) => {
 exports.deleteReview = async (req, res) => {
   const songId = req.params.songID;
   const { reviewId } = req.body;
+
+  if (!mongoose.isValidObjectId(songId)) {
+    return renderSongNotFound(req, res);
+  }
 
   try {
     const review = await Review.findByReviewId(reviewId);
