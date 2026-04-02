@@ -6,7 +6,7 @@ const authMiddleware = require('../middleware/auth-middleware');
 const baseControllers = require("../controllers/base-controllers.js");
 
 // Base Routes
-router.get("/", baseControllers.homepage);
+router.get("/", baseControllers.guestpage);
 // TODO: Keep/remove on consensus
 router.get("/homepage",authMiddleware.isLoggedIn, baseControllers.homepage);
 
