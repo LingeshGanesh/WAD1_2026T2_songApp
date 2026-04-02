@@ -138,6 +138,14 @@ exports.unfollowUser = function (currentUserId, targetUserId) {
     ]);
 };
 
+// Functions for users to receive and view alerts
+exports.addAlertToMany = function (userIds, message) {
+    return User.updateMany(
+        { _id: { $in: userIds } },
+        { $push: { alerts: { message } }, $set: { hasUnreadAlerts: true } }
+    );
+};
+
 //delete evrything user created and delete user
 exports.deleteUserAndData = async (userId) => {
 
@@ -239,14 +247,6 @@ exports.getSuggestedUsers = async function (currentUserId) {
 exports.updateOne = function (filter, update) {
     return User.updateOne(filter, update);
 }
-
-// Functions for users to receive and view alerts
-exports.addAlertToMany = function (userIds, message) {
-    return User.updateMany(
-        { _id: { $in: userIds } },
-        { $push: { alerts: { message } }, $set: { hasUnreadAlerts: true } }
-    );
-};
 
 // Functions to delete all alerts
 exports.clearAlerts = function (userId) {
