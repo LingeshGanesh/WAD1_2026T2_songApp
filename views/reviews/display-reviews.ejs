@@ -1,34 +1,50 @@
 <!DOCTYPE html>
-<!-- All Song Reviews Page - Shows reviews for all songs -->
 <html>
 <head>
-  <title>All Reviews</title>
+  <title>Reviews</title>
+
   <style>
-    body { background-color: black; color:  white; }
-    a { color: rgb(46, 162, 108); }
+    body { 
+      background-color: black; 
+      color: white;           
+    }
+    a { 
+      color: rgb(46, 162, 108); 
+    }
   </style>
 </head>
+
 <body>
-  <!-- User navbar at the top of the page -->
+
   <%- include('../navbar-user') %>
+
+  <!-- links back to other pages -->
+  <a href="/homepage"><strong>Back to Main Page</strong></a><br>
+  <a href="/songs/browse"><strong>Back to Browse Songs</strong></a><br><br>
+
 
   <h1><u>Review List:</u></h1>
 
-  <!-- Check if there are no reviews to display -->
+  <!-- if no reviews -->
   <% if (!reviews) { %>
     <%= output %>
     <br>
-  <% } else { %>
 
-    <!-- Display total number of reviews found -->
+  <!-- if got reviews -->
+  <% } else { %> 
+
     <h4><%= totalReviews %> review(s) found.</h4>
 
-    <!-- Ordered list for reviews, starting number based on current page -->
+    <ol>
+      <br>
+    <% } %>
+
+    <!-- display 5 reviews per page -->
     <ol start="<%= ((page || 1) - 1) * 5 + 1 %>">
 
-      <!-- Loop through all songs -->
       <% songs.forEach(function(song) { %>
 
+<<<<<<< Updated upstream
         <!-- Loop through all reviews -->
         <% reviews.forEach(function(review) { %>
 
@@ -44,29 +60,47 @@
           <% } %>
         <% }) %>
       <% }) %>
+=======
+        <% reviews.forEach(function(review) { %>
+
+          <!-- match review to its song -->
+          <% if (review.songId.toString() === song._id.toString()) { %>       
+
+            <li>
+      
+              <strong>Song: <%= song.title %></strong><br>
+              <strong>Username: <%= review.userName %></strong><br>
+              Rating: <%= review.rating %><br>
+              Comment: <%= review.comment %><br>
+              Created At: <%= review.createdAt.toLocaleString() %><br> 
+            </li>
+            <br>
+
+          <% } %>
+
+        <% }) %>
+      <% }) %>  
+
+>>>>>>> Stashed changes
     </ol>
 
     <br>
 
-    <!-- Pagination controls - only show if there are multiple pages -->
+    <!-- if more than 1 page -->
     <% if (totalPages > 1) { %>
       <div>
-        <!-- Previous page link - only show if not on first page -->
         <% if (page > 1) { %>
           <a href="/reviews/?page=<%= page - 1 %>">Previous</a>
         <% } %>
 
-        <!-- Current page indicator -->
         Page <%= page %> of <%= totalPages %>
 
-        <!-- Next page link - only show if not on last page -->
         <% if (page < totalPages) { %>
           <a href="/reviews/?page=<%= page + 1 %>">Next</a>
         <% } %>
+
       </div>
     <% } %>
-
-  <% } %>
 
 </body>
 </html>
