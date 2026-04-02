@@ -10,7 +10,7 @@
 
 <body>
     <div class="page-body">
-        <a href="/user/profile" class="back-link">Back</a>
+        <a href="#" class="back-link" onclick="history.back(); return false;">← Back</a>
         <h2>
             <%= type==='followers' ? 'Followers' : 'Following' %>
                 of User: <%= user ? user.username : '' %>
