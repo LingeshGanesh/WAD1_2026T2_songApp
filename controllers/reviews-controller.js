@@ -92,19 +92,15 @@ exports.getAllReviews = async (req, res) => {
         const user = await User.findUserByID(review.userId);
         review.userName = user ? user.username : 'Unknown User';
       }
-
-      // Sort reviews by most recent first
-      reviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     }
 
     // Handle pagination
     const page = parseInt(req.query.page) || 1;
     const limit = 5;
-    const totalReviews = reviews ? reviews.length : 0;
+    const totalReviews = reviews.length;
     const totalPages = Math.ceil(totalReviews / limit);
     const startIndex = (page - 1) * limit;
-    const endIndex = page * limit;
-    const paginatedReviews = reviews ? reviews.slice(startIndex, endIndex) : [];
+    const paginatedReviews = reviews.slice(startIndex, startIndex + limit);
 
     // Render the display-reviews page
     res.render('reviews/display-reviews', { reviews: paginatedReviews, songs, output, page, totalPages, totalReviews });

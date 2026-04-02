@@ -27,10 +27,7 @@
     <ol start="<%= ((page || 1) - 1) * 5 + 1 %>">
 
       <!-- Loop through all songs -->
-      <% songs.forEach(function(song) { %>
-
-        <!-- Loop through all reviews -->
-       <% reviews.forEach(function(review) { %>
+      <% reviews.forEach(function(review) { %>
         <% const song = songs.find(s => s._id.toString() === review.songId.toString()); %>
         <li>
           <strong>Song: <%= song ? song.title : 'Unknown Song' %></strong><br>
@@ -39,7 +36,6 @@
           Comment: <%= review.comment %>
         </li>
         <br>
-      <% }) %>
       <% }) %>
     </ol>
 

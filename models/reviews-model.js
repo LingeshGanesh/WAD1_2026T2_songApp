@@ -28,8 +28,8 @@ const reviewSchema = new mongoose.Schema({
 const Review = mongoose.model('Review', reviewSchema, 'reviews');
 
 // Retrieve all reviews from the database
-exports.retrieveAll = function() { 
-    return Review.find().sort({ createdAt: -1 });
+exports.retrieveAll = async function() { 
+    return await Review.find().sort({ createdAt: -1 }).lean();
 };
 
 // Find reviews for a specific song by songId
