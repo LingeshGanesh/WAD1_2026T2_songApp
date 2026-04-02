@@ -14,7 +14,13 @@
     <!-- Song information -->
     <p><strong>Uploaded by:</strong> <%= song.uploader ? song.uploader.username : "-" %></p>
     <p><strong>Artist:</strong> <%= song.artist %></p>
-    <p><strong>Album:</strong> <%= song.album || "N/A" %></p>
+    <p><strong>Album:</strong>
+        <% if (song.album && song.album._id) { %>
+        <a href="/album/<%= song.album._id %>"><%= song.album.title %></a>
+        <% } else { %>
+        N/A
+        <% } %>
+    </p>
     <p><strong>Genre:</strong> <%= song.genre || "N/A" %></p>
     <p><strong>Duration:</strong> <%= formatDuration(song.duration) %></p>
     <p><strong>YouTube URL:</strong>

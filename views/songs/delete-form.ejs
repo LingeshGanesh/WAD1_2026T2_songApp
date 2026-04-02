@@ -20,7 +20,12 @@
         <p>Uploaded by: <strong>
                 <%= song.uploader ? song.uploader.username : "-" %>
             </strong></p>
-        <p>Album: <%= song.album || "N/A" %>
+        <p>Album:
+            <% if (song.album && song.album._id) { %>
+            <a href="/album/<%= song.album._id %>"><%= song.album.title %></a>
+            <% } else { %>
+            N/A
+            <% } %>
         </p>
         <p>Duration: <%= formatDuration(song.duration) %>
         </p>
