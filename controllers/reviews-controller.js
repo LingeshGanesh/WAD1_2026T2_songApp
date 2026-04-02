@@ -97,13 +97,14 @@ exports.getAllReviews = async (req, res) => {
       }
     }
 
-    const page = parseInt(req.query.page) || 1;
     const limit = 5;
     const totalReviews = reviews ? reviews.length : 0;
     const totalPages = Math.ceil(totalReviews / limit);
+    const page = Math.max(1, Math.min(parseInt(req.query.page) || 1, totalPages));
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
     const paginatedReviews = reviews ? reviews.slice(startIndex, endIndex) : [];
+
 
     res.render('reviews/display-reviews', {
       reviews: paginatedReviews,
@@ -142,16 +143,17 @@ exports.getReviewInfo = async (req, res) => {
 
     reviews = reviews.reverse();
 
-    const page = parseInt(req.query.page) || 1;
     const limit = 5;
     const totalReviews = reviews ? reviews.length : 0;
     const totalPages = Math.ceil(totalReviews / limit);
+    const page = Math.max(1, Math.min(parseInt(req.query.page) || 1, totalPages));
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
     const paginatedReviews = reviews ? reviews.slice(startIndex, endIndex) : [];
 
     let output = '';
     let error = '';
+
 
     // if no reviews
     if (!reviews || reviews.length === 0) {
