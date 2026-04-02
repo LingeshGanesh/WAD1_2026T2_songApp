@@ -41,7 +41,10 @@ node scripts/seed-all.js
 ```
 
 # 🤖 Use of AI
-...
+1. Debugging of code
+2. Styling and Design of the pages
+3. Scripts folder (dummy data) generated
+
 
 # 👥 Team
 | Name | Task |
