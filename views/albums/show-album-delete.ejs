@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Album Marked for Deletion</title>
+    <link rel="stylesheet" href="/css/album-dark.css">
 </head>
 <body>
+    <%- include('../navbar-user') %>
     <h1>Album Marked for Deletion</h1>
     <button type="button"><strong><a href="/album/<%= album._id %>">Back To Album</strong></a></button><br>
     <% if(album){ %>
