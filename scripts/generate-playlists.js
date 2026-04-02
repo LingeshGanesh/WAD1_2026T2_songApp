@@ -75,7 +75,7 @@ async function run() {
                 owner: randomUser(allUsers)._id,
                 songs: randomSongs(allSongs)
             }
-            const doc = Playlist.insert(plistObj).then(doc => {
+            await Playlist.insert(plistObj).then(doc => {
                 // Assign Thumbnail
                 fetch("https://cataas.com/cat").then(x => x.blob()).then(async blob => {
                     const fileobject = {

@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Song = require("../models/songs-model");
+const { ALLOWED_GENRES } = require("../models/songs-model");
 
 // HELPER FUNCTIONS
 // Helper function for normalizing and formating song fields from form data
@@ -19,6 +20,10 @@ function validateSong(fields) {
     // Required fields: title, artist
     if (!fields.title || !fields.artist) {
         return "Title and artist are required.";
+    }
+    // Prevent any genre that is not in the allowed list to maintain consistency
+    if (!ALLOWED_GENRES.includes(fields.genre)) {
+        return `Genre must be one of: ${ALLOWED_GENRES.join(", ")}.`;
     }
     // Duration must be a positive number
     if (!Number.isFinite(fields.duration) || fields.duration <= 0) {

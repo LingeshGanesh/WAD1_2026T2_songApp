@@ -8,23 +8,49 @@
     <%- include("../navbar-user") %>
     <br><br><br>
     <div class="view-event">
-        <a href="/events/event-list" class="back-link">← Back</a>
+        <a href="#" class="back-link" onclick="history.back(); return false;">← Back</a>
         <h1><%= event.name %></h1>
         <div class="view-event-details">
             <p class="events-section-label">Details</p>
             <p><span class="detail-label">Description</span> <%= event.desc %></p>
             <p><span class="detail-label">Location</span> <%= event.location %></p>
             <p><span class="detail-label">Starting Time</span> <%= event.date %></p>
+
+                <div class="event-card-actions" style="margin-top:1rem;">
+                <% if (event.author && event.author._id.toString() === userId) { %>
+                    <button disabled>Your event</button>
+                <% } else if (userEvents.some(e => e.toString() === event._id.toString())) { %>
+                    <form action="/events/event-list/remove" method="POST">
+                    <input type="hidden" name="eventId" value="<%= event._id %>">
+                    <button type="submit" class="btn-remove">Remove from my events</button>
+                    </form>
+                <% } else if (event.participants.length >= event.capacity) { %>
+                    <button disabled>Event Full</button>
+                <% } else if (new Date() > new Date(event.date)) { %>
+                    <button disabled>Past Event</button>
+                <% } else { %>
+                    <form action="/events/event-list" method="POST">
+                    <input type="hidden" name="eventId" value="<%= event._id %>">
+                    <button type="submit" class="btn-add">Add to my events</button>
+                    </form>
+                <% } %>
+            </div>
         </div>
         <p class="events-section-label">Participants</p>
         <div class="view-event-participants">
             <% event.participants.forEach(p => { %>
                 <div class="participant-row">
-                    <img src="<%= p.profilePicture %>" style="width:32px;height:32px;border-radius:50%;vertical-align:middle;"> <%= p.username %>
+                    <img src="<%= p.profilePicture %>" style="width:32px;height:32px;border-radius:50%;vertical-align:middle;">
+                    <% if (p._id.toString() === userId) { %>
+                        <span class="event-card-name"><%= p.username %></span> <span style="color:#888;">(you)</span>
+                    <% } else { %>
+                        <a href="/user/displayProfile?id=<%= p._id %>" class="event-card-name"><%= p.username %></a>
+                    <% } %>
                 </div>
             <% }) %>
         </div>
     </div>
+
     <br><br><br>
     <%- include("../footer") %>
 </body>

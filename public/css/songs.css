@@ -1,0 +1,48 @@
+.songs-page {
+    background-color: #000;
+    color: #fff;
+}
+
+.songs-page a {
+    color: #8ecbff;
+}
+
+.songs-page fieldset {
+    border: 1px solid #444;
+    background-color: #111;
+}
+
+.songs-page input,
+.songs-page select,
+.songs-page textarea,
+.songs-page button {
+    background-color: #111;
+    color: #fff;
+    border: 1px solid #555;
+}
+
+.browse-songs {
+    color: #fff;
+}
+
+.browse-songs table {
+    border-collapse: collapse;
+    width: 100%;
+    background-color: #111;
+}
+
+.browse-songs th,
+.browse-songs td {
+    text-align: left;
+    padding: 8px;
+    border: 1px solid #333;
+}
+
+.browse-songs tr:nth-child(even) {
+    background-color: #1a1a1a;
+}
+
+.browse-songs th {
+    background-color: #04AA6D;
+    color: #fff;
+}

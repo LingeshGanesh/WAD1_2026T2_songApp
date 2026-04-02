@@ -1,5 +1,16 @@
 const mongoose = require('mongoose');
 
+const ALLOWED_GENRES = [
+    "Classical",
+    "Country",
+    "Electronic",
+    "Hip-Hop",
+    "Indie",
+    "Jazz",
+    "Pop",
+    "Rock"
+];
+
 const songSchema = new mongoose.Schema({
     // Adding uploader field to track who uploaded the song, which can be used for authorization in delete/edit operations
     uploader: {
@@ -19,7 +30,11 @@ const songSchema = new mongoose.Schema({
         type: String
     },
     genre: {
-        type: String
+        type: String,
+        enum: {
+            values: ALLOWED_GENRES,
+            message: "Genre must be one of the allowed options."
+        }
     },
     duration: {
         type: Number
@@ -70,3 +85,4 @@ Song.deleteManyByUploader = function (userId) {
 // end of delete many
 
 module.exports = Song;
+module.exports.ALLOWED_GENRES = ALLOWED_GENRES;

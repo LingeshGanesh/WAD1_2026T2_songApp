@@ -6,7 +6,7 @@ const router = express.Router();
 
 // in Create, Edit and Delete, check if user is logged in
 // Read operations are open to all users
-router.get("/browse", songsController.browse);
+router.get("/browse", authMiddleware.isLoggedIn, songsController.browse);
 router.get("/create", authMiddleware.isLoggedIn, songsController.showCreationForm);
 router.post("/create", authMiddleware.isLoggedIn, songsController.createSong);
 router.get("/edit/:songID", authMiddleware.isLoggedIn, songsController.showEditForm);

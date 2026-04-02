@@ -105,8 +105,10 @@ exports.showEventList = async (req, res) => {
 
 exports.viewEvent = async (req, res) => {
     try {
+        const userId = req.session.user.id;
+        const user = await User.findUserByID(userId);
         const event = await Event.findById(req.query.id);
-        res.render("events/view-event", { event });
+        res.render("events/view-event", { event, userId, userEvents: user.events });
     } catch (error) {
         console.error(error);
         res.status(500).send("Something went wrong");
