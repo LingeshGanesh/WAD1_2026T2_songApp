@@ -30,6 +30,7 @@ exports.showEvents = async (req, res) => {
         // filter is the function that does for each event it'll only return if it meets the condition after =>
         if (filter === 'past') {
             eventList = eventList.filter(event => new Date(event.date) < now);
+            eventList.sort((a, b) => new Date(b.date) - new Date(a.date));
         } else if (filter === 'attending') {
             eventList = eventList.filter(event => user.events.some(id => id.equals(event._id)));
         } else {
@@ -159,12 +160,15 @@ exports.updateEvent = async (req, res) => {
         let success = await Event.editEvent(id, userId, name, desc, date, entryFee, location, capacity);
 
         if (old.participants.length > 0) {
+            // initialize to push all changes to be sent as a message
             const changes = [];
             if (old.desc !== desc) changes.push(`Description changed to ${desc}`);
-            if (old.date.toISOString().split('T')[0] !== date) changes.push(`Date changed to ${date}`);
+            // convert to different format for comparison
+            if (old.date.toISOString().slice(0, 16) !== new Date(date + ':00+08:00').toISOString().slice(0, 16)) changes.push(`Date changed to ${date}`);
             if (String(old.entryFee) !== String(entryFee)) changes.push(`Price changed to $${entryFee}`);
             if (old.location !== location) changes.push(`Location changed to ${location}`);
             if (String(old.capacity) !== String(capacity)) changes.push(`Capacity changed to ${capacity}`);
+            // send only if at least one field has been changed
             if (changes.length > 0) {
                 const alertResult = await User.addAlertToMany(old.participants, `${name} has been updated: ${changes.join(', ')}`);
                 console.log(alertResult);

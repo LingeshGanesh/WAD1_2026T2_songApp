@@ -1,7 +1,7 @@
 exports.guestpage = (req, res) => {
     const {user} = req.session;
     if (user) {
-        res.redirect("/homepage");
+        res.redirect("/home");
     } else {
         res.render("home-guest");
     }

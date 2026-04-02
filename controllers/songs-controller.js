@@ -4,6 +4,8 @@ const { ALLOWED_GENRES } = require("../models/songs-model");
 
 // HELPER FUNCTIONS
 // Helper function for normalizing and formating song fields from form data
+// INPUT: req.body from create/edit song form
+// OUTPUT: Trimmed and formatted fields
 function normalizeSongFields(body) {
     return {
         title: (body.title || "").trim(),
@@ -15,6 +17,8 @@ function normalizeSongFields(body) {
 }
 
 // Helper function for validating song fields
+// INPUT: Normalized song fields
+// OUTPUT: Error message string if validation fails, or null if validation succeeds
 function validateSong(fields) {
     // Required fields: title, artist
     if (!fields.title || !fields.artist) {
@@ -32,6 +36,8 @@ function validateSong(fields) {
 }
 
 // Helper functions for validating and building song data
+// INPUT: Form data from create/edit song form
+// OUTPUT: Formatted song data for database operations, or error messages for validation failures
 function buildSongPayload(fields) {
     return {
         uploader: fields.uploader,
@@ -44,11 +50,21 @@ function buildSongPayload(fields) {
     };
 }
 
+// Helper function get album title for song
+// INPUT: song object
+// OUTPUT: album title
 function getAlbumTitle(song) {
-    return song.album && typeof song.album === "object" ? song.album.title || "" : "";
+    // If song has album, return title
+    if (song.album && typeof song.album === "object") {
+        return song.album.title || "";
+    }
+    // Else return nothing
+    return "";
 }
 
 // Helper function to convert duration in seconds to M:SS format for display
+// INPUT: duration in seconds
+// OUTPUT: formatted duration string in M:SS format
 function formatDuration(seconds) {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -57,6 +73,8 @@ function formatDuration(seconds) {
 
 // Function to get the value to sort by based on the sort key
 // This allows us to handle sorting by uploader username instead of just the uploader ID
+// INPUT: song object and sort key
+// OUTPUT: value to sort by (e.g. uploader username, song title, artist name, etc.)
 function getSongSortValue(song, sortKey) {
     switch (sortKey) {
         case "uploader":
@@ -71,12 +89,15 @@ function getSongSortValue(song, sortKey) {
             return song.genre || "";
         case "duration":
             return Number(song.duration) || 0;
+        // Default case
         default:
             return song.artist || "";
     }
 }
 
 // Function to sort songs based on a given sort key and direction
+// INPUT: array of song objects, sort key and sort direction 
+// OUTPUT: new array of songs sorted by the specified key and direction
 function sortSongs(songs, sortKey, direction) {
     // Determine the sort direction factor: 1 for ascending, -1 for descending
     const directionFactor = direction === "desc" ? -1 : 1;
@@ -105,6 +126,8 @@ function sortSongs(songs, sortKey, direction) {
 
 // RENDER FUNCTIONS
 // Show form to create new song
+// INPUT: req with form data (title, artist, genre, duration, youtubeUrl)
+// OUTPUT: Rendered create song form with error messages if validation fails
 exports.showCreationForm = (req, res) => {
     res.render("songs/create-form", {
         // No need to show uploader field in form if user authentication is implemented and uploader is taken from session
@@ -121,6 +144,8 @@ exports.showCreationForm = (req, res) => {
 };
 
 // Show form to edit existing song
+// INPUT: songID from URL parameters
+// OUTPUT: Rendered edit song form with existing song data
 exports.showEditForm = async (req, res) => {
     const { songID } = req.params;
 
@@ -144,6 +169,8 @@ exports.showEditForm = async (req, res) => {
 };
 
 // Show form to confirm deletion of song and handle deletion
+// INPUT: songID from URL parameters, confirmation text from form data
+// OUTPUT: Rendered delete confirmation form with song data
 exports.showDeleteForm = async (req, res) => {
     const { songID } = req.params;
     // Validate songID format
@@ -167,6 +194,8 @@ exports.showDeleteForm = async (req, res) => {
 
 // CRUD FUNCTIONS
 // READ: Browse all songs
+// INPUT: Optional query parameters for sorting (sort by uploader, title, artist, album, genre, or duration; direction asc or desc)
+// OUTPUT: Rendered browse songs page with list of songs sorted by the specified key and direction
 exports.browse = async (req, res) => {
     // Validate and sanitize sort query parameters
     const allowedSorts = ["uploader", "title", "artist", "album", "genre", "duration"];
@@ -196,9 +225,11 @@ exports.browse = async (req, res) => {
 };
 
 // CREATE: Create new song
+// INPUT: Form data from create song form (title, artist, genre, duration, youtubeUrl)
+// OUTPUT: If validation fails, re-render create form with error messages; if successful, redirect to the new song's info page
 exports.createSong = async (req, res) => {
-    const fields = normalizeSongFields(req.body);
-    const validationError = validateSong(fields);
+    const fields = normalizeSongFields(req.body); // Normalize and format form data into consistent song fields
+    const validationError = validateSong(fields); // Validate the song fields and get any validation error message
     fields.uploader = req.user._id; // Store the uploader as a User ObjectId reference
     fields.album = null; // Songs created here are not attached to an album initially
 
@@ -219,20 +250,22 @@ exports.createSong = async (req, res) => {
 };
 
 // READ: View details of a specific song
+// INPUT: songID from URL parameters
+// OUTPUT: Rendered song info page with song details
 exports.songInfo = async (req, res) => {
     const { songID } = req.params;
-
+    // 404 if invalid
     if (!mongoose.isValidObjectId(songID)) {
         return res.status(404).render("not-found", { url: req.url });
     }
 
     try {
         const song = await Song.findByID(songID);
-
+        // if song not found, show 404 page
         if (!song) {
             return res.status(404).render("not-found", { url: req.url });
         }
-
+        // Render song info page with song details
         res.render("songs/song-info", { song, formatDuration });
     } catch (error) {
         console.error(error);
@@ -241,17 +274,19 @@ exports.songInfo = async (req, res) => {
 };
 
 // UPDATE: Update existing song
+// INPUT: songID from URL parameters, form data from edit song form (title, artist, genre, duration, youtubeUrl)
+// OUTPUT:  Redirect to the updated song's info page, else re-render edit form with error messages if validation fails or if user is not authorized to edit
 exports.updateSong = async (req, res) => {
-    const { songID } = req.params;
-    const fields = normalizeSongFields(req.body);
-    const validationError = validateSong(fields);
+    const { songID } = req.params; // Get songID from URL parameters
+    const fields = normalizeSongFields(req.body); // Form data
+    const validationError = validateSong(fields); // Validate form data
     const uploader = req.user._id; // Get the user ID of the logged-in user from the session
 
-    // Validate songID format
+    // If not valid ObjectId, show 404 page
     if (!mongoose.isValidObjectId(songID)) {
         return res.status(404).render("not-found", { url: req.url });
     }
-    // If validation fails, re-render form with error message and previously entered values
+    // If validation error, re-render form with error message and previously entered values
     if (validationError) {
         return res.status(400).render("songs/edit-form", {
             error: validationError,
@@ -290,9 +325,11 @@ exports.updateSong = async (req, res) => {
 };
 
 // Delete song after confirmation
+// INPUT: songID from URL parameters, confirmation text from form data
+// OUTPUT: Successfully deleted song and redirected to browse page, else re-render delete confirmation form with error messages if validation fails or if user is not authorized to delete
 exports.deleteSong = async (req, res) => {
-    const { songID } = req.params;
-    const confirmation = req.body.confirmation;
+    const { songID } = req.params; // Get songID from URL parameters
+    const confirmation = req.body.confirmation; // Get confirmation text from form data
     const uploader = req.user._id; // Get the user ID of the logged-in user from the session
     // Validate songID format
     if (!mongoose.isValidObjectId(songID)) {
