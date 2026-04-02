@@ -7,7 +7,7 @@
 <body>
     <%- include("../navbar-user") %><br><br><br>
     <div class="event-list-page">
-        <a href="/events/user-events" class="back-link">← Back</a>
+        <a href="#" class="back-link" onclick="history.back(); return false;">← Back</a>
         <h1>Add a New Event</h1>
         <form action="/events/add-event" method="POST" class="event-form">
             <div class="form-field"><label>Name</label><input type="text" name="name"></div>

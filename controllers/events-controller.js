@@ -1,8 +1,16 @@
 const fs = require('fs/promises');
+const mongoose = require('mongoose');
 
 // Get Service model
 const Event = require('./../models/events-model');
 const User = require('./../models/users-model');
+
+function renderEventNotFound(req, res) {
+    return res.status(404).render("status/not-found", {
+        url: req.url,
+        user: req.user || req.session?.use || null
+    });
+}
 
 exports.getIndex = async (req, res) => {
     try {
@@ -119,7 +127,9 @@ exports.viewEvent = async (req, res) => {
         res.render("events/view-event", { event, userId, userEvents: user.events });
     } catch (error) {
         console.error(error);
-        res.status(500).send("Something went wrong");
+        if (!mongoose.isValidObjectId(req.query.id)) {
+            return renderEventNotFound(req, res);
+        }
     }
 };
 
@@ -135,8 +145,10 @@ exports.getEvent = async (req, res) => {
         }
         res.render("events/update-event", { result, msg });
     } catch (error) {
-        console.log(error);
-        res.status(500).send("Something went wrong");
+        console.error(error);
+        if (!mongoose.isValidObjectId(req.query.id)) {
+            return renderEventNotFound(req, res);
+        }
     }
 };
 
@@ -214,6 +226,7 @@ exports.deleteAnEvent = async (req, res) => {
 
     } catch (error) {
         console.error(error);
+        res.status(500).send("Something went wrong");
     }
 };
 
@@ -228,7 +241,9 @@ exports.getMarkedEvent = async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        res.status(500).send("Something went wrong");
+        if (!mongoose.isValidObjectId(req.query.id)) {
+            return renderEventNotFound(req, res);
+        }
     }
 };
 
