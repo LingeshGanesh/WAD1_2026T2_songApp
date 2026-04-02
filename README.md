@@ -1,5 +1,5 @@
-# WAD1_2026T2_songApp
-Desc
+# Lowkify
+Lowkify is a song and playlist manager for all music lovers. We are definitely not copying other similar application; it is purely coincidental. 😉
 
 ## Installation
 1. Download zip or clone this repository
