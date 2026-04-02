@@ -5,8 +5,13 @@ const Event = require('./../models/events-model');
 const User = require('./../models/users-model');
 
 exports.getIndex = async (req, res) => {
-    const upcomingEvents = await Event.getUpcomingEvents();
-    res.render("events/home-events", { upcomingEvents });
+    try {
+        const upcomingEvents = await Event.getUpcomingEvents();
+        res.render("events/home-events", { upcomingEvents });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Something went wrong");
+    }
 };
 
 //DUMMY USER ID TO BE USED ONLY UNTIL AUTH AND SESSION IS ONLINE
@@ -254,7 +259,7 @@ exports.attendEvent = async (req, res) => {
     const userId = req.session.user.id;
     const eventId = req.body.eventId;
 
-    const event = await Event.findById({ _id: eventId });
+    const event = await Event.findById(eventId);
 
     if (!event) {
       return res.send("Event not found");
