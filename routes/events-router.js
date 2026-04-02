@@ -25,7 +25,7 @@ router.get("/add-event", authMiddleware.isLoggedIn, eventsController.showAddForm
 router.post("/add-event", authMiddleware.isLoggedIn, eventsController.createEvent);
 
 // Define paths for editting events THAT THE USER HAS CREATED ONLY
-router.get("/edit-events", authMiddleware.isLoggedIn, eventsController.showEventList);
+router.get("/user-events", authMiddleware.isLoggedIn, eventsController.showEventList);
 router.get("/update-event", authMiddleware.isLoggedIn, eventsController.getEvent);
 router.post("/update-event", authMiddleware.isLoggedIn, eventsController.updateEvent);
 
