@@ -1,0 +1,58 @@
+[
+    {
+        "username": "admin",
+        "songTitle": "Love Story",
+        "rating": 5,
+        "comment": "Still one of the most instantly memorable pop-country singles ever.",
+        "createdAt": "2026-03-29T11:30:00.000+08:00"
+    },
+    {
+        "username": "jon",
+        "songTitle": "Blank Space",
+        "rating": 5,
+        "comment": "Sharp songwriting, huge chorus, and a production style that still feels fresh.",
+        "createdAt": "2026-03-30T18:45:00.000+08:00"
+    },
+    {
+        "username": "admin",
+        "songTitle": "Cruel Summer",
+        "rating": 5,
+        "comment": "The bridge hits every time and the whole track has restless energy.",
+        "createdAt": "2026-03-31T20:10:00.000+08:00"
+    },
+    {
+        "username": "jon",
+        "songTitle": "Anti-Hero",
+        "rating": 4,
+        "comment": "Clever and self-aware, with a hook that gets stuck in your head quickly.",
+        "createdAt": "2026-04-01T10:20:00.000+08:00"
+    },
+    {
+        "username": "admin",
+        "songTitle": "Teenage Dream",
+        "rating": 5,
+        "comment": "Bright, polished pop that perfectly matches the album's carefree mood.",
+        "createdAt": "2026-04-01T16:00:00.000+08:00"
+    },
+    {
+        "username": "jon",
+        "songTitle": "Firework",
+        "rating": 4,
+        "comment": "Big chorus, uplifting message, and exactly the kind of song built for singing loudly.",
+        "createdAt": "2026-04-02T09:15:00.000+08:00"
+    },
+    {
+        "username": "admin",
+        "songTitle": "Telephone",
+        "rating": 4,
+        "comment": "A dramatic pop collaboration with a chaotic energy that really works.",
+        "createdAt": "2026-04-02T12:30:00.000+08:00"
+    },
+    {
+        "username": "jon",
+        "songTitle": "Love the Way You Lie",
+        "rating": 5,
+        "comment": "The contrast between the verses and chorus gives the track a lot of impact.",
+        "createdAt": "2026-04-02T18:00:00.000+08:00"
+    }
+]

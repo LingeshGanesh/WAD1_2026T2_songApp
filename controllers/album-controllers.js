@@ -186,6 +186,7 @@ exports.updateAlbum = async (req, res) => {
 
         await Song.updateMany(
             {
+                // Find songs that were previously in the album but are not in the updated song list
                 _id: {
                     $in: previousSongIds.filter((songId) => !songIds.some((selectedId) => selectedId.toString() === songId))
                 }
