@@ -9,53 +9,9 @@
 </head>
 
 <body>
-    <!-- <a href="/user/profile" class="back-link">Back</a> -->
     <%- include("../navbar-user") %>
         <div class="page-body">
             <a href="#" class="back-link" onclick="history.back(); return false;">← Back</a>
-
-            <!-- <h2>Profile: Username - <%=user.username%> 
-    </h2>
-    <p><img src="<%=user.profilePicture%>" width="120"></p>
-
-    <p>
-        <%= user.followers.length %>
-            <%- user.followers.length <=1 ? `<a href="/user/showConnection?type=followers&id=${user._id}">follower</a>`
-                : `<a href="/user/showConnection?type=followers&id=${user._id}">followers</a>`
-                %>
-    </p>
-
-    <p>
-        <%= user.followings.length %>
-            <a href="/user/showConnection?type=following&id=<%= user._id %>">following</a>
-    </p>
-    <form action="/user/<%= isFollowing ? 'unfollowUser' : 'followUser' %>" method="post">
-        <input type="hidden" name="targetUserId" value="<%=user._id%>">
-        <button type="submit">
-            <%= isFollowing ? 'Following' : 'Follow' %>
-        </button>
-    </form>
-
-    <h3>Public Playlists</h3>
-
-        <% if (playlists.length> 0) { %>
-            <% playlists.forEach(playlist=> { %>
-                <p>
-                    <a href="/playlist/<%= playlist._id %>">
-                        <%= playlist.name %><br>
-                            <% const thumbURL=playlist.thumbnailExt ?
-                                `/image/playlist-thumb/${playlist._id}${playlist.thumbnailExt}`
-                                : '/image/default-thumb.png' %>
-
-                                <img src="<%= thumbURL %>" width="120">
-
-                    </a>
-
-                </p>
-                <% }) %>
-                    <% } else { %>
-                        <p>You have no playlists yet.</p>
-                        <% } %> -->
             <section class="profile-hero">
                 <div class="profile-hero-avatar">
                     <img src="<%= user.profilePicture %>" alt="<%= user.username %>">
