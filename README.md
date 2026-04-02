@@ -34,13 +34,9 @@ node server.js
 ```
 
 # 📂 Load Test Data
-1. Go to `scripts` folder.
+1. Run `seed-all.js`.
 ```
-cd scripts
-```
-2. Run `[name].js`.
-```
-node [name].js
+node scripts/seed-all.js
 ```
 
 # 🤖 Use of AI

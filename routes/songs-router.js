@@ -13,6 +13,6 @@ router.get("/edit/:songID", authMiddleware.isLoggedIn, songsController.showEditF
 router.post("/edit/:songID", authMiddleware.isLoggedIn, songsController.updateSong);
 router.get("/delete/:songID", authMiddleware.isLoggedIn, songsController.showDeleteForm);
 router.post("/delete/:songID", authMiddleware.isLoggedIn, songsController.deleteSong);
-router.get("/:songID", songsController.songInfo);
+router.get("/:songID", authMiddleware.isLoggedIn, songsController.songInfo);
 
 module.exports = router;
