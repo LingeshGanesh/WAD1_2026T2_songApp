@@ -28,13 +28,13 @@
                             <%= user.email %>
                         </p>
                         <div class="profile-hero-stats">
-                            <a href="/user/showConnection?type=followers&id=<%= user._id %>">
+                            <a href="/user/show-connection?type=followers&id=<%= user._id %>">
                                 <span>
                                     <%= user.followers.length %>
                                 </span>
                                 <%= user.followers.length===1 ? 'Follower' : 'Followers' %>
                             </a>
-                            <a href="/user/showConnection?type=following&id=<%= user._id %>">
+                            <a href="/user/show-connection?type=following&id=<%= user._id %>">
                                 <span>
                                     <%= user.followings.length %>
                                 </span> Following
@@ -141,30 +141,23 @@
                                     <h3>Your Reviews</h3>
                                 </div>
                                 <div class="panel-body">
-                                    <% if (reviewsEntered && reviewsEntered.length> 0) { %>
-                                        <% reviewsEntered.forEach((review)=> { %>
-                                            <% let songTitle=review.songId; %>
-                                                <% for (let song of allSongs) { %>
-                                                    <% if (song._id.toString()===review.songId.toString()) { %>
-                                                        <% songTitle=song.title; break; %>
-                                                            <% } %>
-                                                                <% } %>
-                                                                    <div class="review-row">
-                                                                        <div class="review-song">
-                                                                            <%= songTitle %>
-                                                                        </div>
-                                                                        <div><span class="review-rating">
-                                                                                <%= review.rating %>/5
-                                                                            </span></div>
-                                                                        <div class="review-comment">
-                                                                            <%= review.comment %>
-                                                                        </div>
-                                                                    </div>
-                                                                    <% }) %>
-                                                                        <% } else { %>
-                                                                            <div class="empty-state">No reviews yet.
-                                                                            </div>
-                                                                            <% } %>
+                                    <% if (reviewsWithTitles && reviewsWithTitles.length> 0) { %>
+                                        <% reviewsWithTitles.forEach(review=> { %>
+                                            <div class="review-row">
+                                                <div class="review-song">
+                                                    <%= review.songTitle %>
+                                                </div>
+                                                <div><span class="review-rating">
+                                                        <%= review.rating %>/5
+                                                    </span></div>
+                                                <div class="review-comment">
+                                                    <%= review.comment %>
+                                                </div>
+                                            </div>
+                                            <% }) %>
+                                                <% } else { %>
+                                                    <div class="empty-state">No reviews yet.</div>
+                                                    <% } %>
                                 </div>
                             </div>
 
