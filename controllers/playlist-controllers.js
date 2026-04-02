@@ -74,7 +74,6 @@ exports.playlistInfo = async (req, res) => {
     
     try {
         let playlist = await Playlist.getByID(playlistID, true);
-        console.log(playlist);
         // If the playlist does not exist, show playlist not found page
         if (!playlist) {
             return res.status(404).render('playlists/not-found');

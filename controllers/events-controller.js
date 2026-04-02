@@ -14,15 +14,11 @@ exports.getIndex = async (req, res) => {
     }
 };
 
-//DUMMY USER ID TO BE USED ONLY UNTIL AUTH AND SESSION IS ONLINE
-//const userId = req.session.user.id;
-
 
 // Controller function to get all the documents in the db and display it
 exports.showEvents = async (req, res) => {
     try {
         const userId = req.session.user?.id;
-        if (!userId) return res.redirect("/login");
 
         const user = await User.findUserByEmail(req.session.user.email);
         const filter = req.query.filter;
@@ -30,12 +26,14 @@ exports.showEvents = async (req, res) => {
 
         let eventList = await Event.retrieveAll();
 
+        // show depending on which
+        // filter is the function that does for each event it'll only return if it meets the condition after =>
         if (filter === 'past') {
-            eventList = eventList.filter(e => new Date(e.date) < now);
+            eventList = eventList.filter(event => new Date(event.date) < now);
         } else if (filter === 'attending') {
-            eventList = eventList.filter(e => user.events.some(id => id.equals(e._id)));
+            eventList = eventList.filter(event => user.events.some(id => id.equals(event._id)));
         } else {
-            eventList = eventList.filter(e => new Date(e.date) >= now);
+            eventList = eventList.filter(event => new Date(event.date) >= now);
         }
 
         res.render("events/display-events", { eventList, userId, userEvents: user.events, followings: user.followings, filter });
@@ -46,7 +44,12 @@ exports.showEvents = async (req, res) => {
 };
 
 exports.showAddForm = (req, res) => {
-    res.render("events/add-event", { result: undefined, msg: undefined });
+    try {
+        res.render("events/add-event", { result: undefined, msg: undefined });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Something went wrong");
+    }
 };
 
 exports.createEvent = async (req, res) => {
@@ -54,7 +57,7 @@ exports.createEvent = async (req, res) => {
         // get user input
         const name = req.body.name;
         const desc = req.body.desc;
-        const date = new Date(req.body.date + ':00+08:00');
+        const date = new Date(req.body.date + ':00+08:00'); // so have time with date
         const entryFee = req.body.entryFee;
         const location = req.body.location;
         const capacity = req.body.capacity;
@@ -82,9 +85,9 @@ exports.createEvent = async (req, res) => {
             let msg = "Please fix the following issues:";
 
         if (error.name === "ValidationError") {
-            msg += "<br><ul>" + Object.values(error.errors)
-                .map(err => `<li>${err.message}</li>`)
-                .join("") + "</ul>";
+            msg += "<br><ul>" + Object.values(error.errors) //initialize list
+                .map(err => `<li>${err.message}</li>`) // changes the errors into point form
+                .join("") + "</ul>"; // close the list
         }
             let result = "fail";
             res.render("events/add-event", { result, msg });
@@ -96,9 +99,8 @@ exports.createEvent = async (req, res) => {
 };
 
 exports.showEventList = async (req, res) => {
-    const userId = req.session.user.id;
-
     try {
+        const userId = req.session.user.id;
         let events = await Event.retrieveByAuthor(userId);
         console.log(events);
         res.render("events/user-events", { events });
@@ -121,13 +123,10 @@ exports.viewEvent = async (req, res) => {
 };
 
 exports.getEvent = async (req, res) => {
-    const userId = req.session.user.id;
-    const id = req.query.id;
-    const msg = req.query.msg;
-    console.log(id);
-    console.log("getting event")
-
     try {
+        const userId = req.session.user.id;
+        const id = req.query.id;
+        const msg = req.query.msg;
         const result = await Event.findByIdAndAuthor(id, userId);
         // prevents bypassing using url
         if (new Date() > new Date(result.date)){
@@ -142,18 +141,17 @@ exports.getEvent = async (req, res) => {
 
 exports.updateEvent = async (req, res) => {
     const userId = req.session.user.id;
-
     const id = req.body.id;
-    console.log('id'+id);
-    const name = req.body.name;
-    console.log('name:'+name);
-    const desc = req.body.desc;
-    const date = req.body.date;
-    const entryFee = req.body.entryFee;
-    const location = req.body.location;
-    const capacity = req.body.capacity;
-
+    
     try {
+        console.log('id'+id);
+        const name = req.body.name;
+        console.log('name:'+name);
+        const desc = req.body.desc;
+        const date = req.body.date;
+        const entryFee = req.body.entryFee;
+        const location = req.body.location;
+        const capacity = req.body.capacity;
 
         const old = await Event.findByIdAndAuthor(id, userId);
         console.log(old.participants);
@@ -193,12 +191,12 @@ exports.updateEvent = async (req, res) => {
 };
 
 exports.deleteAnEvent = async (req, res) => {
-    const userId = req.session.user.id;
-    const id = req.body.id;
-    const name = req.body.name;
-    console.log("name"+name);
-
     try {
+
+        const userId = req.session.user.id;
+        const id = req.body.id;
+        const name = req.body.name;
+
         const old = await Event.findByIdAndAuthor(id, userId);
         if (old.participants.length > 0) await User.addAlertToMany(old.participants, `${name} has been deleted`);
 
@@ -216,11 +214,11 @@ exports.deleteAnEvent = async (req, res) => {
 };
 
 exports.getMarkedEvent = async (req, res) => {
-    const userId = req.session.user.id;
-    const id = req.query.id;
-    console.log(id);
-
     try {
+        const userId = req.session.user.id;
+        const id = req.query.id;
+        console.log(id);
+
         const result = await Event.findByIdAndAuthor(id, userId);
         res.render("events/delete-event", { result });
 
@@ -231,7 +229,12 @@ exports.getMarkedEvent = async (req, res) => {
 };
 
 exports.showForm = (req, res) => {
-    res.render("events/search-event", { result: undefined, searchTerm: undefined });
+    try {
+        res.render("events/search-event", { result: undefined, searchTerm: undefined });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Something went wrong");
+    }
 };
 
 exports.submitEvent = async (req, res) => {
