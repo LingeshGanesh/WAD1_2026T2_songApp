@@ -93,11 +93,6 @@ exports.updatePasswordByID = function (id, password) {
     return User.updateOne({ _id: id }, { password: password });
 }
 
-//delete user
-// exports.deleteUser = function (id) {
-//     return User.deleteOne({ _id: id })
-// }
-
 //search users 
 exports.searchUsers = function (query, currentUserId) {
     //https://stackoverflow.com/questions/76149327/how-to-solve-redos-pointed-out-by-snyk
