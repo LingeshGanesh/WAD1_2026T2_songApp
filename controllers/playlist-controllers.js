@@ -1,6 +1,7 @@
 // Import
 const mongoose = require('mongoose');
 const Playlist = require("../models/playlists-model");
+const Song = require("../models/songs-model");
 const statusPage = require('../modules/status-page');
 
 // Private Method
@@ -125,6 +126,15 @@ exports.randomPlaylist = async (req, res) => {
         return statusPage.renderISE(res, "Error calling database.");
     }
 }
+
+exports.searchSongs = async (req, res) => {
+    const songs = await Song.find({
+        // req.query.q is the search term for the url eg /album/song-search?q=hi gives q = "hi"
+        // $options: 'i' makes it case-insensitive
+        title: { $regex: req.query.q.trim(), $options: 'i' }, 
+    }).select('_id title artist').limit(10); //only the songid, song title and song artist will be returned
+    res.json(songs); // sends the result back as JSON objects for EJS to fetch and render as dropdown list
+};
 
 // Create
 exports.showCreationForm = async (req, res) => {

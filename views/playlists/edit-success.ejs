@@ -3,15 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/playlist-browse.css">
     <title>Playlist Update Successful!</title>
 </head>
 <body>
+    <%- include("../navbar-user") %>
     <div>
         <h1>Playlist Update Successful!</h1>
-        <ul>
-            <li><a href="/playlist/<%= playlist._id %>">Visit "<%= playlist.name %>" playlist page</a></li>
-            <li><a href="/">Go to Homepage</a></li>
+        <ul class="action-btns">
+            <li><a class="action-btn" href="/playlist/<%= playlist._id %>">Visit "<%= playlist.name %>" playlist page</a></li>
+            <li><a class="action-btn" href="/">Go to Homepage</a></li>
         </ul>
     </div>
+    <%- include("../footer") %>
 </body>
 </html>

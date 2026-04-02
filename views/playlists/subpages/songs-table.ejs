@@ -3,13 +3,15 @@
  - /views/playlists/playlist-info.ejs
 -->
 
-<table border="1">
-    <tr>
-        <th>No.</th>
-        <th>Title</th>
-        <th>Artist</th>
-        <th>Duration</th>
-    </tr>
+<table border="1" class="songs">
+    <thead>
+        <tr>
+            <th>No.</th>
+            <th>Title</th>
+            <th>Artist</th>
+            <th>Duration</th>
+        </tr>
+    </thead>
     <% for (let i = 0; i < songs.length; i++) { %>
     <tr>
         <% const song = songs[i] %>
