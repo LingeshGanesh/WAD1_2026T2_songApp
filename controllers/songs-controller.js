@@ -2,6 +2,16 @@ const mongoose = require("mongoose");
 const Song = require("../models/songs-model");
 const { ALLOWED_GENRES } = require("../models/songs-model");
 
+// Helper function to render a 404 not found page for songs
+// INPUT: req and res objects from Express route handlers
+// OUTPUT: Rendered 404 not found page with the requested URL and user information if available
+function renderSongNotFound(req, res) {
+    return res.status(404).render("status/not-found", {
+        url: req.url,
+        user: req.user || req.session?.user || null
+    });
+}
+
 // HELPER FUNCTIONS
 // Helper function for normalizing and formating song fields from form data
 // INPUT: req.body from create/edit song form
@@ -151,14 +161,14 @@ exports.showEditForm = async (req, res) => {
 
     // Validate songID format
     if (!mongoose.isValidObjectId(songID)) {
-        return res.status(404).render("not-found", { url: req.url });
+        return renderSongNotFound(req, res);
     }
     // Load song data from the database
     try {
         // Check if song exists before rendering edit form
         const song = await Song.findByID(songID);
         if (!song) {
-            return res.status(404).render("not-found", { url: req.url });
+            return renderSongNotFound(req, res);
         }
         // Render edit form with existing song data
         res.render("songs/edit-form", { error: null, song });
@@ -175,14 +185,14 @@ exports.showDeleteForm = async (req, res) => {
     const { songID } = req.params;
     // Validate songID format
     if (!mongoose.isValidObjectId(songID)) {
-        return res.status(404).render("not-found", { url: req.url });
+        return renderSongNotFound(req, res);
     }
     // Load song data from the database
     try {
         const song = await Song.findByID(songID);
         // If song not found, show 404 page
         if (!song) {
-            return res.status(404).render("not-found", { url: req.url });
+            return renderSongNotFound(req, res);
         }
         // Render delete confirmation form with song data
         res.render("songs/delete-form", { error: null, song, formatDuration });
@@ -254,16 +264,16 @@ exports.createSong = async (req, res) => {
 // OUTPUT: Rendered song info page with song details
 exports.songInfo = async (req, res) => {
     const { songID } = req.params;
-    // 404 if invalid
+    // 404 if invalid object ID
     if (!mongoose.isValidObjectId(songID)) {
-        return res.status(404).render("not-found", { url: req.url });
+        return renderSongNotFound(req, res);
     }
 
     try {
         const song = await Song.findByID(songID);
         // if song not found, show 404 page
         if (!song) {
-            return res.status(404).render("not-found", { url: req.url });
+            return renderSongNotFound(req, res);
         }
         // Render song info page with song details
         res.render("songs/song-info", { song, formatDuration });
@@ -284,7 +294,7 @@ exports.updateSong = async (req, res) => {
 
     // If not valid ObjectId, show 404 page
     if (!mongoose.isValidObjectId(songID)) {
-        return res.status(404).render("not-found", { url: req.url });
+        return renderSongNotFound(req, res);
     }
     // If validation error, re-render form with error message and previously entered values
     if (validationError) {
@@ -297,7 +307,7 @@ exports.updateSong = async (req, res) => {
     try {
         const existingSong = await Song.findByID(songID);
         if (!existingSong) {
-            return res.status(404).render("not-found", { url: req.url });
+            return renderSongNotFound(req, res);
         }
 
         // Only allow updates if uploader matches
@@ -333,14 +343,14 @@ exports.deleteSong = async (req, res) => {
     const uploader = req.user._id; // Get the user ID of the logged-in user from the session
     // Validate songID format
     if (!mongoose.isValidObjectId(songID)) {
-        return res.status(404).render("not-found", { url: req.url });
+        return renderSongNotFound(req, res);
     }
 
     try {
         const song = await Song.findByID(songID);
         // If song not found, show 404 page
         if (!song) {
-            return res.status(404).render("not-found", { url: req.url });
+            return renderSongNotFound(req, res);
         }
         // Only allow deletion if uploader matches and confirmation text is correct
         if (song.uploader._id.toString() !== uploader.toString()) {
