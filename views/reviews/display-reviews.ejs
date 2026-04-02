@@ -1,62 +1,68 @@
 <!DOCTYPE html>
+<!-- All Song Reviews Page - Shows reviews for all songs -->
 <html>
 <head>
-  <title>Reviews</title>
+  <title>All Reviews</title>
 </head>
 <body>
-  <a href="/homepage"><strong>Back to Main Page</strong></a><br>
-  <a href="/songs/browse"><strong>Back to Browse Songs</strong></a><br><br>
+  <!-- Include the user navbar at the top of the page -->
+  <%- include('../navbar-user') %>
 
   <h1><u>Review List:</u></h1>
-    <% if (!reviews) { %>
-      <%= output %>
-    <br>
-    <% } else { %>
 
+  <!-- Check if there are no reviews to display -->
+  <% if (!reviews) { %>
+    <%= output %>
+    <br>
+  <% } else { %>
+
+    <!-- Display total number of reviews found -->
     <h4><%= totalReviews %> review(s) found.</h4>
 
-  <ol>
+    <!-- Ordered list for reviews, starting number based on current page -->
+    <ol start="<%= ((page || 1) - 1) * 5 + 1 %>">
 
-     
-        
+      <!-- Loop through all songs -->
+      <% songs.forEach(function(song) { %>
 
-      <br>
-    <% } %>
+        <!-- Loop through all reviews -->
+        <% reviews.forEach(function(review) { %>
 
-      <ol start="<%= ((page || 1) - 1) * 5 + 1 %>">
-        <% songs.forEach(function(song) { %>
-            <% reviews.forEach(function(review) { %>
-                <% if (review.songId.toString() === song._id.toString()) { %>       
-              <li>
-                <strong>Song: <%= song.title %></strong><br>
-                <strong>Username: <%= review.userName %></strong><br>
-                Rating: <%= review.rating %><br>
-                Comment: <%= review.comment %>
-              </li>
-              <br>
-            <% }}) %>
-          <% }) %>  
-      </ol>
+          <!-- Only display review if it matches the current song -->
+          <% if (review.songId.toString() === song._id.toString()) { %>
+            <li>
+              <strong>Song: <%= song.title %></strong><br>
+              <strong>Username: <%= review.userName %></strong><br>
+              Rating: <%= review.rating %><br>
+              Comment: <%= review.comment %>
+            </li>
+            <br>
+          <% } %>
+        <% }) %>
+      <% }) %>
+    </ol>
 
-      <br>
+    <br>
+
+    <!-- Pagination controls - only show if there are multiple pages -->
     <% if (totalPages > 1) { %>
-    <div>
-      <% if (page > 1) { %>
-        <a href="/reviews/?page=<%= page - 1 %>">Previous</a>
-      <% } %>
-      Page <%= page %> of <%= totalPages %>
-      <% if (page < totalPages) { %>
-        <a href="/reviews/?page=<%= page + 1 %>">Next</a>
-      <% } %>
-    </div>
+      <div>
+        <!-- Previous page link - only show if not on first page -->
+        <% if (page > 1) { %>
+          <a href="/reviews/?page=<%= page - 1 %>">Previous</a>
+        <% } %>
+
+        <!-- Current page indicator -->
+        Page <%= page %> of <%= totalPages %>
+
+        <!-- Next page link - only show if not on last page -->
+        <% if (page < totalPages) { %>
+          <a href="/reviews/?page=<%= page + 1 %>">Next</a>
+        <% } %>
+      </div>
     <% } %>
 
-
-</body>
-</html>
-
-    
-  </ol>
+  <% } %>
 
 </body>
 </html>
