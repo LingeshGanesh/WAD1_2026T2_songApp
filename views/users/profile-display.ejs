@@ -9,107 +9,64 @@
 </head>
 
 <body>
-    <!-- <a href="/user/profile" class="back-link">Back</a> -->
-     <%- include("../navbar-user") %>
-     <br><br><br>
-     <a href="#" class="back-link" onclick="history.back(); return false;">← Back</a>
+    <%- include("../navbar-user") %>
+        <div class="page-body">
+            <a href="#" class="back-link" onclick="history.back(); return false;">← Back</a>
+            <section class="profile-hero">
+                <div class="profile-hero-avatar">
+                    <img src="<%= user.profilePicture %>" alt="<%= user.username %>">
+                </div>
 
-    <!-- <h2>Profile: Username - <%=user.username%> 
-    </h2>
-    <p><img src="<%=user.profilePicture%>" width="120"></p>
+                <div class="profile-hero-info">
+                    <p class="profile-label">Profile</p>
+                    <h1 class="profile-big-name">
+                        <%= user.username %>
+                    </h1>
+                    <p class="profile-subtext">
+                        <%= playlists.length %> Public Playlists
+                    </p>
 
-    <p>
-        <%= user.followers.length %>
-            <%- user.followers.length <=1 ? `<a href="/user/showConnection?type=followers&id=${user._id}">follower</a>`
-                : `<a href="/user/showConnection?type=followers&id=${user._id}">followers</a>`
-                %>
-    </p>
+                    <div class="profile-links">
+                        <a href="/user/showConnection?type=followers&id=<%= user._id %>">
+                            <%= user.followers.length %> followers
+                        </a>
+                        <a href="/user/showConnection?type=following&id=<%= user._id %>">
+                            <%= user.followings.length %> following
+                        </a>
+                    </div>
 
-    <p>
-        <%= user.followings.length %>
-            <a href="/user/showConnection?type=following&id=<%= user._id %>">following</a>
-    </p>
-    <form action="/user/<%= isFollowing ? 'unfollowUser' : 'followUser' %>" method="post">
-        <input type="hidden" name="targetUserId" value="<%=user._id%>">
-        <button type="submit">
-            <%= isFollowing ? 'Following' : 'Follow' %>
-        </button>
-    </form>
+                    <form action="/user/<%= isFollowing ? 'unfollowUser' : 'followUser' %>" method="post">
+                        <input type="hidden" name="targetUserId" value="<%= user._id %>">
+                        <button type="submit" class="profile-follow-btn">
+                            <%= isFollowing ? 'Following' : 'Follow' %>
+                        </button>
+                    </form>
+                </div>
+            </section>
 
-    <h3>Public Playlists</h3>
+            <section class="playlist-section">
+                <h2>Public Playlists</h2>
 
-        <% if (playlists.length> 0) { %>
-            <% playlists.forEach(playlist=> { %>
-                <p>
-                    <a href="/playlist/<%= playlist._id %>">
-                        <%= playlist.name %><br>
+                <% if (playlists.length> 0) { %>
+                    <div class="playlist-grid">
+                        <% playlists.forEach(playlist=> { %>
                             <% const thumbURL=playlist.thumbnailExt ?
                                 `/image/playlist-thumb/${playlist._id}${playlist.thumbnailExt}`
                                 : '/image/default-thumb.png' %>
 
-                                <img src="<%= thumbURL %>" width="120">
-
-                    </a>
-
-                </p>
-                <% }) %>
+                                <a href="/playlist/<%= playlist._id %>" class="playlist-card">
+                                    <img src="<%= thumbURL %>" alt="<%= playlist.name %>">
+                                    <span>
+                                        <%= playlist.name %>
+                                    </span>
+                                </a>
+                                <% }) %>
+                    </div>
                     <% } else { %>
-                        <p>You have no playlists yet.</p>
-                        <% } %> -->
-    <section class="profile-hero">
-        <div class="profile-hero-avatar">
-            <img src="<%= user.profilePicture %>" alt="<%= user.username %>">
+                        <div class="empty-state">No public playlists yet.</div>
+                        <% } %>
+            </section>
         </div>
-
-        <div class="profile-hero-info">
-            <p class="profile-label">Profile</p>
-            <h1 class="profile-big-name">
-                <%= user.username %>
-            </h1>
-            <p class="profile-subtext">
-                <%= playlists.length %> Public Playlists
-            </p>
-
-            <div class="profile-links">
-                <a href="/user/showConnection?type=followers&id=<%= user._id %>">
-                    <%= user.followers.length %> followers
-                </a>
-                <a href="/user/showConnection?type=following&id=<%= user._id %>">
-                    <%= user.followings.length %> following
-                </a>
-            </div>
-
-            <form action="/user/<%= isFollowing ? 'unfollowUser' : 'followUser' %>" method="post">
-                <input type="hidden" name="targetUserId" value="<%= user._id %>">
-                <button type="submit" class="profile-follow-btn">
-                    <%= isFollowing ? 'Following' : 'Follow' %>
-                </button>
-            </form>
-        </div>
-    </section>
-
-    <section class="playlist-section">
-        <h2>Public Playlists</h2>
-
-        <% if (playlists.length> 0) { %>
-            <div class="playlist-grid">
-                <% playlists.forEach(playlist=> { %>
-                    <% const thumbURL=playlist.thumbnailExt ?
-                        `/image/playlist-thumb/${playlist._id}${playlist.thumbnailExt}` : '/image/default-thumb.png' %>
-
-                        <a href="/playlist/<%= playlist._id %>" class="playlist-card">
-                            <img src="<%= thumbURL %>" alt="<%= playlist.name %>">
-                            <span>
-                                <%= playlist.name %>
-                            </span>
-                        </a>
-                        <% }) %>
-            </div>
-            <% } else { %>
-                <div class="empty-state">No public playlists yet.</div>
-                <% } %>
-    </section>
-
 </body>
 
 </html>

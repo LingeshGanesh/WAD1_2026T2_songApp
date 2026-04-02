@@ -9,30 +9,32 @@
 </head>
 
 <body>
-    <a href="/user/profile" class="back-link">Back</a>
-    <h2>
-        <%= type==='followers' ? 'Followers' : 'Following' %>
-            of User: <%= user ? user.username : '' %>
-    </h2>
+    <div class="page-body">
+        <a href="#" class="back-link" onclick="history.back(); return false;">← Back</a>
+        <h2>
+            <%= type==='followers' ? 'Followers' : 'Following' %>
+                of User: <%= user ? user.username : '' %>
+        </h2>
 
-    <% if (list.length===0) { %>
-        <p class="empty-state">No <%= type %> found</p>
-        <% } else { %>
-            <div class="connections-grid">
-                <% list.forEach(user=> { %>
-                    <a href="<%= user._id.equals(currentUserId) 
+        <% if (list.length===0) { %>
+            <p class="empty-state">No <%= type %> found</p>
+            <% } else { %>
+                <div class="connections-grid">
+                    <% list.forEach(user=> { %>
+                        <a href="<%= user._id.equals(currentUserId) 
                                 ? '/user/profile' 
                                 : `/user/displayProfile?id=${user._id}` %>" class="profile-card">
-                        <div class="avatar-wrapper">
-                            <img src="<%= user.profilePicture %>" alt="<%= user.username %>">
-                        </div>
-                        <span class="profile-username">
-                            <%= user.username %>
-                        </span>
-                    </a>
-                    <% }) %>
-            </div>
-            <% } %>
+                            <div class="avatar-wrapper">
+                                <img src="<%= user.profilePicture %>" alt="<%= user.username %>">
+                            </div>
+                            <span class="profile-username">
+                                <%= user.username %>
+                            </span>
+                        </a>
+                        <% }) %>
+                </div>
+                <% } %>
+    </div>
 </body>
 
 </html>
