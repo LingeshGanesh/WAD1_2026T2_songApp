@@ -20,7 +20,6 @@ exports.registerGet = (req, res) => {
 exports.registerPost = async (req, res) => {
     try {
         const { username = '', email = '', password = '', cfmpassword = '', avatar = '' } = req.body;
-        //console.log(username, email, avatar, password, cfmpassword);
 
         const trimmedUsername = username.trim();
         const trimmedEmail = email.trim();
@@ -46,7 +45,7 @@ exports.registerPost = async (req, res) => {
         } else if (!passwordRegex.test(password)) {
             errors.push("Password must be at least 8 characters and include uppercase, lowercase, number, and special character (@#$%^&!?)");
         };
-        //console.log(password)
+        
         if (!cfmpassword) {
             errors.push("Please confirm your password");
         } else if (password !== cfmpassword) {
@@ -119,7 +118,6 @@ exports.loginPost = async (req, res) => {
     try {
         const { email = '', password = '' } = req.body;
         const trimmedEmail = email.trim().toLowerCase();
-
 
         let errors = [];
 
@@ -334,7 +332,7 @@ exports.updatePassword = async (req, res) => {
     try {
         const id = req.session.user.id;
         const { currentPassword = '', newPassword = '', cfmPassword = '' } = req.body;
-        // console.log(currentPassword, cfmPassword, newPassword);
+        
         let errors = [];
 
         const user = await User.findUserByID(id);
