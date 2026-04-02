@@ -19,7 +19,6 @@ exports.getIndex = async (req, res) => {
 exports.showEvents = async (req, res) => {
     try {
         const userId = req.session.user?.id;
-        if (!userId) return res.redirect("/login");
 
         const user = await User.findUserByEmail(req.session.user.email);
         const filter = req.query.filter;
@@ -27,6 +26,8 @@ exports.showEvents = async (req, res) => {
 
         let eventList = await Event.retrieveAll();
 
+        // show depending on which
+        // filter is the function that does for each event it'll only return if it meets the condition after =>
         if (filter === 'past') {
             eventList = eventList.filter(event => new Date(event.date) < now);
         } else if (filter === 'attending') {
@@ -56,7 +57,7 @@ exports.createEvent = async (req, res) => {
         // get user input
         const name = req.body.name;
         const desc = req.body.desc;
-        const date = new Date(req.body.date + ':00+08:00');
+        const date = new Date(req.body.date + ':00+08:00'); // so have time with date
         const entryFee = req.body.entryFee;
         const location = req.body.location;
         const capacity = req.body.capacity;
@@ -84,9 +85,9 @@ exports.createEvent = async (req, res) => {
             let msg = "Please fix the following issues:";
 
         if (error.name === "ValidationError") {
-            msg += "<br><ul>" + Object.values(error.errors)
-                .map(err => `<li>${err.message}</li>`)
-                .join("") + "</ul>";
+            msg += "<br><ul>" + Object.values(error.errors) //initialize list
+                .map(err => `<li>${err.message}</li>`) // changes the errors into point form
+                .join("") + "</ul>"; // close the list
         }
             let result = "fail";
             res.render("events/add-event", { result, msg });
@@ -139,10 +140,10 @@ exports.getEvent = async (req, res) => {
 };
 
 exports.updateEvent = async (req, res) => {
+    const userId = req.session.user.id;
+    const id = req.body.id;
+    
     try {
-        const userId = req.session.user.id;
-
-        const id = req.body.id;
         console.log('id'+id);
         const name = req.body.name;
         console.log('name:'+name);
