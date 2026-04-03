@@ -135,3 +135,11 @@ td ol {
     margin-left: 2rem;
     list-style-type: decimal-leading-zero;
 }
+
+@media (min-width:1080px) {
+    main.pinfo {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+}

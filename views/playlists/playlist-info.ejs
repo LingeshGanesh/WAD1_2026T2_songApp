@@ -13,49 +13,55 @@
 </head>
 <body>
     <%- include("../navbar-user") %>
-    <main>
-        <%- include("subpages/playlist-header", {playlist}) %>
-        <% if (isOwner) { %>
-            <ul class="action-btns">
-                <li><a class="action-btn" href="/playlist/edit/<%= playlist._id %>">Edit</a></li>
-                <li><a class="action-btn" href="/playlist/delete/<%= playlist._id %>">Delete</a></li>
-            </ul>
-        <% } %>
-        <br>
+    <main class="pinfo">
+        <section class="column-1">
+
+            <%- include("subpages/playlist-header", {playlist}) %>
+            <% if (isOwner) { %>
+                <ul class="action-btns">
+                    <li><a class="action-btn" href="/playlist/edit/<%= playlist._id %>">Edit</a></li>
+                    <li><a class="action-btn" href="/playlist/delete/<%= playlist._id %>">Delete</a></li>
+                </ul>
+            <% } %>
+            <br>
+                
+            <fieldset>
+                <legend><strong>Description</strong></legend>
+                <%- include("subpages/playlist-desc", {playlist}) %>
+            </fieldset><br>
+            <!-- Other information -->
+            <table class="pinfo">
+                <tr>
+                    <th>Visibility</th>
+                    <th>:</th>
+                    <td><%= playlist.visibility %></td>
+                </tr>
+                <tr>
+                    <th>Creation Date</th>
+                    <th>:</th>
+                    <td><%= playlist.creationDate %></td>
+                </tr>
+                <tr>
+                    <th>Total Songs</th>
+                    <th>:</th>
+                    <td><%= playlist.songs.length %> song<%= playlist.songs.length == 1? "": "s" %></td>
+                </tr>
+                <tr>
+                    <% const minute = Math.floor(playlistDuration / 60) %>
+                    <% const second = playlistDuration % 60 %>
+                    <th>Total Duration</th>
+                    <th>:</th>
+                    <td><%= minute %> minute<%= minute == 1? "": "s" %> <%= second? `${second} second${second == 1? "": "s"}`: ""  %></td>
+                </tr>
+            </table><br>
+        </section>
+
+        <section class="column-2">
+            <!-- Songs -->
+            <%- include("subpages/songs-table", {songs: playlist.songs, durations: songsDuration}) %>
             
-        <fieldset>
-            <legend><strong>Description</strong></legend>
-            <%- include("subpages/playlist-desc", {playlist}) %>
-        </fieldset><br>
-        <!-- Other information -->
-        <table class="pinfo">
-            <tr>
-                <th>Visibility</th>
-                <th>:</th>
-                <td><%= playlist.visibility %></td>
-            </tr>
-            <tr>
-                <th>Creation Date</th>
-                <th>:</th>
-                <td><%= playlist.creationDate %></td>
-            </tr>
-            <tr>
-                <th>Total Songs</th>
-                <th>:</th>
-                <td><%= playlist.songs.length %> song<%= playlist.songs.length == 1? "": "s" %></td>
-            </tr>
-            <tr>
-                <% const minute = Math.floor(playlistDuration / 60) %>
-                <% const second = playlistDuration % 60 %>
-                <th>Total Duration</th>
-                <th>:</th>
-                <td><%= minute %> minute<%= minute == 1? "": "s" %> <%= second? `${second} second${second == 1? "": "s"}`: ""  %></td>
-            </tr>
-        </table><br>
-        <!-- Songs -->
-        <%- include("subpages/songs-table", {songs: playlist.songs, durations: songsDuration}) %>
-        
-        <p><a href="/playlist/random" class="action-btn">I'm feeling lucky!</a></p>
+            <p><a href="/playlist/random" class="action-btn">I'm feeling lucky!</a></p>
+        </section>
     </main>
 </body>
 </html>
