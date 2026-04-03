@@ -33,7 +33,8 @@ async function run() {
 
             const participantIds = participants
                 .filter(Boolean)
-                .map((user) => user._id);
+                .map((user) => user._id)
+                .filter((id) => !id.equals(author._id));
 
             const eventPayload = {
                 name: eventData.name,

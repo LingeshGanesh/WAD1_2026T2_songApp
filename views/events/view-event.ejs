@@ -12,6 +12,17 @@
         <h1><%= event.name %></h1>
         <div class="view-event-details">
             <p class="events-section-label">Details</p>
+
+            <p>
+                <span class="detail-label">Host</span>
+                <img src="<%= event.author.profilePicture %>" style="width:32px;height:32px;border-radius:50%;vertical-align:middle;">
+                <% if (event.author._id.toString() === userId) { %>
+                    <span class="event-card-name"><%= event.author.username %></span> <span style="color:#888;">(you)</span>
+                <% } else { %>
+                    <a href="/user/display-profile?id=<%= event.author._id %>" class="event-card-name"><%= event.author.username %></a>
+                <% } %>
+            </p>
+
             <p><span class="detail-label">Description</span> <%= event.desc %></p>
             <p><span class="detail-label">Location</span> <%= event.location %></p>
             <p><span class="detail-label">Starting Time</span> <%= event.date %></p>
