@@ -65,7 +65,7 @@ async function run() {
 
         for (let i = 0; i < playlistNumPerUser * allUsers.length; i++) {
             // playlist
-            const name = fetch("https://random-words-api.kushcreates.com/api?language=en&words=2")
+            const name = fetch("https://random-words-api.kushcreates.com/api?language=en&type=capitalized&words=2")
                 .then(x => x.json())
                 .then(y => [y[0].word, y[1].word].join(" "))
                 .catch(e => {"Top Text"});
