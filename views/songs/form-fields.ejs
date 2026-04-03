@@ -3,6 +3,7 @@
 <!-- Determine whether to show uploader and album fields based on passed variables -->
 <% const displayUploader = typeof showUploader === "undefined" ? true : showUploader; %>
 <% const displayAlbum = typeof showAlbum === "undefined" ? true : showAlbum; %>
+<% const requireYoutubeUrl = typeof requireYoutubeUrl === "undefined" ? false : requireYoutubeUrl; %>
 
 <!-- Hidden field for uploader (only shown if showUploader is true) -->
 <% if (displayUploader !== false) { %>
@@ -39,4 +40,4 @@
 <input type="number" name="duration" id="duration" min="1" value="<%= fields.duration || '' %>" required><br><br>
 
 <label for="youtubeUrl">YouTube URL</label><br>
-<input type="url" name="youtubeUrl" id="youtubeUrl" value="<%= fields.youtubeUrl || '' %>"><br><br>
+<input type="url" name="youtubeUrl" id="youtubeUrl" value="<%= fields.youtubeUrl || '' %>" <%= requireYoutubeUrl ? "required" : "" %>><br><br>

@@ -17,10 +17,28 @@ function normalizeSongFields(body) {
     };
 }
 
+function isValidYouTubeUrl(url) {
+    if (!url) {
+        return false;
+    }
+
+    try {
+        const parsedUrl = new URL(url);
+        const hostname = parsedUrl.hostname.toLowerCase();
+        return hostname === "youtube.com"
+            || hostname === "www.youtube.com"
+
+    } catch (error) {
+        return false;
+    }
+}
+
 // Helper function for validating song fields
 // INPUT: Normalized song fields
 // OUTPUT: Error message string if validation fails, or null if validation succeeds
-function validateSong(fields) {
+function validateSong(fields, options = {}) {
+    const { requireYouTubeUrl = false } = options;
+
     // Required fields: title, artist
     if (!fields.title || !fields.artist) {
         return "Title and artist are required.";
@@ -33,6 +51,15 @@ function validateSong(fields) {
     if (!Number.isFinite(fields.duration) || fields.duration <= 0) {
         return "Duration must be a positive number of seconds.";
     }
+
+    if (requireYouTubeUrl && !fields.youtubeUrl) {
+        return "A YouTube link is required when creating a song.";
+    }
+
+    if (fields.youtubeUrl && !isValidYouTubeUrl(fields.youtubeUrl)) {
+        return "Please enter a valid YouTube link.";
+    }
+
     return null;
 }
 
@@ -230,7 +257,7 @@ exports.browse = async (req, res) => {
 // OUTPUT: If validation fails, re-render create form with error messages; if successful, redirect to the new song's info page
 exports.createSong = async (req, res) => {
     const fields = normalizeSongFields(req.body); // Normalize and format form data into consistent song fields
-    const validationError = validateSong(fields); // Validate the song fields and get any validation error message
+    const validationError = validateSong(fields, { requireYouTubeUrl: true }); // Validate the song fields and get any validation error message
     fields.uploader = req.user._id; // Store the uploader as a User ObjectId reference
     fields.album = null; // Songs created here are not attached to an album initially
 
