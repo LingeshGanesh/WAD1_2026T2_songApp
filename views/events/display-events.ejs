@@ -17,7 +17,6 @@
     <a href="/events/event-list?filter=attending"><button class="<%= filter === 'attending' ? 'tab-active' : '' %>">Attending</button></a>
   </div>
   <% if (eventList.length === 0) { %>
-    <a href="/events" class="back-link">← Back</a>
     <p class="empty-state">No events yet.</p>
   <% } else { %>
 
