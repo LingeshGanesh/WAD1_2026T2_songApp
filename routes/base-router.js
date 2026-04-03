@@ -27,8 +27,8 @@ router.use("/album", authMiddleware.isLoggedIn, albumRouter);
 router.use("/songs", authMiddleware.isLoggedIn, songsRouter);
 
 // 404 Not Found
-router.all(/.*/, (req, res) => {
-    res.status(404).render('status/not-found', { url: req.url, user: req.session.user || null });
+router.all(/.*/, authMiddleware.isLoggedIn, (req, res) => {
+    res.status(404).render('status/not-found', { url: req.url });
 })
 
 // Export
