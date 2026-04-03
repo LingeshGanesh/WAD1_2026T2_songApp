@@ -10,7 +10,7 @@ Lowkify is a web application built for music lovers who want a simple and enjoya
 
 # ⚙️ Installation
 1. Install npm and nodejs.
-2. Download zip or clone this repository
+2. Download zip and extract, or clone this repository
 3. Open the terminal in the app folder and type the following
 ```
 npm install
