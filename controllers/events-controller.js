@@ -1,16 +1,10 @@
-const fs = require('fs/promises');
 const mongoose = require('mongoose');
+const statusPage = require("../modules/status-page");
 
 // Get Service model
 const Event = require('./../models/events-model');
 const User = require('./../models/users-model');
 
-function renderEventNotFound(req, res) {
-    return res.status(404).render("status/not-found", {
-        url: req.url,
-        user: req.user || req.session?.use || null
-    });
-}
 
 exports.getIndex = async (req, res) => {
     try {
@@ -115,7 +109,7 @@ exports.showEventList = async (req, res) => {
         res.render("events/user-events", { events });
     } catch (error) {
         console.error(error);
-        res.send("Error reading database");
+        statusPage.renderISE(res, "Error reading database");
     }
 };
 
@@ -125,12 +119,14 @@ exports.viewEvent = async (req, res) => {
         const user = await User.findUserByID(userId);
         // .populate gets the relevant field connected and loads their data in
         const event = await Event.findById(req.query.id).populate("author participants");
+        if (!event) {return statusPage.renderNotFound(req, res);} // Harvin: show not found page if event not found
         res.render("events/view-event", { event, userId, userEvents: user.events });
     } catch (error) {
         console.error(error);
         if (!mongoose.isValidObjectId(req.query.id)) {
-            return renderEventNotFound(req, res);
+            return statusPage.renderNotFound(req, res);
         }
+        statusPage.renderISE(res, "Error reading database");
     }
 };
 
@@ -148,8 +144,9 @@ exports.getEvent = async (req, res) => {
     } catch (error) {
         console.error(error);
         if (!mongoose.isValidObjectId(req.query.id)) {
-            return renderEventNotFound(req, res);
+            return statusPage.renderNotFound(req, res);
         }
+        statusPage.renderISE(res, "Error reading database");
     }
 };
 
@@ -227,7 +224,7 @@ exports.deleteAnEvent = async (req, res) => {
 
     } catch (error) {
         console.error(error);
-        res.status(500).send("Something went wrong");
+        statusPage.renderISE(res, "Something went wrong");
     }
 };
 
@@ -238,13 +235,15 @@ exports.getMarkedEvent = async (req, res) => {
         console.log(id);
 
         const result = await Event.findByIdAndAuthor(id, userId);
+        if (!result) {return statusPage.renderNotFound(req, res);} // Harvin: show not found page if event not found
         res.render("events/delete-event", { result });
 
     } catch (error) {
         console.log(error);
         if (!mongoose.isValidObjectId(req.query.id)) {
-            return renderEventNotFound(req, res);
+            return statusPage.renderNotFound(req, res);
         }
+        statusPage.renderISE(res, "Error calling database.");
     }
 };
 
@@ -253,7 +252,7 @@ exports.showForm = (req, res) => {
         res.render("events/search-event", { result: undefined, searchTerm: undefined });
     } catch (error) {
         console.error(error);
-        res.status(500).send("Something went wrong");
+        statusPage.renderISE(res, "Something went wrong");
     }
 };
 
@@ -273,7 +272,7 @@ exports.submitEvent = async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        res.status(500).send("Something went wrong");
+        statusPage.renderISE(res, "Something went wrong");
     }
 };
 
@@ -305,7 +304,7 @@ exports.attendEvent = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.send("Error adding event");
+    statusPage.renderISE(res, "Error adding event");
   }
 };
 
@@ -323,6 +322,6 @@ exports.removeEvent = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.send("Error removing event");
+    statusPage.renderISE(res, "Error removing event");
   }
 };

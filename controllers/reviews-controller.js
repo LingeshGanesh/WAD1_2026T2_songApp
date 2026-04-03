@@ -1,17 +1,8 @@
 const Review = require('../models/reviews-model');
 const Song = require("../models/songs-model");
 const User = require('../models/users-model');
+const statusPage = require('../modules/status-page');
 const mongoose = require("mongoose");
-
-// Helper function to render a 404 not found page for songs
-// INPUT: req and res objects from Express route handlers
-// OUTPUT: Rendered 404 not found page with the requested URL and user information if available
-function renderSongNotFound(req, res) {
-  return res.status(404).render("status/not-found", {
-    url: req.url,
-    user: req.user || req.session?.user || null
-  });
-}
 
 // CREATE REVIEW
 exports.createReview = async (req, res) => {
@@ -21,8 +12,6 @@ exports.createReview = async (req, res) => {
     const user = await User.findUserByID(userId);
     console.log("User found:", user);
 
-    const userName = user.username;
-
     // song ID from URL parameters
     const songId = req.params.songID;
 
@@ -31,7 +20,7 @@ exports.createReview = async (req, res) => {
     let error = '';
     // 404 if invalid song ID
     if (!mongoose.isValidObjectId(songId)) {
-      return renderSongNotFound(req, res);
+      return statusPage.renderNotFound(req, res);
     }
 
     // error validation
@@ -124,7 +113,7 @@ exports.getReviewInfo = async (req, res) => {
   // 404 if invalid song ID
   const songId = req.params.songID;
   if (!mongoose.isValidObjectId(songId)) {
-    return renderSongNotFound(req, res);
+    return statusPage.renderNotFound(req, res);
   }
 
   try {
@@ -188,7 +177,7 @@ exports.updateReview = async (req, res) => {
   }
   // 404 if invalid song ID
   if (!mongoose.isValidObjectId(songId)) {
-    return renderSongNotFound(req, res);
+    return statusPage.renderNotFound(req, res);
   }
 
   if (review.userId.toString() !== req.session.user.id) {
@@ -225,7 +214,7 @@ exports.deleteReview = async (req, res) => {
   const { reviewId } = req.body;
 
   if (!mongoose.isValidObjectId(songId)) {
-    return renderSongNotFound(req, res);
+    return statusPage.renderNotFound(req, res);
   }
 
   try {

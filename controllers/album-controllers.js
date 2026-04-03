@@ -1,4 +1,4 @@
-const fs = require('fs/promises');
+const statusPage = require('../modules/status-page');
 const mongoose = require('mongoose');
 const Album = require('../models/albums-model');
 const Song = require('../models/songs-model');
@@ -9,7 +9,8 @@ exports.showAlbumList = async (req, res) => {
         const allAlbums = await Album.retrieveAll().populate('createdBy') || [];
         res.render("albums/show-album-list", { allAlbums });
     } catch (error) {
-        console.error(error)
+        console.error(error);
+        return statusPage.renderISE(res, "Error calling database.");
     }
 };
 
@@ -17,22 +18,16 @@ exports.albumInfo = async (req, res) => {
     const albumID = req.params.id // extracts album ID from url, req.params.id returns the objectID
     // if /album/123456789, req.params.id returns '123456789' stored in albumID to find specific album in the database
 
-    function renderAlbumNotFound(req, res) {
-        return res.status(404).render("status/not-found", {
-            url: req.url,
-            user: req.user || req.session?.user || null
-        });
-    }
-
     if (!mongoose.isValidObjectId(albumID)) {
-        return renderAlbumNotFound(req, res)
+        return statusPage.renderNotFound(req, res);
     }
     try {
         // populate to get song and creator details
         const album = await Album.findByID(albumID).populate('songs').populate('createdBy');
         res.render("albums/show-album-created", { album })
     } catch (error) {
-        console.error(error)
+        console.error(error);
+        return statusPage.renderISE(res, "Error calling database.");
     }
 };
 
@@ -40,7 +35,8 @@ exports.showAddForm = async (req, res) => {
     try {
         res.render("albums/add-album", { msg: "" })
     } catch (error) {
-        console.error(error)
+        console.error(error);
+        return statusPage.renderISE(res, "Error calling database.");
     }
 };
 
@@ -107,36 +103,19 @@ exports.createAlbum = async (req, res) => {
 exports.showEditForm = async (req, res) => {
     const albumID = req.params.id;
 
-    function renderAlbumNotFound(req, res) {
-        return res.status(404).render("status/not-found", {
-            url: req.url,
-            user: req.user || req.session?.user || null
-        });
-    }
-
     if (!mongoose.isValidObjectId(albumID)) {
-        return renderAlbumNotFound(req, res)
+        return statusPage.renderNotFound(req, res);
     }
     try {
         const album = await Album.findByIDAndPopulate(albumID);
         if (album.createdBy._id.toString() !== req.session.user.id) {
-            return res.send(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <link rel="stylesheet" href="/css/album-dark.css">
-                </head>
-                <body>
-                    <h1>You do not have permission to access this.</h1>
-                    <a href="/album/browse">Go back</a>
-                </body>
-                </html>
-            `);
+            return showForbiddenPage(res);
         }
 
         res.render("albums/edit-album", { album, msg: "" }); // add msg: ""
     } catch (error) {
         console.error(error);
+        return statusPage.renderISE(res, "Error calling database.");
     }
 };
 
@@ -144,33 +123,12 @@ exports.updateAlbum = async (req, res) => {
     const albumID = req.params.id;
     const album = await Album.findByIDAndPopulate(albumID);
 
-    // Helper function to render a 404 not found page for songs
-    // INPUT: req and res objects from Express route handlers
-    // OUTPUT: Rendered 404 not found page with the requested URL and user information if available
-    function renderAlbumNotFound(req, res) {
-        return res.status(404).render("status/not-found", {
-            url: req.url,
-            user: req.user || req.session?.user || null
-    });
-    }
-
     if (!mongoose.isValidObjectId(albumID)) {
-        return renderAlbumNotFound(req,res)
+        return statusPage.renderNotFound(req,res);
     }
 
     if (album.createdBy._id.toString() !== req.session.user.id) {
-        return res.send(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <link rel="stylesheet" href="/css/album-dark.css">
-                </head>
-                <body>
-                    <h1>You do not have permission to access this.</h1>
-                    <a href="/album/browse">Go back</a>
-                </body>
-                </html>
-            `);
+        return showForbiddenPage(res);
     }
 
     const title = req.body.title;
@@ -193,17 +151,17 @@ exports.updateAlbum = async (req, res) => {
 
     if (year.toString().length !== 4) {
         const album = await Album.findByIDAndPopulate(albumID);
-        return res.render("albums/edit-album", { album, msg: "Year must be 4 digits" })
+        return res.render("albums/edit-album", { album, msg: "Year must be 4 digits" });
     }
 
     if (year < 1900) {
         const album = await Album.findByIDAndPopulate(albumID);
-        return res.render("albums/edit-album", { album, msg: "Year must be after the 1900s" })
+        return res.render("albums/edit-album", { album, msg: "Year must be after the 1900s" });
     }
 
     if (year > currentYear) {
         const album = await Album.findByIDAndPopulate(albumID);
-        return res.render("albums/edit-album", { album, msg: `Year cannot be after ${currentYear}.` })
+        return res.render("albums/edit-album", { album, msg: `Year cannot be after ${currentYear}.` });
     }
 
     const songIds = songs.split(',').map(id => new mongoose.Types.ObjectId(id.trim()));
@@ -253,68 +211,33 @@ exports.updateAlbum = async (req, res) => {
 exports.getMarkedAlbum = async (req, res) => {
     const albumID = req.params.id;
 
-    function renderAlbumNotFound(req, res) {
-        return res.status(404).render("status/not-found", {
-            url: req.url,
-            user: req.user || req.session?.user || null
-        });
-    }
-
     if (!mongoose.isValidObjectId(albumID)) {
-        return renderAlbumNotFound(req, res)
+        return statusPage.renderNotFound(req, res)
     }
 
     try {
         const album = await Album.findByID(albumID).populate('songs').populate('createdBy');
         if (album.createdBy._id.toString() !== req.session.user.id) {
-            return res.send(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <link rel="stylesheet" href="/css/album-dark.css">
-                </head>
-                <body>
-                    <h1>You do not have permission to access this.</h1>
-                    <a href="/album/browse">Go back</a>
-                </body>
-                </html>
-            `);
+            return showForbiddenPage(res);
         }
         res.render("albums/show-album-delete", { album })
     } catch (error) {
         console.error(error)
+        return statusPage.renderISE(res, "Error calling database.");
     }
 };
 
 exports.deleteAlbum = async (req, res) => {
     const albumID = req.params.id;
 
-    function renderAlbumNotFound(req, res) {
-        return res.status(404).render("status/not-found", {
-            url: req.url,
-            user: req.user || req.session?.user || null
-        });
-    }
-
     if (!mongoose.isValidObjectId(albumID)) {
-        return renderAlbumNotFound(req, res)
+        return statusPage.renderNotFound(req, res)
     }
 
     try {
         const album = await Album.findByID(albumID);
         if (album.createdBy.toString() !== req.session.user.id) {
-            return res.send(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <link rel="stylesheet" href="/css/album-dark.css">
-                </head>
-                <body>
-                    <h1>You do not have permission to access this.</h1>
-                    <a href="/album/browse">Go back</a>
-                </body>
-                </html>
-            `);
+            return showForbiddenPage(res);
         }
 
         const songIds = album.songs.map(s => s._id ? s._id : s);
@@ -342,6 +265,7 @@ exports.deleteAlbum = async (req, res) => {
         }
     } catch (error) {
         console.error(error);
+        return statusPage.renderISE(res, "Error calling database.");
     }
 };
 
@@ -355,3 +279,19 @@ exports.searchSongs = async (req, res) => {
     }).select('_id title artist').limit(10); //only the songid, song title and song artist will be returned
     res.json(songs); // sends the result back as JSON objects for EJS to fetch and render as dropdown list
 };
+
+// Harvin
+function showForbiddenPage(res) {
+    return res.status(403).send(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <link rel="stylesheet" href="/css/album-dark.css">
+        </head>
+        <body>
+            <h1>You do not have permission to access this.</h1>
+            <a href="/album/browse">Go back</a>
+        </body>
+        </html>
+    `);
+}

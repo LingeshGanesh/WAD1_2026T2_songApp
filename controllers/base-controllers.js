@@ -2,6 +2,7 @@
 const User = require("../models/users-model");
 const Song = require("../models/songs-model");
 const Playlist = require("../models/playlists-model");
+const statusPage = require("../modules/status-page");
 
 // Controllers
 exports.guestpage = async (req, res) => {

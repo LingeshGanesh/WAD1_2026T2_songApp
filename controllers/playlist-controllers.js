@@ -79,7 +79,7 @@ exports.playlistInfo = async (req, res) => {
 
     // The given playlistID is not a valid ID.
     if (!mongoose.isValidObjectId(playlistID)) {
-        return res.status(404).render("status/not-found", {url: req.url, user});
+        return statusPage.renderNotFound(req, res);
     }
     
     try {

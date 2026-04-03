@@ -1,16 +1,7 @@
 const mongoose = require("mongoose");
 const Song = require("../models/songs-model");
 const { ALLOWED_GENRES } = require("../models/songs-model");
-
-// Helper function to render a 404 not found page for songs
-// INPUT: req and res objects from Express route handlers
-// OUTPUT: Rendered 404 not found page with the requested URL and user information if available
-function renderSongNotFound(req, res) {
-    return res.status(404).render("status/not-found", {
-        url: req.url,
-        user: req.user || req.session?.user || null
-    });
-}
+const statusPage = require("../modules/status-page");
 
 // HELPER FUNCTIONS
 // Helper function for normalizing and formating song fields from form data
@@ -161,20 +152,20 @@ exports.showEditForm = async (req, res) => {
 
     // Validate songID format
     if (!mongoose.isValidObjectId(songID)) {
-        return renderSongNotFound(req, res);
+        return statusPage.renderNotFound(req, res);
     }
     // Load song data from the database
     try {
         // Check if song exists before rendering edit form
         const song = await Song.findByID(songID);
         if (!song) {
-            return renderSongNotFound(req, res);
+            return statusPage.renderNotFound(req, res);
         }
         // Render edit form with existing song data
         res.render("songs/edit-form", { error: null, song });
     } catch (error) {
         console.error(error);
-        res.status(500).send("Error loading song for editing.");
+        statusPage.renderISE(res, "Error loading song for editing.");
     }
 };
 
@@ -185,20 +176,20 @@ exports.showDeleteForm = async (req, res) => {
     const { songID } = req.params;
     // Validate songID format
     if (!mongoose.isValidObjectId(songID)) {
-        return renderSongNotFound(req, res);
+        return statusPage.renderNotFound(req, res);
     }
     // Load song data from the database
     try {
         const song = await Song.findByID(songID);
         // If song not found, show 404 page
         if (!song) {
-            return renderSongNotFound(req, res);
+            return statusPage.renderNotFound(req, res);
         }
         // Render delete confirmation form with song data
         res.render("songs/delete-form", { error: null, song, formatDuration });
     } catch (error) {
         console.error(error);
-        res.status(500).send("Error loading song for deletion.");
+        statusPage.renderISE(res, "Error loading song for deletion.");
     }
 };
 
@@ -230,7 +221,7 @@ exports.browse = async (req, res) => {
     } catch (error) {
         // Log the error and show a generic error message to the user
         console.error(error);
-        res.status(500).send("Error loading songs from the database.");
+        statusPage.renderISE(res, "Error loading songs from the database.");
     }
 };
 
@@ -266,20 +257,20 @@ exports.songInfo = async (req, res) => {
     const { songID } = req.params;
     // 404 if invalid object ID
     if (!mongoose.isValidObjectId(songID)) {
-        return renderSongNotFound(req, res);
+        return statusPage.renderNotFound(req, res);
     }
 
     try {
         const song = await Song.findByID(songID);
         // if song not found, show 404 page
         if (!song) {
-            return renderSongNotFound(req, res);
+            return statusPage.renderNotFound(req, res);
         }
         // Render song info page with song details
         res.render("songs/song-info", { song, formatDuration });
     } catch (error) {
         console.error(error);
-        res.status(500).send("Error loading song from the database.");
+        statusPage.renderISE(res, "Error loading song from the database.");
     }
 };
 
@@ -294,7 +285,7 @@ exports.updateSong = async (req, res) => {
 
     // If not valid ObjectId, show 404 page
     if (!mongoose.isValidObjectId(songID)) {
-        return renderSongNotFound(req, res);
+        return statusPage.renderNotFound(req, res);
     }
     // If validation error, re-render form with error message and previously entered values
     if (validationError) {
@@ -307,7 +298,7 @@ exports.updateSong = async (req, res) => {
     try {
         const existingSong = await Song.findByID(songID);
         if (!existingSong) {
-            return renderSongNotFound(req, res);
+            return statusPage.renderNotFound(req, res);
         }
 
         // Only allow updates if uploader matches
@@ -343,14 +334,14 @@ exports.deleteSong = async (req, res) => {
     const uploader = req.user._id; // Get the user ID of the logged-in user from the session
     // Validate songID format
     if (!mongoose.isValidObjectId(songID)) {
-        return renderSongNotFound(req, res);
+        return statusPage.renderNotFound(req, res);
     }
 
     try {
         const song = await Song.findByID(songID);
         // If song not found, show 404 page
         if (!song) {
-            return renderSongNotFound(req, res);
+            return statusPage.renderNotFound(req, res);
         }
         // Only allow deletion if uploader matches and confirmation text is correct
         if (song.uploader._id.toString() !== uploader.toString()) {
@@ -373,6 +364,6 @@ exports.deleteSong = async (req, res) => {
         res.redirect("/songs/browse");
     } catch (error) {
         console.error(error);
-        res.status(500).send("Error deleting song from the database.");
+        statusPage.renderISE(res, "Error deleting song from the database.");
     }
 };
