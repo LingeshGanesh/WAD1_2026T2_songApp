@@ -4,11 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>404 Not Found</title>
+    <link rel="stylesheet" href="/css/events-styles.css">
 </head>
 <body>
     <%- include("../navbar-user") %>
-    <h1>404 Not Found</h1>
-    <p>The url <strong>lowkify.com<%= url %></strong> does not exist.</p>
-    <a href="/">Return to homepage</a>
+    <section class="home-hero">
+        <h1>404 <span class="home-accent">Not Found</span></h1>
+        <p>The url <strong>lowkify.com<%= url %></strong> does not exist.</p>
+        <a href="/"><button class="home-btn-primary">Return to homepage</button></a>
+    </section>
 </body>
 </html>

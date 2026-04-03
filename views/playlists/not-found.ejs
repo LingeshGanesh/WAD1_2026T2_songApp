@@ -4,14 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Playlist Not Found</title>
+    <link rel="stylesheet" href="/css/events-styles.css">
 </head>
 <body>
     <%- include("../navbar-user") %>
-    <h1>Playlist Not Found</h1>
-    <p>The playlist you're looking for is either private or not found.</p>
-    <ul>
-        <li><a href="/playlist/browse">Browse Playlist</a></li>
-        <li><a href="/">Go to homepage</a></li>
-    </ul>
+    <section class="home-hero">
+        <h1>Playlist <span class="home-accent">Not Found</span></h1>
+        <p>The playlist you're looking for is either private or not found.</p>
+        <ul class="home-cta-row" style="list-style-type: none;">
+            <li><a href="/playlist/browse">
+                <button class="home-btn-primary">Browse Playlist</button>
+            </a></li>
+            <li><a href="/">
+                <button class="home-btn-secondary">Go to homepage</button>
+            </a></li>
+        </ul>
+    </section>
 </body>
 </html>
