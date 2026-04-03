@@ -3,12 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 Not Found</title>
+    <title>500 Internal Server Error</title>
+    <link rel="stylesheet" href="/css/events-styles.css">
 </head>
 <body>
     <%- include("../navbar-user") %>
-    <h1>500 Internal Server Error</h1>
-    <p><%= message %></p>
-    <a href="/">Return to homepage</a>
+    <section class="home-hero">
+        <h1>500 <span class="home-accent">Internal Server Error</span></h1>
+        <p><%= message %></p>
+        <a href="/"><button class="home-btn-primary">Return to homepage</button></a>
+    </section>
 </body>
 </html>
