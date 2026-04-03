@@ -96,6 +96,9 @@ table:not(.playlist-header):not(.pinfo) {
     border-radius: 0.5rem;
     padding: 0.2rem;
     transition: transform 0.5s, background-color 0.5s;
+    td {
+        padding: 0.5rem;
+    }
     a, h1 {
         color: white;
         text-decoration: none;
