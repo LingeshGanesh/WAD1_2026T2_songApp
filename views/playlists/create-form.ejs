@@ -4,24 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/playlist-browse.css">
+    <link rel="stylesheet" href="/css/events-styles.css">
     <title>Create Playlist</title>
 </head>
 <body>
     <%- include("../navbar-user") %>
-    <h1>Create Playlist</h1>
-    <% if (error) { %>
-        <p style="color: red;"><strong>Error:</strong> Playlist must have at least one song.</p>
-    <% } %>
-    <form action="/playlist/create" method="post" enctype="multipart/form-data">
-
-        <%- include("subpages/form-fields.ejs", error? {fields, editThumb: false, error}: {editThumb: false, error}) %> 
-
-        <!-- Song Selection -->
-        <%- include("subpages/songs-insert-table", {songs: []}) %>
-        <br>
-    <input type="submit" value="Create Playlist">
-
-    </form>
-
+    <main>
+        <h1>Create Playlist</h1>
+        <% if (error) { %>
+            <p style="color: red;"><strong>Error:</strong> Playlist must have at least one song.</p>
+        <% } %>
+        <form action="/playlist/create" method="post" enctype="multipart/form-data">
+    
+            <%- include("subpages/form-fields.ejs", error? {fields, editThumb: false, error}: {editThumb: false, error}) %> 
+    
+            <!-- Song Selection -->
+            <%- include("subpages/songs-insert-table", {songs: []}) %>
+            <br>
+        <input type="submit" value="Create Playlist">
+    
+        </form>
+    </main>
 </body>
 </html>

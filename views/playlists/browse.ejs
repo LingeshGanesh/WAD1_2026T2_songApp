@@ -10,7 +10,6 @@
 <body>
     <%- include("../navbar-user") %>
     <main>
-        <div class="playlist-page-content">
         <h1>Browse Playlists</h1>
         <ul class="action-btns">
             <li><a class="action-btn" href="/playlist/create">Create a new playlist</a></li>
@@ -35,7 +34,6 @@
         </form>
         <br>
         <%- include("subpages/playlists-table", {playlists: allPlaylists}) %>
-        </div>
     </main>
 </body>
 </html>

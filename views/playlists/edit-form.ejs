@@ -4,25 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/playlist-browse.css">
+    <link rel="stylesheet" href="/css/events-styles.css">
     <title>Edit Playlist</title>
 </head>
 <body>
     <%- include("../navbar-user") %>
-    <h1>Edit Playlist</h1>
-    <% if (error) { %>
-        <p style="color: red;"><strong>Error:</strong> Playlist must have at least one song.</p>
-    <% } %>
-    <form action="/playlist/edit/<%= playlist._id %>" method="post" enctype="multipart/form-data">
-        
-        <!-- error set to true to fill the fields, as if there is an error -->
-        <%- include("subpages/form-fields.ejs", {fields: playlist, editThumb: true, error: true}) %>
-
-        <!-- Song Selection -->
-        <%- include("subpages/songs-insert-table", {songs: playlist.songs}) %>
-        <br>
-        <input type="submit" value="Save Changes">
-
-    </form>
+    <main>
+        <h1>Edit Playlist</h1>
+        <% if (error) { %>
+            <p style="color: red;"><strong>Error:</strong> Playlist must have at least one song.</p>
+        <% } %>
+        <form action="/playlist/edit/<%= playlist._id %>" method="post" enctype="multipart/form-data">
+            
+            <!-- error set to true to fill the fields, as if there is an error -->
+            <%- include("subpages/form-fields.ejs", {fields: playlist, editThumb: true, error: true}) %>
+    
+            <!-- Song Selection -->
+            <%- include("subpages/songs-insert-table", {songs: playlist.songs}) %>
+            <br>
+            <input type="submit" value="Save Changes">
+    
+        </form>
+    </main>
 
 </body>
 </html>

@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= playlist.name %></title>
     <link rel="stylesheet" href="/css/playlist-browse.css">
+    <link rel="stylesheet" href="/css/events-styles.css">
+    <title><%= playlist.name %></title>
     <style>
         table.pinfo th {text-align: left;}
         .random {background-color: red;}
@@ -20,11 +21,12 @@
                 <li><a class="action-btn" href="/playlist/delete/<%= playlist._id %>">Delete</a></li>
             </ul>
         <% } %>
-        
+        <br>
+            
         <fieldset>
             <legend><strong>Description</strong></legend>
             <%- include("subpages/playlist-desc", {playlist}) %>
-        </fieldset>
+        </fieldset><br>
         <!-- Other information -->
         <table class="pinfo">
             <tr>

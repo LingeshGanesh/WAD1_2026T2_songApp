@@ -4,82 +4,87 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/playlist-browse.css">
+    <link rel="stylesheet" href="/css/events-styles.css">
     <title>Delete Playlist</title>
     <style>
         table th.pinfo {text-align: left;}
         th {vertical-align: top;}
-        td ol {margin: 0;}
-        #overload-songs {text-align: center;}
+        #overload-songs {text-align: left;}
+        #overload-songs>#ellip {padding-left: 1rem;}
         #overload-songs>div:last-child {font-style: italic;}
         form>input:last-child {background-color: red;color: white;}
     </style>
 </head>
 <body>
     <%- include("../navbar-user") %>
-    <h1>Delete Playlist "<%= playlist.name %>"</h1>
-    <p>You're going to <strong>permanently</strong> delete this playlist:</p>
-    <table>
-        <tr>
-            <th class="pinfo">Name</th>
-            <th>:</th>
-            <td><%= playlist.name %></td>
-        </tr>
-        <tr>
-            <th class="pinfo">Description</th>
-            <th>:</th>
-            <td><%- include("subpages/playlist-desc", {playlist}) %></td>
-        </tr>
-        <tr>
-            <th class="pinfo">Genre</th>
-            <th>:</th>
-            <td><%= playlist.genre %></td>
-        </tr>
-        <tr>
-            <th class="pinfo">Visibility</th>
-            <th>:</th>
-            <td><%= playlist.visibility %></td>
-        </tr>
-        <tr>
-            <th class="pinfo">Songs</th>
-            <th>:</th>
-            <td>
-                <ol>
-                    <% for (let i = 0; i < Math.min(playlist.songs.length, 6); i++) { %>
-                        <% const song = playlist.songs[i] %>
-                        <li><a href="/song/<% song._id %>">
-                            <%= song.artist %> - <%= song.title %>
-                        </a></li>
+    <main>
+        <h1>Delete Playlist "<%= playlist.name %>"</h1>
+        <p>You're going to <strong>permanently</strong> delete this playlist:</p>
+        <table>
+            <tr>
+                <th class="pinfo">Name</th>
+                <th>:</th>
+                <td><%= playlist.name %></td>
+            </tr>
+            <tr>
+                <th class="pinfo">Description</th>
+                <th>:</th>
+                <td><%- include("subpages/playlist-desc", {playlist}) %></td>
+            </tr>
+            <tr>
+                <th class="pinfo">Genre</th>
+                <th>:</th>
+                <td><%= playlist.genre %></td>
+            </tr>
+            <tr>
+                <th class="pinfo">Visibility</th>
+                <th>:</th>
+                <td><%= playlist.visibility %></td>
+            </tr>
+            <tr>
+                <th class="pinfo">Songs</th>
+                <th>:</th>
+                <td>
+                    <ol>
+                        <% for (let i = 0; i < Math.min(playlist.songs.length, 6); i++) { %>
+                            <% const song = playlist.songs[i] %>
+                            <li><a href="/song/<% song._id %>">
+                                <%= song.artist %> - <%= song.title %>
+                            </a></li>
+                        <% } %>
+                    </ol>
+                    <% if (playlist.songs.length > 6) { %>
+                        <div id="overload-songs">
+                            <div id="ellip">&vellip;</div>
+                            <div>(and <%= playlist.songs.length - 6 %> more)</div>
+                        </div>
                     <% } %>
-                </ol>
-                <% if (playlist.songs.length > 6) { %>
-                    <div id="overload-songs">
-                        <div>&vellip;</div>
-                        <div>(and <%= playlist.songs.length - 6 %> more)</div>
-                    </div>
-                <% } %>
-            </td>
-        </tr>
-    </table>
-
-    <% if (errorMsgs) { %>
-        <ul style="color: red;">
-            <% errorMsgs.forEach(msg => { %>
-                <li><%= msg %></li>
-            <% }) %>
-        </ul>    
-    <% } %>
-
-    <form action="/playlist/delete/<%= playlist._id %>" method="post">
-        <label for="username">Type your <strong>username</strong> to confirm:</label><br>
-        <input type="text" name="username" id="username" required><br><br>
-
-        <input type="checkbox" name="declaration" id="declaration-1" required>
-        <label for="declaration-1">I confirm to <strong>permanently</strong> delete this playlist.</label><br>
-        
-        <input type="checkbox" name="declaration" id="declaration-2" required>
-        <label for="declaration-2">I understand that this action is <strong>irreversible</strong> and <strong>cannot be undone</strong>.</label><br>
+                </td>
+            </tr>
+        </table>
+    
         <br>
-        <input type="submit" value="Delete Playlist">
-    </form>
+        <% if (errorMsgs) { %>
+            <ul style="color: red;">
+                <% errorMsgs.forEach(msg => { %>
+                    <li><%= msg %></li>
+                <% }) %>
+            </ul>    
+            <br>
+        <% } %>
+    
+        <form action="/playlist/delete/<%= playlist._id %>" method="post">
+            <label for="username">Type your <strong>username</strong> to confirm:</label><br>
+            <input type="text" name="username" id="username" required><br>
+    
+            <input type="checkbox" name="declaration" id="declaration-1" required>
+            <label for="declaration-1">I confirm to <strong>permanently</strong> delete this playlist.</label><br>
+            
+            <input type="checkbox" name="declaration" id="declaration-2" required>
+            <label for="declaration-2">I understand that this action is <strong>irreversible</strong> and <strong>cannot be undone</strong>.</label><br>
+            <br>
+            <input type="submit" value="Delete Playlist">
+        </form>
+    </main>
 </body>
 </html>

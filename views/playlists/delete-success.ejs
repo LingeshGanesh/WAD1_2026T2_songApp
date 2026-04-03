@@ -3,17 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/playlist-browse.css">
+    <link rel="stylesheet" href="/css/events-styles.css">
     <title>Playlist Deletion Successful!</title>
 </head>
 <body>
     <%- include("../navbar-user") %>
-    <div>
+    <section class="home-hero">
         <h1>Playlist Deletion Successful!</h1>
-        <ul class="action-btns">
-            <li><a class="action-btn" href="/playlist/browse">Browse playlists</a></li>
-            <li><a class="action-btn" href="/">Go to Homepage</a></li>
+        <ul class="home-cta-row" style="list-style-type: none;">
+            <li><a class="action-btn" href="/playlist/browse">
+                <button class="home-btn-primary">Browse playlists</button>
+            </a></li>
+            <li><a href="/">
+                <button class="home-btn-secondary">Go to homepage</button>
+            </a></li>
         </ul>
-    </div>
+    </section>
 </body>
 </html>
