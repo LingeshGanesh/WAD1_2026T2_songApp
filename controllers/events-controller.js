@@ -123,7 +123,8 @@ exports.viewEvent = async (req, res) => {
     try {
         const userId = req.session.user.id;
         const user = await User.findUserByID(userId);
-        const event = await Event.findById(req.query.id);
+        // .populate gets the relevant field connected and loads their data in
+        const event = await Event.findById(req.query.id).populate("author participants");
         res.render("events/view-event", { event, userId, userEvents: user.events });
     } catch (error) {
         console.error(error);
@@ -175,8 +176,8 @@ exports.updateEvent = async (req, res) => {
             // initialize to push all changes to be sent as a message
             const changes = [];
             if (old.desc !== desc) changes.push(`Description changed to ${desc}`);
-            // convert to different format for comparison
             if (old.date.toISOString().slice(0, 16) !== new Date(date + ':00+08:00').toISOString().slice(0, 16)) changes.push(`Date changed to ${date}`);
+            // convert to string for comparison
             if (String(old.entryFee) !== String(entryFee)) changes.push(`Price changed to $${entryFee}`);
             if (old.location !== location) changes.push(`Location changed to ${location}`);
             if (String(old.capacity) !== String(capacity)) changes.push(`Capacity changed to ${capacity}`);
