@@ -4,22 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
+    <link rel="stylesheet" href="/css/events-styles.css">
 </head>
-<body>
+<body class="home-bg">
     <%- include('navbar-guest') %>
-    <h1>Welcome to Lowkify!</h1>
-    <p>
-        Lowkify is a song and playlist manager for all music lovers. 
-        We are definitely not copying other similar application; 
-        it is purely coincidental. 😉
-    </p>
-    <p>
-        Join <strong><%= stats.user.length %></strong> users to listening
-        <strong><%= stats.song.length %></strong> songs! There are currently
-        <strong><%= stats.playlist.length %>+</strong> playlists posted and shared!
-    </p>
-    <h1>Join Lowkify now</h1>
-    <a href="/user/login"><button>Log-In</button></a>
-    <a href="/user/register"><button>Register</button></a>
+    <section class="home-hero">
+        <h1>Welcome to <br><span class="home-accent">Lowkify!</span></h1>
+        <p>
+            Lowkify is a song and playlist manager for all music lovers. 
+            We are definitely not copying other similar application; 
+            it is purely coincidental. 😉
+        </p>
+        <p>
+            Join <strong><%= stats.user.length %> user<%= stats.user.length == 1? "": "s" %></strong> to listening
+            <strong><%= stats.song.length %> song<%= stats.song.length == 1? "": "s" %>!</strong> There are currently
+            <strong><%= stats.playlist.length %>+ playlists</strong> posted and shared!
+        </p>
+        <div class="home-cta-row">
+            <a href="/user/register"><button class="home-btn-primary">Register</button></a>
+            <a href="/user/login"><button class="home-btn-secondary">Log-In</button></a>
+        </div>
+    </section>
 </body>
 </html>
