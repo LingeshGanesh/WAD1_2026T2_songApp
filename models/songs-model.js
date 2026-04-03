@@ -41,10 +41,12 @@ const songSchema = new mongoose.Schema({
         }
     },
     duration: {
-        type: Number
+        type: Number,
+        required: [true, 'A song must have a duration']
     },
     youtubeUrl: {
-        type: String
+        type: String,
+        required: [true, 'A song must have a YouTube URL']
     }
 });
 
