@@ -38,21 +38,22 @@
 <% } %>
 
 <script>
-    document.getElementById('albumSearch').addEventListener('input', function () {
-        const q = this.value.toLowerCase();
-        const rows = document.querySelectorAll('.album-row');
+    document.getElementById('albumSearch').addEventListener('input', function () { // fires everytime user type/delete something
+        const q = this.value.toLowerCase(); // get the current text in search box and makes it case insensitive
+        const rows = document.querySelectorAll('.album-row'); // selects all table rows with class album row rendered by EJS
         let visible = 0;
 
-        rows.forEach(row => {
-            const title = row.querySelector('td a').textContent.toLowerCase();
-            if (title.startsWith(q)) {
-                row.style.display = '';
-                visible++;
+        rows.forEach(row => { // loops through every album
+            const title = row.querySelector('td a').textContent.toLowerCase(); // gets the album title text from the link inside the first cell
+            if (title.startsWith(q)) { // check for if title starts with what the user type
+                row.style.display = ''; // if match, show the row
+                visible++; // count the number of rows
             } else {
-                row.style.display = 'none';
+                row.style.display = 'none'; // if dont match, dont show the row
             }
         });
 
+        // after looping through all rows, if visible is 0 means no rows match so it will show no albums found message. otherwise it is kept hidden
         document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
     });
 </script>

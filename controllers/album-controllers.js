@@ -209,7 +209,8 @@ exports.updateAlbum = async (req, res) => {
     const songIds = songs.split(',').map(id => new mongoose.Types.ObjectId(id.trim()));
 
     try {
-        const previousSongIds = album.songs.map(s => s._id.toString());
+        // extracts the objectIds strings from the current album's songs array
+        const previousSongIds = album.songs.map(song => song._id.toString());
         await Album.editAlbum(albumID, title, description, songIds, year);
 
         //Song.updateMany(...) runs update on all documents that match the filter
@@ -347,10 +348,9 @@ exports.deleteAlbum = async (req, res) => {
 // Song.find({...}) queries the song collection with 2 conditions: title and uploader
 exports.searchSongs = async (req, res) => {
     const songs = await Song.find({
-        // $regex: '^' matches any title starting from the first letter
         // req.query.q is the search term for the url eg /album/song-search?q=hi gives q = "hi"
         // $options: 'i' makes it case-insensitive
-        title: { $regex: '^' + req.query.q, $options: 'i' },
+        title: { $regex: req.query.q, $options: 'i' },
         uploader: req.session.user.id // only the song that uploader added will be returned
     }).select('_id title artist').limit(10); //only the songid, song title and song artist will be returned
     res.json(songs); // sends the result back as JSON objects for EJS to fetch and render as dropdown list

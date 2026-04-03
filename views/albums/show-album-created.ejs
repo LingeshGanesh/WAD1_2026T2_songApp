@@ -17,8 +17,8 @@
     <button type="button"><a href="/album/delete/<%= album._id%>"><strong>Delete Album</strong></a></button>
     <h1><%= album.title %></h1>
 
-    <strong><%= album.createdBy.username %></strong> • <%= album.yearReleased %> • <%= album.songs.length %> <%= album.songs.length === 1 ? 'song' : 'songs' %>, <%= Math.floor(album.songs.reduce((acc, s)=> acc + s.duration, 0) / 60) %> min, <%= (album.songs.reduce((acc, s)=> acc +
-            s.duration, 0) % 60).toString().padStart(2, '0') %> sec
+    <strong><%= album.createdBy.username %></strong> • <%= album.yearReleased %> • <%= album.songs.length %> <%= album.songs.length === 1 ? 'song' : 'songs' %>, <%= Math.floor(album.songs.reduce((acc, song)=> acc + song.duration, 0) / 60) %> min, <%= (album.songs.reduce((acc, song)=> acc +
+            song.duration, 0) % 60).toString().padStart(2, '0') %> sec
     <hr>
 
     <% if (album.description === ""){ %>
