@@ -1,5 +1,5 @@
 # 🎶 Lowkify
-Lowkify is a song and playlist manager for all music lovers. We are definitely not copying other similar application; it is purely coincidental. 😉
+Lowkify is a web application built for music lovers who want a simple and enjoyable way to manage songs and playlists. In addition to playlist creation and song browsing, the platform also supports albums, reviews, events, and user interaction features, creating a more connected and engaging music-sharing experience.
 
 # 📋 Index
 - [⚙️ Installation](#️-installation)
