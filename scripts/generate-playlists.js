@@ -6,6 +6,7 @@ const playlistNumPerUser = 8;
 const path = require("path");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const sharp = require("sharp");
 
 const Playlist = require("../models/playlists-model");
 const User = require("../models/users-model");
@@ -64,8 +65,14 @@ async function run() {
 
         for (let i = 0; i < playlistNumPerUser * allUsers.length; i++) {
             // playlist
-            const name = fetch("https://random-words-api.kushcreates.com/api?language=en&words=2").then(x => x.json()).then(y => [y[0].word, y[1].word].join(" "));
-            const desc = fetch("https://api.adviceslip.com/advice").then(x => x.json()).then(y => y.slip.advice);
+            const name = fetch("https://random-words-api.kushcreates.com/api?language=en&words=2")
+                .then(x => x.json())
+                .then(y => [y[0].word, y[1].word].join(" "))
+                .catch(e => {"Top Text"});
+            const desc = fetch("https://api.adviceslip.com/advice")
+                .then(x => x.json())
+                .then(y => y.slip.advice)
+                .catch(e => {"Bottom Text"});;
             const plistObj = {
                 name: await name,
                 description: await desc,
@@ -77,11 +84,11 @@ async function run() {
             await Playlist.insert(plistObj).then(doc => {
                 // Assign Thumbnail
                 fetch("https://cataas.com/cat").then(x => x.blob()).then(async blob => {
-                    const fileobject = {
-                        originalname: blob.type.replace("/", "."),
-                        buffer: await blob.stream()
-                    }
-                    Playlist.addThumbnail(doc._id, fileobject);
+                    const imageBuffer = await sharp(await blob.bytes())
+                        .resize(256, 256, {fit: "fill"})
+                        .jpeg()
+                        .toBuffer();
+                    Playlist.addThumbnail(doc._id, imageBuffer);
                 });
             })
             console.log(plistObj.name);

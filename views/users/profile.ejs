@@ -119,9 +119,9 @@
             <% if (playlists.length> 0) { %>
                 <div class="playlist-grid">
                     <% playlists.forEach(playlist=> { %>
-                        <% const thumbURL=playlist.thumbnailExt ?
-                            `/image/playlist-thumb/${playlist._id}${playlist.thumbnailExt}` : '/image/default-thumb.png'
-                            %>
+                        <% const thumbURL = playlist.thumbnail? 
+                            `/image/playlist-thumb/${playlist._id}.jpeg` : 
+                            "/image/default-thumb.png" %>
                             <a class="profile-playlist-card" href="/playlist/<%= playlist._id %>">
                                 <img src="<%= thumbURL %>" alt="<%= playlist.name %>">
                                 <span>

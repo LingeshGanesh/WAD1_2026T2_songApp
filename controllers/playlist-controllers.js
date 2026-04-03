@@ -1,7 +1,10 @@
 // Import
 const mongoose = require('mongoose');
+const sharp = require('sharp');
+
 const Playlist = require("../models/playlists-model");
 const Song = require("../models/songs-model");
+
 const statusPage = require('../modules/status-page');
 
 // Private Method
@@ -26,6 +29,13 @@ function convertTime(timeSec) {
     return `${minute}:${second.toString().padStart(2, "0")}`;
 }
 
+async function normalizeThumb(imageBuffer) {
+    return await sharp(imageBuffer)
+    .resize(256, 256, {fit: "fill"})
+    .jpeg()
+    .toBuffer();
+}
+
 // Controllers
 // Read
 exports.browse = async (req, res) => {
@@ -40,9 +50,9 @@ exports.browse = async (req, res) => {
     let allPlaylists;
     try {
         if (query.length == 0) {
-            allPlaylists = await Playlist.retrieveAll();
+            allPlaylists = await Playlist.retrievePublic();
         } else {
-            allPlaylists = await Playlist.searchPlaylists(query);
+            allPlaylists = await Playlist.searchPublicPlaylists(query);
         }
     } catch (error) {
         console.error(error);
@@ -167,6 +177,7 @@ exports.createPlaylist = async (req, res) => {
 
     // Insert into the database
     try {
+        // Create a new playlist object
         const newPlaylist = {
             name: name,
             description: description,
@@ -180,8 +191,9 @@ exports.createPlaylist = async (req, res) => {
         const playlistDoc = await Playlist.insert(newPlaylist);
         const playlistID = playlistDoc._id;
 
-        // Add the thumbnail into the entry
+        // Add the thumbnail into local storage
         if (thumbnail) {
+            thumbnail = await normalizeThumb(thumbnail.buffer);
             await Playlist.addThumbnail(playlistID, thumbnail);
         }
     
@@ -271,6 +283,7 @@ exports.updatePlaylist = async (req, res) => {
         // Update thumbnail data
         if (editThumb) {
             if (thumbnail) {
+                thumbnail = await normalizeThumb(thumbnail.buffer);
                 await Playlist.addThumbnail(playlistID, thumbnail);
             } else {
                 // No thumbnail provided. Clear the extension field

@@ -4,7 +4,7 @@
  - /views/playlists/playlist-info.ejs
 -->
 
-<% const thumbURL = playlist.thumbnailExt? `/image/playlist-thumb/${playlist._id}${playlist.thumbnailExt}` : "/image/default-thumb.png" %>
+<% const thumbURL = playlist.thumbnail? `/image/playlist-thumb/${playlist._id}.jpeg` : "/image/default-thumb.png" %>
 <table class="playlist-header">
     <tr>
         <td><img src="<%= thumbURL %>" alt="<%= playlist.name %>" height="128" width="128"></td>

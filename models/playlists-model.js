@@ -5,11 +5,10 @@ const fs = require('fs/promises');
 const path = require('path');
 const thumbnailDir = path.join(__dirname, "../public/image/playlist-thumb");
 
-// Set the directory if it does not exist during setup
+// Set the thumbnail directory if it does not exist during setup
 if (!require("fs").existsSync(path.join(thumbnailDir))) {
     fs.mkdir(thumbnailDir);
 }
-
 
 // Schema
 const playlistSchema = new mongoose.Schema({
@@ -20,8 +19,8 @@ const playlistSchema = new mongoose.Schema({
     description: {
         type: String
     },
-    thumbnailExt: {
-        type: String
+    thumbnail: {
+        type: mongoose.Schema.Types.Buffer
     },
     visibility: {
         type: String,
@@ -43,6 +42,16 @@ const playlistSchema = new mongoose.Schema({
 });
 
 const Playlist = mongoose.model('Playlist', playlistSchema, 'playlists');
+
+
+// Create thumbnails from each playlistDocs
+Playlist.find({thumbnail: {$exists: true}}).then(docs => {
+    for (let doc of docs) {
+        if (doc.thumbnail) {
+            fs.writeFile(path.join(thumbnailDir, `${doc._id}.jpeg`), doc.thumbnail);
+        }
+    }
+});
 
 
 // CRUD Functions
@@ -69,7 +78,7 @@ exports.getByID = async function(id, loadSong) {
     }
 }
 
-exports.searchPlaylists = function (query) {
+exports.searchPublicPlaylists = function (query) {
     //https://stackoverflow.com/questions/76149327/how-to-solve-redos-pointed-out-by-snyk
     //all special regular expression characters escaped
     const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -77,7 +86,8 @@ exports.searchPlaylists = function (query) {
     return Playlist.find({
         //https://www.mongodb.com/docs/manual/reference/operator/query/regex/
         // i matches lower or uppercase
-        name: { $regex: escapedQuery, $options: 'i' }
+        name: { $regex: escapedQuery, $options: 'i' },
+        visibility: "Public"
     }).populate("owner").limit(10);
 }
 
@@ -87,11 +97,9 @@ exports.insert = async function(newPlaylist) {
     return doc;
 }
 
-exports.addThumbnail = async function(playlistID, fileobject) {
-    await exports.updateByID(playlistID, {thumbnailExt: path.extname(fileobject.originalname)})
-    let filename = fileobject.originalname;
-    let imagefile = fileobject.buffer;
-    await fs.writeFile(path.join(thumbnailDir, `${playlistID}${path.extname(filename)}`), imagefile);
+exports.addThumbnail = async function(playlistID, imageBuffer) {
+    await fs.writeFile(path.join(thumbnailDir, `${playlistID}.jpeg`), imageBuffer);
+    await exports.updateByID(playlistID, {thumbnail: imageBuffer});
 }
 
 // Update
@@ -102,10 +110,10 @@ exports.updateByID = async function(id, newValue) {
 // Delete
 exports.removeThumbnail = async function(playlistID) {
     const playlistObj = await Playlist.findById(playlistID);
-    const thumbnailExt = playlistObj.thumbnailExt;
-    await exports.updateByID(playlistID, {thumbnailExt: null});
-    if (thumbnailExt) {
-        const filename = `${playlistID}${thumbnailExt}`;
+    const thumbnail = playlistObj.thumbnail;
+    await exports.updateByID(playlistID, {thumbnail: null});
+    if (thumbnail) {
+        const filename = `${playlistID}.jpeg`;
         await fs.rm(path.join(thumbnailDir, filename));
     }
 }
