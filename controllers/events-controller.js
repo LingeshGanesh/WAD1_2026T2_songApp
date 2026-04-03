@@ -119,7 +119,7 @@ exports.viewEvent = async (req, res) => {
         const user = await User.findUserByID(userId);
         // .populate gets the relevant field connected and loads their data in
         const event = await Event.findById(req.query.id).populate("author participants");
-        if (!event) {return statusPage.renderNotFound(req, res);} // Harvin: show not found page if event not found
+        if (!event) {return statusPage.renderNotFound(req, res);} // show not found page if event not found
         res.render("events/view-event", { event, userId, userEvents: user.events });
     } catch (error) {
         console.error(error);
@@ -135,8 +135,9 @@ exports.getEvent = async (req, res) => {
         const userId = req.session.user.id;
         const id = req.query.id;
         const msg = req.query.msg;
-        const result = await Event.findByIdAndAuthor(id, userId);
-        // prevents bypassing using url
+        const result = await Event.findById(id);
+        if (!result) return statusPage.renderNotFound(req, res);
+        if (result.author.toString() !== userId) return showForbiddenPage(res);
         if (new Date() > new Date(result.date)){
             return res.redirect("/events/user-events");
         }
@@ -165,6 +166,7 @@ exports.updateEvent = async (req, res) => {
         const capacity = req.body.capacity;
 
         const old = await Event.findByIdAndAuthor(id, userId);
+        if (old.author.toString() !== userId) return showForbiddenPage(res);
         console.log(old.participants);
 
         let success = await Event.editEvent(id, userId, name, desc, date, entryFee, location, capacity);
@@ -206,12 +208,13 @@ exports.updateEvent = async (req, res) => {
 
 exports.deleteAnEvent = async (req, res) => {
     try {
-
         const userId = req.session.user.id;
         const id = req.body.id;
         const name = req.body.name;
 
-        const markedEvent = await Event.findByIdAndAuthor(id, userId);
+        const markedEvent = await Event.findById(id);
+        if (!markedEvent) return statusPage.renderNotFound(req, res);
+        if (markedEvent.author.toString() !== userId) return showForbiddenPage(res);
         if (markedEvent.participants.length > 0) await User.addAlertToMany(markedEvent.participants, `${name} has been deleted`);
 
         let success = await Event.deleteEvent(id, userId);
@@ -234,8 +237,9 @@ exports.getMarkedEvent = async (req, res) => {
         const id = req.query.id;
         console.log(id);
 
-        const result = await Event.findByIdAndAuthor(id, userId);
-        if (!result) {return statusPage.renderNotFound(req, res);} // Harvin: show not found page if event not found
+        const result = await Event.findById(id);
+        if (!result) return statusPage.renderNotFound(req, res);
+        if (result.author.toString() !== userId) return showForbiddenPage(res);
         res.render("events/delete-event", { result });
 
     } catch (error) {
@@ -325,3 +329,18 @@ exports.removeEvent = async (req, res) => {
     statusPage.renderISE(res, "Error removing event");
   }
 };
+
+function showForbiddenPage(res) {
+    return res.status(403).send(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <link rel="stylesheet" href="/css/album-dark.css">
+        </head>
+        <body>
+            <h1>You do not have permission to access this.</h1>
+            <a href="/events">Go back</a>
+        </body>
+        </html>
+    `);
+}

@@ -8,18 +8,19 @@
   <%- include("../navbar-user") %>
   <br><br><br>
   <div class="event-list-page">
+  <a href="/events" class="back-link">← Back</a>
+  <h1>Music is better with friends!!</h1>
+
+  <div class="filter-tabs">
+    <a href="/events/event-list"><button class="<%= !filter || filter === 'upcoming' ? 'tab-active' : '' %>">Upcoming</button></a>
+    <a href="/events/event-list?filter=past"><button class="<%= filter === 'past' ? 'tab-active' : '' %>">Past</button></a>
+    <a href="/events/event-list?filter=attending"><button class="<%= filter === 'attending' ? 'tab-active' : '' %>">Attending</button></a>
+  </div>
   <% if (eventList.length === 0) { %>
     <a href="/events" class="back-link">← Back</a>
     <p class="empty-state">No events yet.</p>
   <% } else { %>
-    <h1>Music is better with friends!!</h1>
-    <a href="/events" class="back-link">← Back</a>
 
-    <div class="filter-tabs">
-      <a href="/events/event-list"><button class="<%= !filter || filter === 'upcoming' ? 'tab-active' : '' %>">Upcoming</button></a>
-      <a href="/events/event-list?filter=past"><button class="<%= filter === 'past' ? 'tab-active' : '' %>">Past</button></a>
-      <a href="/events/event-list?filter=attending"><button class="<%= filter === 'attending' ? 'tab-active' : '' %>">Attending</button></a>
-    </div>
      
     <% eventList.forEach(event => { %>
       <div class="event-card">

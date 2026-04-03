@@ -280,7 +280,6 @@ exports.searchSongs = async (req, res) => {
     res.json(songs); // sends the result back as JSON objects for EJS to fetch and render as dropdown list
 };
 
-// Harvin
 function showForbiddenPage(res) {
     return res.status(403).send(`
         <!DOCTYPE html>
