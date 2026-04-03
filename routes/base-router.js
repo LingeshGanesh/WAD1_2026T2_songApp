@@ -21,10 +21,10 @@ const songsRouter = require("./songs-router.js");
 // Branching Routes
 router.use("/playlist", authMiddleware.isLoggedIn, playlistRouter);
 router.use("/user", usersRouter);
-router.use("/events", eventsRouter);
-router.use("/reviews", reviewsRouter);
-router.use("/album", albumRouter);
-router.use("/songs", songsRouter);
+router.use("/events", authMiddleware.isLoggedIn, eventsRouter);
+router.use("/reviews", authMiddleware.isLoggedIn, reviewsRouter);
+router.use("/album", authMiddleware.isLoggedIn, albumRouter);
+router.use("/songs", authMiddleware.isLoggedIn, songsRouter);
 
 // 404 Not Found
 router.all(/.*/, (req, res) => {
