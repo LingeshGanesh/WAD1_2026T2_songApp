@@ -39,10 +39,10 @@ node server.js
 ```
 node scripts/seed-all.js
 ```
-2. You can log in as `admin` (no, you are still a normal user)
+2. You can log in as `Bob` 
 ```
-email    : admin@admin.com
-password : Admin123!
+email    : bob@test.com
+password : Password1!
 ```
 
 # 🤖 Use of AI
