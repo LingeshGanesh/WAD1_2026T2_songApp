@@ -30,6 +30,8 @@
                 <div class="event-card-actions" style="margin-top:1rem;">
                 <% if (event.author && event.author._id.toString() === userId) { %>
                     <button disabled>Your event</button>
+                <% } else if (new Date() > new Date(event.date)) { %>
+                    <button disabled>Past Event</button>
                 <% } else if (userEvents.some(e => e.toString() === event._id.toString())) { %>
                     <form action="/events/event-list/remove" method="POST">
                     <input type="hidden" name="eventId" value="<%= event._id %>">
@@ -37,8 +39,6 @@
                     </form>
                 <% } else if (event.participants.length >= event.capacity) { %>
                     <button disabled>Event Full</button>
-                <% } else if (new Date() > new Date(event.date)) { %>
-                    <button disabled>Past Event</button>
                 <% } else { %>
                     <form action="/events/event-list" method="POST">
                     <input type="hidden" name="eventId" value="<%= event._id %>">
