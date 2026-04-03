@@ -128,3 +128,7 @@ img {
 hr {
     border-color: #333;
 }
+
+.album-content {
+    padding: 20px;
+}

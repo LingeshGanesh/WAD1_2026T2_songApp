@@ -1,83 +1,90 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Reviews</title>
 
   <style>
-    body { 
-      background-color: black; 
-      color: white;           
+    body {
+      background-color: black;
+      color: white;
     }
-    a { 
-      color: rgb(46, 162, 108); 
+
+    a {
+      color: rgb(46, 162, 108);
     }
   </style>
+  <link rel="stylesheet" href="/css/events-styles.css">
 </head>
 
 <body>
 
   <%- include('../navbar-user') %>
 
-  <!-- links back to other pages -->
-  <a href="/home"><strong>Back to Main Page</strong></a><br>
-  <a href="/songs/browse"><strong>Back to Browse Songs</strong></a><br><br>
+    <div class="review-content" style="padding: 20px;">
+      <!-- links back to other pages -->
+      <a href="/home"><strong>Back to Main Page</strong></a><br>
+      <a href="/songs/browse"><strong>Back to Browse Songs</strong></a><br><br>
 
 
-  <h1><u>Review List:</u></h1>
+      <h1><u>Review List:</u></h1>
 
-  <!-- if no reviews -->
-  <% if (!reviews) { %>
-    <%= output %>
-    <br>
+      <!-- if no reviews -->
+      <% if (!reviews) { %>
+        <%= output %>
+          <br>
 
-  <!-- if got reviews -->
-  <% } else { %> 
+          <!-- if got reviews -->
+          <% } else { %>
 
-    <h4><%= totalReviews %> review(s) found.</h4>
+            <h4>
+              <%= totalReviews %> review(s) found.
+            </h4>
 
-    <ol>
-      <br>
-    <% } %>
+            <ol>
+              <br>
+              <% } %>
 
-    <!-- display 5 reviews per page -->
-    <ol start="<%= ((page || 1) - 1) * 5 + 1 %>">
+                <!-- display 5 reviews per page -->
+                <ol start="<%= ((page || 1) - 1) * 5 + 1 %>">
 
-      <% songs.forEach(function(song) { %>
+                  <% songs.forEach(function(song) { %>
 
-        <!-- loop through all reviews -->
-        <% reviews.forEach(function(review) { %>
+                    <!-- loop through all reviews -->
+                    <% reviews.forEach(function(review) { %>
 
-          <!-- only display review if it matches the current song -->
-          <% if (review.songId.toString() === song._id.toString()) { %>
-            <li>
-              <strong>Song: <%= song.title %></strong><br>
-              <strong>Username: <%= review.userName %></strong><br>
-              Rating: <%= review.rating %><br>
-              Comment: <%= review.comment %>
-            </li>
-            <br>
-          <% } %>
-        <% }) %>
-      <% }) %>
-    </ol>
+                      <!-- only display review if it matches the current song -->
+                      <% if (review.songId.toString()===song._id.toString()) { %>
+                        <li>
+                          <strong>Song: <%= song.title %></strong><br>
+                          <strong>Username: <%= review.userName %></strong><br>
+                          Rating: <%= review.rating %><br>
+                            Comment: <%= review.comment %>
+                        </li>
+                        <br>
+                        <% } %>
+                          <% }) %>
+                            <% }) %>
+                </ol>
 
-    <br>
+                <br>
 
-    <!-- if more than 1 page -->
-    <% if (totalPages > 1) { %>
-      <div>
-        <% if (page > 1) { %>
-          <a href="/reviews/?page=<%= page - 1 %>">Previous</a>
-        <% } %>
+                <!-- if more than 1 page -->
+                <% if (totalPages> 1) { %>
+                  <div>
+                    <% if (page> 1) { %>
+                      <a href="/reviews/?page=<%= page - 1 %>">Previous</a>
+                      <% } %>
 
-        Page <%= page %> of <%= totalPages %>
+                        Page <%= page %> of <%= totalPages %>
 
-        <% if (page < totalPages) { %>
-          <a href="/reviews/?page=<%= page + 1 %>">Next</a>
-        <% } %>
+                            <% if (page < totalPages) { %>
+                              <a href="/reviews/?page=<%= page + 1 %>">Next</a>
+                              <% } %>
 
-      </div>
-    <% } %>
-
+                  </div>
+                  <% } %>
+    </div>
 </body>
+
 </html>

@@ -23,6 +23,8 @@
 
 .browse-songs {
     color: #fff;
+    padding-top: 20px;
+    padding-left: 20px;
 }
 
 .browse-songs input[type="search"] {
