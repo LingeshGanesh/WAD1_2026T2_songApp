@@ -108,6 +108,10 @@ table:not(.playlist-header):not(.pinfo) {
     }
 }
 
+.playlist-page-content {
+    padding: 20px;
+}
+
 a {
     color: white;
 }

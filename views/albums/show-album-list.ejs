@@ -6,10 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Browse Playlists</title>
     <link rel="stylesheet" href="/css/album-dark.css">
+    <link rel="stylesheet" href="/css/events-styles.css">
 </head>
 
 <body>
     <%- include('../navbar-user') %>
+
+    <div class="album-content">
     <h1>Browse Albums</h1>
     <button type="button"><a href="/album/create"><strong>Create Album</strong></a><br><br></button><br><br>
     <input type="text" id="albumSearch" placeholder="Search by album title..."><br><br>
@@ -53,5 +56,6 @@
         document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
     });
 </script>
+    </div>
 </body>
 </html>
